@@ -34,7 +34,7 @@ describe("cliTools", () => {
       logged = true;
     };
 
-    printParams({ test: { } });
+    printParams({ test: {} });
     expect(logged).toBeTruthy();
     console.log = log;
   });
@@ -53,9 +53,9 @@ describe("cliTools", () => {
     console.log = () => {
       logged = true;
     };
-    parseArgs({ }, ['-h'], true);
-    parseArgs({ }, ['--help'], true);
-    parseArgs({ }, ['--help'], "some help string");
+    parseArgs({}, ["-h"], true);
+    parseArgs({}, ["--help"], true);
+    parseArgs({}, ["--help"], "some help string");
     expect(ran).toBeTruthy();
     expect(logged).toBeTruthy();
     process.exit = exit;

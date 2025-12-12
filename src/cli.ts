@@ -9,16 +9,13 @@ const params = {
   input: {
     shorthand: "i",
     value: "string",
-    required:
-      process.stdin.isTTY &&
-      "input is required when no JSON or file path is piped",
+    required: process.stdin.isTTY && "input is required when no JSON or file path is piped",
     description: "JSON or a source file path. Required if no data is piped.",
   },
   output: {
     shorthand: "o",
     value: "string",
-    description:
-      "A file path to write to. If not supplied stdout will be used.",
+    description: "A file path to write to. If not supplied stdout will be used.",
   },
   name: {
     shorthand: "n",
@@ -28,8 +25,7 @@ const params = {
   depth: {
     shorthand: "d",
     value: "number",
-    description:
-      "Maximum depth of recursion before falling back to z.any(). Defaults to 0.",
+    description: "Maximum depth of recursion before falling back to z.any(). Defaults to 0.",
   },
   module: {
     shorthand: "m",
@@ -39,11 +35,11 @@ const params = {
   type: {
     shorthand: "t",
     value: "string",
-    description: "The name of the (optional) inferred type export."
+    description: "The name of the (optional) inferred type export.",
   },
   noImport: {
     shorthand: "ni",
-    description: "Removes the `import { z } from 'zod';` or equivalent from the output."
+    description: "Removes the `import { z } from 'zod';` or equivalent from the output.",
   },
   withJsdocs: {
     shorthand: "wj",

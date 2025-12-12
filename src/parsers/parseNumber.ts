@@ -1,9 +1,7 @@
 import { JsonSchemaObject } from "../Types.js";
 import { withMessage } from "../utils/withMessage.js";
 
-export const parseNumber = (
-  schema: JsonSchemaObject & { type: "number" | "integer" },
-) => {
+export const parseNumber = (schema: JsonSchemaObject & { type: "number" | "integer" }) => {
   let r = "z.number()";
 
   if (schema.type === "integer") {
@@ -30,46 +28,22 @@ export const parseNumber = (
 
   if (typeof schema.minimum === "number") {
     if (schema.exclusiveMinimum === true) {
-      r += withMessage(schema, "minimum", ({ json }) => [
-        `.gt(${json}`,
-        ", ",
-        ")",
-      ]);
+      r += withMessage(schema, "minimum", ({ json }) => [`.gt(${json}`, ", ", ")"]);
     } else {
-      r += withMessage(schema, "minimum", ({ json }) => [
-        `.gte(${json}`,
-        ", ",
-        ")",
-      ]);
+      r += withMessage(schema, "minimum", ({ json }) => [`.gte(${json}`, ", ", ")"]);
     }
   } else if (typeof schema.exclusiveMinimum === "number") {
-    r += withMessage(schema, "exclusiveMinimum", ({ json }) => [
-      `.gt(${json}`,
-      ", ",
-      ")",
-    ]);
+    r += withMessage(schema, "exclusiveMinimum", ({ json }) => [`.gt(${json}`, ", ", ")"]);
   }
 
   if (typeof schema.maximum === "number") {
     if (schema.exclusiveMaximum === true) {
-      r += withMessage(schema, "maximum", ({ json }) => [
-        `.lt(${json}`,
-        ", ",
-        ")",
-      ]);
+      r += withMessage(schema, "maximum", ({ json }) => [`.lt(${json}`, ", ", ")"]);
     } else {
-      r += withMessage(schema, "maximum", ({ json }) => [
-        `.lte(${json}`,
-        ", ",
-        ")",
-      ]);
+      r += withMessage(schema, "maximum", ({ json }) => [`.lte(${json}`, ", ", ")"]);
     }
   } else if (typeof schema.exclusiveMaximum === "number") {
-    r += withMessage(schema, "exclusiveMaximum", ({ json }) => [
-      `.lt(${json}`,
-      ", ",
-      ")",
-    ]);
+    r += withMessage(schema, "exclusiveMaximum", ({ json }) => [`.lt(${json}`, ", ", ")"]);
   }
 
   return r;

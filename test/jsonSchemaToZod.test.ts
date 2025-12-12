@@ -1,8 +1,4 @@
-import {
-  JSONSchema4,
-  JSONSchema6Definition,
-  JSONSchema7Definition,
-} from "json-schema";
+import { JSONSchema4, JSONSchema6Definition, JSONSchema7Definition } from "json-schema";
 import jsonSchemaToZod from "../src";
 import { suite } from "./suite";
 
@@ -79,10 +75,7 @@ export type MyType = z.infer<typeof mySchema>
     let didThrow = false;
 
     try {
-      jsonSchemaToZod(
-        { type: "string" },
-        { name: "hello", module: "cjs", type: true },
-      );
+      jsonSchemaToZod({ type: "string" }, { name: "hello", module: "cjs", type: true });
     } catch {
       didThrow = true;
     }
@@ -200,30 +193,34 @@ export default z.string()
 
   it("can include jsdocs", () => {
     expect(
-      jsonSchemaToZod({
-        type: "object",
-        description: "Description for schema",
-        properties: {
-          prop: {
-            type: "string",
-            description: "Description for prop"
-          },
-          obj: {
-            type: "object",
-            description: "Description for object that is multiline\nMore content\n\nAnd whitespace",
-            properties: {
-              nestedProp: {
-                type: "string",
-                description: "Description for nestedProp"
-              },
-              nestedProp2: {
-                type: "string",
-                description: "Description for nestedProp2"
+      jsonSchemaToZod(
+        {
+          type: "object",
+          description: "Description for schema",
+          properties: {
+            prop: {
+              type: "string",
+              description: "Description for prop",
+            },
+            obj: {
+              type: "object",
+              description:
+                "Description for object that is multiline\nMore content\n\nAnd whitespace",
+              properties: {
+                nestedProp: {
+                  type: "string",
+                  description: "Description for nestedProp",
+                },
+                nestedProp2: {
+                  type: "string",
+                  description: "Description for nestedProp2",
+                },
               },
             },
-          }
-        }
-      }, { module: "esm", withJsdocs: true }),
+          },
+        },
+        { module: "esm", withJsdocs: true },
+      ),
       `import { z } from "zod"
 
 /**Description for schema*/
@@ -241,7 +238,8 @@ export default z.object({
 "nestedProp": z.string().describe("Description for nestedProp").optional(), 
 /**Description for nestedProp2*/
 "nestedProp2": z.string().describe("Description for nestedProp2").optional() }).describe("Description for object that is multiline\\nMore content\\n\\nAnd whitespace").optional() }).describe("Description for schema")
-`).toBeTruthy();
+`,
+    ).toBeTruthy();
   });
 
   it("will remove optionality if default is present", () => {
@@ -301,11 +299,7 @@ export default z.null()
     assert(
       jsonSchemaToZod(
         {
-          allOf: [
-            { type: "string" },
-            { type: "number" },
-            { type: "boolean", description: "foo" },
-          ],
+          allOf: [{ type: "string" }, { type: "number" }, { type: "boolean", description: "foo" }],
         },
         {
           // module: false,
@@ -328,27 +322,45 @@ export default z.null()
   });
 
   it("can output with cjs and a name", () => {
-    expect(jsonSchemaToZod({
-      type: "string"
-    }, { module: "cjs", name: "someName" }), `const { z } = require("zod")
+    expect(
+      jsonSchemaToZod(
+        {
+          type: "string",
+        },
+        { module: "cjs", name: "someName" },
+      ),
+      `const { z } = require("zod")
 
 module.exports = { "someName": z.string() }
-`).toBeTruthy();
+`,
+    ).toBeTruthy();
   });
 
   it("can output with cjs and no name", () => {
-    expect(jsonSchemaToZod({
-      type: "string"
-    }, { module: "cjs" }), `const { z } = require("zod")
+    expect(
+      jsonSchemaToZod(
+        {
+          type: "string",
+        },
+        { module: "cjs" },
+      ),
+      `const { z } = require("zod")
 
 module.exports = z.string()
-`).toBeTruthy();
+`,
+    ).toBeTruthy();
   });
 
   it("can output with name only", () => {
-    expect(jsonSchemaToZod({
-      type: "string"
-    }, { name: "someName" }), "const someName = z.string()").toBeTruthy();
+    expect(
+      jsonSchemaToZod(
+        {
+          type: "string",
+        },
+        { name: "someName" },
+      ),
+      "const someName = z.string()",
+    ).toBeTruthy();
   });
 
   it("can exclude name", () => {

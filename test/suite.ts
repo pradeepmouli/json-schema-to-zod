@@ -28,8 +28,8 @@ export function suite(suiteName: string, suiteContext: SuiteContext): void {
           args.length === 2
             ? assert(args[0], args[1], [])
             : args[0]
-            ? undefined
-            : { expected: "truthy", got: args[0] };
+              ? undefined
+              : { expected: "truthy", got: args[0] };
 
         if (!error) {
           passedAssertions++;
@@ -71,24 +71,16 @@ export function suite(suiteName: string, suiteContext: SuiteContext): void {
   if (tests === 0) {
     console.log(`⚠ '${suiteName}': No tests found`);
   } else if (tests === passedTests) {
-    console.log(
-      `✔ '${suiteName}': ${tests} ${tests === 1 ? "test" : "tests"} passed`,
-    );
+    console.log(`✔ '${suiteName}': ${tests} ${tests === 1 ? "test" : "tests"} passed`);
   } else {
     console.error(
-      `❌ '${suiteName}': ${passedTests}/${tests} ${
-        passedTests === 1 ? "test" : "tests"
-      } passed`,
+      `❌ '${suiteName}': ${passedTests}/${tests} ${passedTests === 1 ? "test" : "tests"} passed`,
     );
     process.exitCode = 1;
   }
 }
 
-function assert(
-  a: unknown,
-  b: unknown,
-  path: (string | number)[],
-): Error | ErrorMap | undefined {
+function assert(a: unknown, b: unknown, path: (string | number)[]): Error | ErrorMap | undefined {
   if (a === b) {
     return undefined;
   }
@@ -146,11 +138,7 @@ function assert(
     }
   }
 
-  if (
-    typeof a === "function" &&
-    typeof b === "function" &&
-    a.toString() === b.toString()
-  ) {
+  if (typeof a === "function" && typeof b === "function" && a.toString() === b.toString()) {
     return undefined;
   }
 
@@ -163,8 +151,7 @@ function assert(
 
 export function colorDiff(got: string, exp: string) {
   return diff(got, exp).reduce(
-    (acc, [type, value]) =>
-      acc + (type === -1 ? GREEN : type === 1 ? RED : RESET) + value,
+    (acc, [type, value]) => acc + (type === -1 ? GREEN : type === 1 ? RED : RESET) + value,
     "",
   );
 }

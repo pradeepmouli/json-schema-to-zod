@@ -8,10 +8,10 @@ describe("parseNullable", () => {
         {
           type: "string",
           nullable: true,
-          default: null
+          default: null,
         },
         { path: [], seen: new Map() },
       ),
-    ).toBe('z.string().nullable().default(null)');
+    ).toBe("z.string().nullable().default(null)");
   });
 });

@@ -27,11 +27,10 @@ export function parseObject(
           })}`;
 
           if (refs.withJsdocs && typeof propSchema === "object") {
-            result = addJsdocs(propSchema, result)
+            result = addJsdocs(propSchema, result);
           }
 
-          const hasDefault =
-            typeof propSchema === "object" && propSchema.default !== undefined;
+          const hasDefault = typeof propSchema === "object" && propSchema.default !== undefined;
 
           const required = Array.isArray(objectSchema.required)
             ? objectSchema.required.includes(key)
@@ -79,13 +78,11 @@ export function parseObject(
           additionalProperties,
         ].join(", ")}]))`;
       } else if (Object.keys(parsedPatternProperties).length > 1) {
-        patternProperties += `.catchall(z.union([${Object.values(
-          parsedPatternProperties,
-        ).join(", ")}]))`;
+        patternProperties += `.catchall(z.union([${Object.values(parsedPatternProperties).join(
+          ", ",
+        )}]))`;
       } else {
-        patternProperties += `.catchall(${Object.values(
-          parsedPatternProperties,
-        )})`;
+        patternProperties += `.catchall(${Object.values(parsedPatternProperties)})`;
       }
     } else {
       if (additionalProperties) {
@@ -98,9 +95,7 @@ export function parseObject(
           parsedPatternProperties,
         ).join(", ")}]))`;
       } else {
-        patternProperties += `z.record(z.string(), ${Object.values(
-          parsedPatternProperties,
-        )})`;
+        patternProperties += `z.record(z.string(), ${Object.values(parsedPatternProperties)})`;
       }
     }
 
@@ -110,9 +105,7 @@ export function parseObject(
 
     if (additionalProperties) {
       if (objectSchema.properties) {
-        patternProperties += `let evaluated = [${Object.keys(
-          objectSchema.properties,
-        )
+        patternProperties += `let evaluated = [${Object.keys(objectSchema.properties)
           .map((key) => JSON.stringify(key))
           .join(", ")}].includes(key)\n`;
       } else {
@@ -121,15 +114,12 @@ export function parseObject(
     }
 
     for (const key in objectSchema.patternProperties) {
-      patternProperties +=
-        "if (key.match(new RegExp(" + JSON.stringify(key) + "))) {\n";
+      patternProperties += "if (key.match(new RegExp(" + JSON.stringify(key) + "))) {\n";
       if (additionalProperties) {
         patternProperties += "evaluated = true\n";
       }
       patternProperties +=
-        "const result = " +
-        parsedPatternProperties[key] +
-        ".safeParse(value[key])\n";
+        "const result = " + parsedPatternProperties[key] + ".safeParse(value[key])\n";
       patternProperties += "if (!result.success) {\n";
 
       patternProperties += `ctx.addIssue({
@@ -147,8 +137,7 @@ export function parseObject(
 
     if (additionalProperties) {
       patternProperties += "if (!evaluated) {\n";
-      patternProperties +=
-        "const result = " + additionalProperties + ".safeParse(value[key])\n";
+      patternProperties += "const result = " + additionalProperties + ".safeParse(value[key])\n";
       patternProperties += "if (!result.success) {\n";
 
       patternProperties += `ctx.addIssue({

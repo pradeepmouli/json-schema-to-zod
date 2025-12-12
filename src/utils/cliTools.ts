@@ -46,8 +46,7 @@ export function parseArgs<T extends Params>(
         ...params,
         help: {
           shorthand: "h",
-          description:
-            typeof help === "string" ? help : "Display this message :)",
+          description: typeof help === "string" ? help : "Display this message :)",
         },
       });
 
@@ -112,10 +111,7 @@ export function parseArgs<T extends Params>(
 export function parseOrReadJSON(jsonOrPath: string): unknown {
   jsonOrPath = jsonOrPath.trim();
 
-  if (
-    jsonOrPath.length < 255 &&
-    statSync(jsonOrPath, { throwIfNoEntry: false })?.isFile()
-  ) {
+  if (jsonOrPath.length < 255 && statSync(jsonOrPath, { throwIfNoEntry: false })?.isFile()) {
     jsonOrPath = readFileSync(jsonOrPath, "utf-8");
   }
 
@@ -141,10 +137,7 @@ export function readPipe(): Promise<string> {
 }
 
 export function printParams(params: Record<string, Param>): void {
-  const longest = Object.keys(params).reduce(
-    (l, c) => (c.length > l ? c.length : l),
-    5,
-  );
+  const longest = Object.keys(params).reduce((l, c) => (c.length > l ? c.length : l), 5);
 
   const header = "Name " + " ".repeat(longest - 2) + "Short Description";
 
@@ -165,8 +158,6 @@ export function printParams(params: Record<string, Param>): void {
       description = "";
     }
 
-    console.log(
-      "--" + name + " ".repeat(longest - name.length) + shorthand + description,
-    );
+    console.log("--" + name + " ".repeat(longest - name.length) + shorthand + description);
   }
 }

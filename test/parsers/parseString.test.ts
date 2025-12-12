@@ -3,11 +3,7 @@ import { parseString } from "../../src/parsers/parseString";
 
 describe("parseString", () => {
   const run = (output: string, data: unknown) =>
-    eval(
-      `const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(
-        data,
-      )})`,
-    );
+    eval(`const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(data)})`);
 
   it("DateTime format", () => {
     const datetime = "2018-11-13T20:20:39Z";
@@ -134,19 +130,18 @@ describe("parseString", () => {
           type: "object",
           properties: {
             name: {
-              type: "string"
+              type: "string",
             },
             age: {
-              type: "integer"
-            }
+              type: "integer",
+            },
           },
-          required: [
-            "name",
-            "age"
-          ]
-        }
+          required: ["name", "age"],
+        },
       }),
-    ).toBe('z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}).pipe(z.object({ "name": z.string(), "age": z.number().int() }))');
+    ).toBe(
+      'z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}).pipe(z.object({ "name": z.string(), "age": z.number().int() }))',
+    );
     expect(
       parseString({
         type: "string",
@@ -155,23 +150,22 @@ describe("parseString", () => {
           type: "object",
           properties: {
             name: {
-              type: "string"
+              type: "string",
             },
             age: {
-              type: "integer"
-            }
+              type: "integer",
+            },
           },
-          required: [
-            "name",
-            "age"
-          ]
+          required: ["name", "age"],
         },
         errorMessage: {
           contentMediaType: "x",
           contentSchema: "y",
         },
       }),
-    ).toBe('z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}, "x").pipe(z.object({ "name": z.string(), "age": z.number().int() }), "y")');
+    ).toBe(
+      'z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}, "x").pipe(z.object({ "name": z.string(), "age": z.number().int() }), "y")',
+    );
   });
 
   it("should accept errorMessage", () => {
@@ -189,6 +183,8 @@ describe("parseString", () => {
           maxLength: "nuts",
         },
       }),
-    ).toBe('z.string().ip({ version: "v4", message: "ayy" }).regex(new RegExp("x"), "lmao").min(1, "deez").max(2, "nuts")');
+    ).toBe(
+      'z.string().ip({ version: "v4", message: "ayy" }).regex(new RegExp("x"), "lmao").min(1, "deez").max(2, "nuts")',
+    );
   });
 });

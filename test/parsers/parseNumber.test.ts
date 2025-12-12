@@ -12,14 +12,14 @@ describe("parseNumber", () => {
     expect(
       parseNumber({
         type: "integer",
-        multipleOf: 1
+        multipleOf: 1,
       }),
     ).toBe(`z.number().int()`);
 
     expect(
       parseNumber({
         type: "number",
-        multipleOf: 1
+        multipleOf: 1,
       }),
     ).toBe(`z.number().int()`);
   });

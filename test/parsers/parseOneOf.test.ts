@@ -37,12 +37,9 @@ describe("parseOneOf", () => {
   });
 
   it("should extract a single schema", () => {
-    expect(
-      parseOneOf(
-        { oneOf: [{ type: "string" }] },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe("z.string()");
+    expect(parseOneOf({ oneOf: [{ type: "string" }] }, { path: [], seen: new Map() })).toBe(
+      "z.string()",
+    );
   });
 
   it("should return z.any() if array is empty", () => {

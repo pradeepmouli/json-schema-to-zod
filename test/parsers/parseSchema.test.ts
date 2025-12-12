@@ -12,23 +12,16 @@ describe("parseSchema", () => {
       type: "object",
       properties: {
         prop: {
-          type: "string"
-        }
-      }
+          type: "string",
+        },
+      },
     };
-    expect(
-      parseSchema(schema, { seen, path: [] })
-    ).toBeTruthy();
-    expect(
-      parseSchema(schema, { seen, path: [] })
-    ).toBeTruthy();
+    expect(parseSchema(schema, { seen, path: [] })).toBeTruthy();
+    expect(parseSchema(schema, { seen, path: [] })).toBeTruthy();
   });
 
   it("should be possible to describe a readonly schema", () => {
-    expect(
-      parseSchema({ type: "string", readOnly: true }),
-      "z.string().readonly()",
-    ).toBeTruthy();
+    expect(parseSchema({ type: "string", readOnly: true }), "z.string().readonly()").toBeTruthy();
   });
 
   it("should handle nullable", () => {
@@ -40,7 +33,7 @@ describe("parseSchema", () => {
         },
         { path: [], seen: new Map() },
       ),
-      'z.string().nullable()',
+      "z.string().nullable()",
     ).toBeTruthy();
   });
 
@@ -53,9 +46,7 @@ describe("parseSchema", () => {
 
   it("should handle multiple type", () => {
     expect(
-      parseSchema({ type: [
-        "string", "number"
-      ] }),
+      parseSchema({ type: ["string", "number"] }),
       `z.union([z.string(), z.number()])`,
     ).toBeTruthy();
   });
@@ -63,9 +54,9 @@ describe("parseSchema", () => {
   it("should handle if-then-else type", () => {
     expect(
       parseSchema({
-        if: {type: 'string'},
-        then: {type: 'number'},
-        else: {type: 'boolean'}
+        if: { type: "string" },
+        then: { type: "number" },
+        else: { type: "boolean" },
       }),
       `z.union([z.number(), z.boolean()]).superRefine((value,ctx) => {
   const result = z.string().safeParse(value).success
@@ -80,24 +71,28 @@ describe("parseSchema", () => {
 
   it("should handle anyOf", () => {
     expect(
-      parseSchema({ anyOf: [
-        {
-          type: "string",
-        },
-        { type: "number" },
-      ] }),
+      parseSchema({
+        anyOf: [
+          {
+            type: "string",
+          },
+          { type: "number" },
+        ],
+      }),
       "z.union([z.string(), z.number()])",
     ).toBeTruthy();
   });
 
   it("should handle oneOf", () => {
     assert(
-      parseSchema({ oneOf: [
-        {
-          type: "string",
-        },
-        { type: "number" },
-      ] }),
+      parseSchema({
+        oneOf: [
+          {
+            type: "string",
+          },
+          { type: "number" },
+        ],
+      }),
       `z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
     const errors = schemas.reduce<z.ZodError[]>(

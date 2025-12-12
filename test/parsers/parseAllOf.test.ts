@@ -17,7 +17,7 @@ describe("parseAllOf", () => {
     expect(
       parseAllOf(
         {
-          allOf: [{type: "string"}, true],
+          allOf: [{ type: "string" }, true],
         },
         { path: [], seen: new Map() },
       ),
@@ -28,10 +28,12 @@ describe("parseAllOf", () => {
     expect(
       parseAllOf(
         {
-          allOf: [{type: "string"}, false],
+          allOf: [{ type: "string" }, false],
         },
         { path: [], seen: new Map() },
       ),
-    ).toBe(`z.intersection(z.string(), z.any().refine((value) => !z.any().safeParse(value).success, "Invalid input: Should NOT be valid against schema"))`);
+    ).toBe(
+      `z.intersection(z.string(), z.any().refine((value) => !z.any().safeParse(value).success, "Invalid input: Should NOT be valid against schema"))`,
+    );
   });
 });

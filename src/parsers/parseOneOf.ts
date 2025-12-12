@@ -1,10 +1,7 @@
 import { JsonSchemaObject, JsonSchema, Refs } from "../Types.js";
 import { parseSchema } from "./parseSchema.js";
 
-export const parseOneOf = (
-  schema: JsonSchemaObject & { oneOf: JsonSchema[] },
-  refs: Refs,
-) => {
+export const parseOneOf = (schema: JsonSchemaObject & { oneOf: JsonSchema[] }, refs: Refs) => {
   return schema.oneOf.length
     ? schema.oneOf.length === 1
       ? parseSchema(schema.oneOf[0], {

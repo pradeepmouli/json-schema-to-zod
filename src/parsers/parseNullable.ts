@@ -5,9 +5,6 @@ import { parseSchema } from "./parseSchema.js";
 /**
  * For compatibility with open api 3.0 nullable
  */
-export const parseNullable = (
-  schema: JsonSchemaObject & { nullable: true },
-  refs: Refs,
-) => {
+export const parseNullable = (schema: JsonSchemaObject & { nullable: true }, refs: Refs) => {
   return `${parseSchema(omit(schema, "nullable"), refs, true)}.nullable()`;
 };

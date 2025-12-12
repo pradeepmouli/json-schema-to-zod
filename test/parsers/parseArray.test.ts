@@ -6,15 +6,15 @@ describe("parseArray", () => {
     expect(
       parseArray(
         {
-          type: 'array',
+          type: "array",
           items: [
             {
-              type: 'string'
+              type: "string",
             },
             {
-              type: 'number'
-            }
-          ]
+              type: "number",
+            },
+          ],
         },
         { path: [], seen: new Map() },
       ),
@@ -25,10 +25,10 @@ describe("parseArray", () => {
     expect(
       parseArray(
         {
-          type: 'array',
+          type: "array",
           items: {
-            type: 'string'
-          }
+            type: "string",
+          },
         },
         { path: [], seen: new Map() },
       ),
@@ -39,11 +39,11 @@ describe("parseArray", () => {
     expect(
       parseArray(
         {
-          type: 'array',
+          type: "array",
           maxItems: 2,
           items: {
-            type: 'string'
-          }
+            type: "string",
+          },
         },
         { path: [], seen: new Map() },
       ),
