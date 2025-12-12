@@ -1,6 +1,6 @@
 import { JSONSchema4, JSONSchema6Definition, JSONSchema7Definition } from "json-schema";
+import { describe, it, expect } from "vitest";
 import jsonSchemaToZod from "../src";
-import { suite } from "./suite";
 
 describe("jsonSchemaToZod", () => {
   it("should accept json schema 7 and 4", () => {
@@ -19,11 +19,10 @@ describe("jsonSchemaToZod", () => {
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.string()
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("should be possible to skip the import line", () => {
@@ -34,9 +33,8 @@ export default z.string()
         },
         { module: "esm", noImport: true },
       ),
-      `export default z.string()
-`,
-    ).toBeTruthy();
+    ).toBe(`export default z.string()
+`);
   });
 
   it("should be possible to add types", () => {
@@ -47,12 +45,11 @@ export default z.string()
         },
         { name: "mySchema", module: "esm", type: true },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export const mySchema = z.string()
 export type MySchema = z.infer<typeof mySchema>
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("should be possible to add types with a custom name template", () => {
@@ -63,12 +60,11 @@ export type MySchema = z.infer<typeof mySchema>
         },
         { name: "mySchema", module: "esm", type: "MyType" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export const mySchema = z.string()
 export type MyType = z.infer<typeof mySchema>
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("should throw when given module cjs and type", () => {
@@ -104,11 +100,10 @@ export type MyType = z.infer<typeof mySchema>
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.string().default("foo")
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("should include falsy defaults", () => {
@@ -120,11 +115,10 @@ export default z.string().default("foo")
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.string().default("")
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("should include falsy defaults", () => {
@@ -136,11 +130,10 @@ export default z.string().default("")
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.literal("")
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("can exclude defaults", () => {
@@ -152,11 +145,10 @@ export default z.literal("")
         },
         { module: "esm", withoutDefaults: true },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.string()
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("should include describes", () => {
@@ -168,11 +160,10 @@ export default z.string()
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.string().describe("foo")
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("can exclude describes", () => {
@@ -184,11 +175,10 @@ export default z.string().describe("foo")
         },
         { module: "esm", withoutDescribes: true },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.string()
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("can include jsdocs", () => {
@@ -221,7 +211,7 @@ export default z.string()
         },
         { module: "esm", withJsdocs: true },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 /**Description for schema*/
 export default z.object({ 
@@ -238,8 +228,7 @@ export default z.object({
 "nestedProp": z.string().describe("Description for nestedProp").optional(), 
 /**Description for nestedProp2*/
 "nestedProp2": z.string().describe("Description for nestedProp2").optional() }).describe("Description for object that is multiline\\nMore content\\n\\nAnd whitespace").optional() }).describe("Description for schema")
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("will remove optionality if default is present", () => {
@@ -256,11 +245,10 @@ export default z.object({
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.object({ "prop": z.string().default("def") })
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("will handle falsy defaults", () => {
@@ -272,11 +260,10 @@ export default z.object({ "prop": z.string().default("def") })
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.boolean().default(false)
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("will ignore undefined as default", () => {
@@ -288,15 +275,14 @@ export default z.boolean().default(false)
         },
         { module: "esm" },
       ),
-      `import { z } from "zod"
+    ).toBe(`import { z } from "zod"
 
 export default z.null()
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("should be possible to define a custom parser", () => {
-    assert(
+    expect(
       jsonSchemaToZod(
         {
           allOf: [{ type: "string" }, { type: "number" }, { type: "boolean", description: "foo" }],
@@ -316,9 +302,7 @@ export default z.null()
           },
         },
       ),
-
-      `z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`,
-    );
+    ).toBe(`z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`);
   });
 
   it("can output with cjs and a name", () => {
@@ -329,11 +313,10 @@ export default z.null()
         },
         { module: "cjs", name: "someName" },
       ),
-      `const { z } = require("zod")
+    ).toBe(`const { z } = require("zod")
 
 module.exports = { "someName": z.string() }
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("can output with cjs and no name", () => {
@@ -344,11 +327,10 @@ module.exports = { "someName": z.string() }
         },
         { module: "cjs" },
       ),
-      `const { z } = require("zod")
+    ).toBe(`const { z } = require("zod")
 
 module.exports = z.string()
-`,
-    ).toBeTruthy();
+`);
   });
 
   it("can output with name only", () => {
@@ -359,11 +341,10 @@ module.exports = z.string()
         },
         { name: "someName" },
       ),
-      "const someName = z.string()",
-    ).toBeTruthy();
+    ).toBe("const someName = z.string()");
   });
 
   it("can exclude name", () => {
-    expect(jsonSchemaToZod(true), "z.any()").toBeTruthy();
+    expect(jsonSchemaToZod(true)).toBe("z.any()");
   });
 });

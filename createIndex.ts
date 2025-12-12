@@ -40,7 +40,7 @@ for (const exportPath of exportPaths) {
   });
 }
 
-// Add the default export
+// Add the import and default export at the end to maintain order
 sourceFile.addImportDeclaration({
   moduleSpecifier: "./jsonSchemaToZod.js",
   namedImports: ["jsonSchemaToZod"],

@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 
 describe("parseSchema", () => {
   it("should be usable without providing refs", () => {
-    expect(parseSchema({ type: "string" }), "z.string()").toBeTruthy();
+    expect(parseSchema({ type: "string" })).toBe("z.string()");
   });
 
   it("should return a seen and processed ref", () => {
@@ -21,7 +21,7 @@ describe("parseSchema", () => {
   });
 
   it("should be possible to describe a readonly schema", () => {
-    expect(parseSchema({ type: "string", readOnly: true }), "z.string().readonly()").toBeTruthy();
+    expect(parseSchema({ type: "string", readOnly: true })).toBe("z.string().readonly()");
   });
 
   it("should handle nullable", () => {
@@ -33,22 +33,17 @@ describe("parseSchema", () => {
         },
         { path: [], seen: new Map() },
       ),
-      "z.string().nullable()",
-    ).toBeTruthy();
+    ).toBe("z.string().nullable()");
   });
 
   it("should handle enum", () => {
-    expect(
-      parseSchema({ enum: ["someValue", 57] }),
+    expect(parseSchema({ enum: ["someValue", 57] })).toBe(
       `z.union([z.literal("someValue"), z.literal(57)])`,
-    ).toBeTruthy();
+    );
   });
 
   it("should handle multiple type", () => {
-    expect(
-      parseSchema({ type: ["string", "number"] }),
-      `z.union([z.string(), z.number()])`,
-    ).toBeTruthy();
+    expect(parseSchema({ type: ["string", "number"] })).toBe(`z.union([z.string(), z.number()])`);
   });
 
   it("should handle if-then-else type", () => {
@@ -58,15 +53,14 @@ describe("parseSchema", () => {
         then: { type: "number" },
         else: { type: "boolean" },
       }),
-      `z.union([z.number(), z.boolean()]).superRefine((value,ctx) => {
+    ).toBe(`z.union([z.number(), z.boolean()]).superRefine((value,ctx) => {
   const result = z.string().safeParse(value).success
     ? z.number().safeParse(value)
-    : z.boolean().safeParse(value).toBeTruthy();
+    : z.boolean().safeParse(value);
   if (!result.success) {
     result.error.errors.forEach((error) => ctx.addIssue(error))
   }
-})`,
-    );
+})`);
   });
 
   it("should handle anyOf", () => {
@@ -79,12 +73,11 @@ describe("parseSchema", () => {
           { type: "number" },
         ],
       }),
-      "z.union([z.string(), z.number()])",
-    ).toBeTruthy();
+    ).toBe("z.union([z.string(), z.number()])");
   });
 
   it("should handle oneOf", () => {
-    assert(
+    expect(
       parseSchema({
         oneOf: [
           {
@@ -93,7 +86,7 @@ describe("parseSchema", () => {
           { type: "number" },
         ],
       }),
-      `z.any().superRefine((x, ctx) => {
+    ).toBe(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
     const errors = schemas.reduce<z.ZodError[]>(
       (errors, schema) =>
@@ -111,7 +104,6 @@ describe("parseSchema", () => {
         message: "Invalid input: Should pass single schema",
       });
     }
-  })`,
-    );
+  })`);
   });
 });

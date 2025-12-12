@@ -385,14 +385,14 @@ describe("parseObject", () => {
   const run = (output: string, data: unknown) =>
     eval(`const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(data)})`);
 
-  it("Funcional tests - run", () => {
+  it("Functional tests - run", () => {
     expect(run("z.string()", "hello")).toEqual({
       success: true,
       data: "hello",
     });
   });
 
-  it("Funcional tests - properties", () => {
+  it("Functional tests - properties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -445,7 +445,7 @@ describe("parseObject", () => {
     ]);
   });
 
-  it("Funcional tests - properties and additionalProperties", () => {
+  it("Functional tests - properties and additionalProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -491,7 +491,7 @@ describe("parseObject", () => {
     ]);
   });
 
-  it("Funcional tests - properties and single-item patternProperties", () => {
+  it("Functional tests - properties and single-item patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -531,7 +531,7 @@ ctx.addIssue({
     expect(result).toBe(expected);
   });
 
-  test("Funcional tests - properties, additionalProperties and patternProperties", (assert) => {
+  it("Functional tests - properties, additionalProperties and patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -602,7 +602,7 @@ ctx.addIssue({
     expect(result).toBe(expected);
   });
 
-  it("Funcional tests - additionalProperties", () => {
+  it("Functional tests - additionalProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       additionalProperties: { type: "boolean" },
@@ -615,7 +615,7 @@ ctx.addIssue({
     expect(result).toBe(expected);
   });
 
-  it("Funcional tests - additionalProperties and patternProperties", () => {
+  it("Functional tests - additionalProperties and patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       additionalProperties: { type: "boolean" },
@@ -699,7 +699,7 @@ ctx.addIssue({
     ]);
   });
 
-  it("Funcional tests - single-item patternProperties", () => {
+  it("Functional tests - single-item patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       patternProperties: {
@@ -730,7 +730,7 @@ ctx.addIssue({
     expect(result).toBe(expected);
   });
 
-  it("Funcional tests - patternProperties", () => {
+  it("Functional tests - patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       patternProperties: {
@@ -802,7 +802,7 @@ ctx.addIssue({
     expect(result).toBe(expected);
   });
 
-  it("Funcional tests - patternProperties and properties", () => {
+  it("Functional tests - patternProperties and properties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
