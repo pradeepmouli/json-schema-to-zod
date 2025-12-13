@@ -5,7 +5,7 @@
 /**
  * Apply optional modifier to a schema.
  */
-export function applyOptional<T extends string>(zodStr: T): `${T}.optional()` {
+export function applyOptional<T extends string>(zodStr: T): string {
   return `${zodStr}.optional()`;
 }
 
