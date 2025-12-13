@@ -1,8 +1,8 @@
+import { describe, it, expect } from "vitest";
 import { omit } from "../../src/utils/omit";
-import { suite } from "../suite";
 
-suite("omit", (test) => {
-  test("omit", (assert) => {
+describe("omit", () => {
+  it("omit", () => {
     const input = {
       a: true,
       b: true,
@@ -20,9 +20,9 @@ suite("omit", (test) => {
     // @ts-expect-error
     output.b;
 
-    assert(output.a, true);
+    expect(output.a).toBe(true);
 
     // @ts-expect-error
-    assert(output.b, undefined);
+    expect(output.b).toBe(undefined);
   });
 });

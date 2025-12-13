@@ -58,10 +58,7 @@ export type JsonSchemaObject = {
 } & { [key: string]: any };
 
 export type ParserSelector = (schema: JsonSchemaObject, refs: Refs) => string;
-export type ParserOverride = (
-  schema: JsonSchemaObject,
-  refs: Refs,
-) => string | void;
+export type ParserOverride = (schema: JsonSchemaObject, refs: Refs) => string | void;
 
 export type Options = {
   name?: string;
@@ -72,7 +69,7 @@ export type Options = {
   parserOverride?: ParserOverride;
   depth?: number;
   type?: boolean | string;
-  noImport?: boolean
+  noImport?: boolean;
 };
 
 export type Refs = Options & {

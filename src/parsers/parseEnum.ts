@@ -1,8 +1,6 @@
 import { JsonSchemaObject, Serializable } from "../Types.js";
 
-export const parseEnum = (
-  schema: JsonSchemaObject & { enum: Serializable[] },
-) => {
+export const parseEnum = (schema: JsonSchemaObject & { enum: Serializable[] }) => {
   if (schema.enum.length === 0) {
     return "z.never()";
   } else if (schema.enum.length === 1) {
@@ -11,8 +9,6 @@ export const parseEnum = (
   } else if (schema.enum.every((x) => typeof x === "string")) {
     return `z.enum([${schema.enum.map((x) => JSON.stringify(x))}])`;
   } else {
-    return `z.union([${schema.enum
-      .map((x) => `z.literal(${JSON.stringify(x)})`)
-      .join(", ")}])`;
+    return `z.union([${schema.enum.map((x) => `z.literal(${JSON.stringify(x)})`).join(", ")}])`;
   }
 };

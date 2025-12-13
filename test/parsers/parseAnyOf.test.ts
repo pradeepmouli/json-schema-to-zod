@@ -1,9 +1,9 @@
+import { describe, it, expect } from "vitest";
 import { parseAnyOf } from "../../src/parsers/parseAnyOf";
-import { suite } from "../suite";
 
-suite("parseAnyOf", (test) => {
-  test("should create a union from two or more schemas", (assert) => {
-    assert(
+describe("parseAnyOf", () => {
+  it("should create a union from two or more schemas", () => {
+    expect(
       parseAnyOf(
         {
           anyOf: [
@@ -15,21 +15,16 @@ suite("parseAnyOf", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      "z.union([z.string(), z.number()])",
-    );
+    ).toBe("z.union([z.string(), z.number()])");
   });
 
-  test("should extract a single schema", (assert) => {
-    assert(
-      parseAnyOf(
-        { anyOf: [{ type: "string" }] },
-        { path: [], seen: new Map() },
-      ),
+  it("should extract a single schema", () => {
+    expect(parseAnyOf({ anyOf: [{ type: "string" }] }, { path: [], seen: new Map() })).toBe(
       "z.string()",
     );
   });
 
-  test("should return z.any() if array is empty", (assert) => {
-    assert(parseAnyOf({ anyOf: [] }, { path: [], seen: new Map() }), "z.any()");
+  it("should return z.any() if array is empty", () => {
+    expect(parseAnyOf({ anyOf: [] }, { path: [], seen: new Map() })).toBe("z.any()");
   });
 });

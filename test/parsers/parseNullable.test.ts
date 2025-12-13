@@ -1,18 +1,17 @@
-import { parseNullable, parseSchema } from "../../src";
-import { suite } from "../suite";
+import { describe, it, expect } from "vitest";
+import { parseSchema } from "../../src";
 
-suite("parseNullable", (test) => {
-  test("parseSchema should not add default twice", (assert) => {
-    assert(
+describe("parseNullable", () => {
+  it("parseSchema should not add default twice", () => {
+    expect(
       parseSchema(
         {
           type: "string",
           nullable: true,
-          default: null
+          default: null,
         },
         { path: [], seen: new Map() },
       ),
-      'z.string().nullable().default(null)',
-    );
+    ).toBe("z.string().nullable().default(null)");
   });
 });

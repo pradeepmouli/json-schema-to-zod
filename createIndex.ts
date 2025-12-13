@@ -1,9 +1,10 @@
-import { readdirSync, writeFileSync, statSync } from "fs";
+import { readdirSync, statSync } from "fs";
+import { Project, SourceFile } from "ts-morph";
 
 const ignore = ["src/index.ts", "src/cli.ts", "src/utils/cliTools.ts"];
 
 function checkSrcDir(path: string): string[] {
-  const lines: string[] = [];
+  const exports: string[] = [];
 
   for (const item of readdirSync(path)) {
     const itemPath = path + "/" + item;
@@ -13,20 +14,44 @@ function checkSrcDir(path: string): string[] {
     }
 
     if (statSync(itemPath).isDirectory()) {
-      lines.push(...checkSrcDir(itemPath));
+      exports.push(...checkSrcDir(itemPath));
     } else if (item.endsWith(".ts")) {
-      lines.push('export * from "./' + itemPath.slice(4, -2) + 'js"');
+      exports.push("./" + itemPath.slice(4, -2) + "js");
     }
   }
 
-  return lines;
+  return exports;
 }
 
-const lines = checkSrcDir("src");
+const exportPaths = checkSrcDir("src");
 
-lines.push(
-  'import { jsonSchemaToZod } from "./jsonSchemaToZod.js"',
-  "export default jsonSchemaToZod",
+// Create a new project and source file using ts-morph
+const project = new Project();
+const sourceFile: SourceFile = project.createSourceFile(
+  "./src/index.ts",
+  "",
+  { overwrite: true },
 );
 
-writeFileSync("./src/index.ts", lines.join("\n"));
+// Add all the export statements
+for (const exportPath of exportPaths) {
+  sourceFile.addExportDeclaration({
+    moduleSpecifier: exportPath,
+  });
+}
+
+// Add the import and default export at the end to maintain order
+sourceFile.addImportDeclaration({
+  moduleSpecifier: "./jsonSchemaToZod.js",
+  namedImports: ["jsonSchemaToZod"],
+});
+
+sourceFile.addExportAssignment({
+  isExportEquals: false,
+  expression: "jsonSchemaToZod",
+});
+
+// Save the file
+sourceFile.saveSync();
+
+console.log("Generated src/index.ts with ts-morph");

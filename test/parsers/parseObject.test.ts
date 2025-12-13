@@ -1,36 +1,34 @@
 import { JSONSchema7 } from "json-schema";
 import { ZodError } from "zod";
 import { parseObject } from "../../src/parsers/parseObject";
-import { suite } from "../suite";
+import { describe, it, expect } from "vitest";
 
-suite("parseObject", (test) => {
-  test("should handle with missing properties", (assert) => {
-    assert(
-      parseObject(
-        {
-          type: "object"
-        },
-        { path: [], seen: new Map() },
-      ),
-      `z.record(z.string(), z.any())`
-    )
-  });
-
-  test("should handle with empty properties", (assert) => {
-    assert(
+describe("parseObject", () => {
+  it("should handle with missing properties", () => {
+    expect(
       parseObject(
         {
           type: "object",
-          properties: {}
         },
         { path: [], seen: new Map() },
       ),
-      `z.object({})`
-    )
+    ).toBe(`z.record(z.string(), z.any())`);
   });
 
-  test("With properties - should handle optional and required properties", (assert) => {
-    assert(
+  it("should handle with empty properties", () => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          properties: {},
+        },
+        { path: [], seen: new Map() },
+      ),
+    ).toBe(`z.object({})`);
+  });
+
+  it("With properties - should handle optional and required properties", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -46,13 +44,13 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-
+    ).toBe(
       'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
     );
   });
 
-  test("With properties - should handle additionalProperties when set to false", (assert) => {
-    assert(
+  it("With properties - should handle additionalProperties when set to false", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -66,12 +64,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      'z.object({ "myString": z.string() }).strict()',
-    );
+    ).toBe('z.object({ "myString": z.string() }).strict()');
   });
 
-  test("With properties - should handle additionalProperties when set to true", (assert) => {
-    assert(
+  it("With properties - should handle additionalProperties when set to true", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -85,12 +82,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      'z.object({ "myString": z.string() }).catchall(z.any())',
-    );
+    ).toBe('z.object({ "myString": z.string() }).catchall(z.any())');
   });
 
-  test("With properties - should handle additionalProperties when provided a schema", (assert) => {
-    assert(
+  it("With properties - should handle additionalProperties when provided a schema", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -104,13 +100,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-
-      'z.object({ "myString": z.string() }).catchall(z.number())',
-    );
+    ).toBe('z.object({ "myString": z.string() }).catchall(z.number())');
   });
 
-  test("Without properties - should handle additionalProperties when set to false", (assert) => {
-    assert(
+  it("Without properties - should handle additionalProperties when set to false", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -118,12 +112,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      "z.record(z.string(), z.never())",
-    );
+    ).toBe("z.record(z.string(), z.never())");
   });
 
-  test("Without properties - should handle additionalProperties when set to true", (assert) => {
-    assert(
+  it("Without properties - should handle additionalProperties when set to true", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -131,12 +124,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      "z.record(z.string(), z.any())",
-    );
+    ).toBe("z.record(z.string(), z.any())");
   });
 
-  test("Without properties - should handle additionalProperties when provided a schema", (assert) => {
-    assert(
+  it("Without properties - should handle additionalProperties when provided a schema", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -145,12 +137,11 @@ suite("parseObject", (test) => {
 
         { path: [], seen: new Map() },
       ),
-      "z.record(z.string(), z.number())",
-    );
+    ).toBe("z.record(z.string(), z.number())");
   });
 
-  test("Without properties - should include falsy defaults", (assert) => {
-    assert(
+  it("Without properties - should include falsy defaults", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -163,12 +154,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      `z.object({ "s": z.string().default("") })`,
-    );
+    ).toBe(`z.object({ "s": z.string().default("") })`);
   });
 
-  test("eh", (assert) => {
-    assert(
+  it("eh", () => {
+    expect(
       parseObject(
         {
           type: "object",
@@ -199,11 +189,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-
+    ).toBe(
       'z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.object({ "c": z.string() })]))',
     );
 
-    assert(
+    expect(
       parseObject(
         {
           type: "object",
@@ -222,15 +212,12 @@ suite("parseObject", (test) => {
                 },
               },
             },
-            {
-            },
+            {},
           ],
         },
         { path: [], seen: new Map() },
       ),
-
-      `z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.any()]))`,
-    );
+    ).toBe(`z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.any()]))`);
 
     assert(
       parseObject(
@@ -304,8 +291,7 @@ suite("parseObject", (test) => {
                 },
               },
             },
-            {
-            },
+            {},
           ],
         },
         { path: [], seen: new Map() },
@@ -332,7 +318,7 @@ suite("parseObject", (test) => {
   }))`,
     );
 
-    assert(
+    expect(
       parseObject(
         {
           type: "object",
@@ -363,11 +349,11 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-
+    ).toBe(
       'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',
     );
 
-    assert(
+    expect(
       parseObject(
         {
           type: "object",
@@ -386,32 +372,27 @@ suite("parseObject", (test) => {
                 },
               },
             },
-            {
-            },
+            {},
           ],
         },
         { path: [], seen: new Map() },
       ),
-
+    ).toBe(
       `z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.any()))`,
     );
   });
 
   const run = (output: string, data: unknown) =>
-    eval(
-      `const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(
-        data,
-      )})`,
-    );
+    eval(`const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(data)})`);
 
-  test("Funcional tests - run", (assert) => {
-    assert(run("z.string()", "hello"), {
+  it("Functional tests - run", () => {
+    expect(run("z.string()", "hello")).toEqual({
       success: true,
       data: "hello",
     });
   });
 
-  test("Funcional tests - properties", (assert) => {
+  it("Functional tests - properties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -425,21 +406,20 @@ suite("parseObject", (test) => {
       },
     };
 
-    const expected =
-      'z.object({ "a": z.string(), "b": z.number().optional() })';
+    const expected = 'z.object({ "a": z.string(), "b": z.number().optional() })';
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
 
-    assert(run(result, { a: "hello" }), {
+    expect(run(result, { a: "hello" })).toEqual({
       success: true,
       data: {
         a: "hello",
       },
     });
 
-    assert(run(result, { a: "hello", b: 123 }), {
+    expect(run(result, { a: "hello", b: 123 })).toEqual({
       success: true,
       data: {
         a: "hello",
@@ -447,26 +427,25 @@ suite("parseObject", (test) => {
       },
     });
 
-    assert(run(result, { b: "hello", x: true }), {
-      success: false,
-      error: new ZodError([
-        {
-          expected: "string",
-          code: "invalid_type",
-          path: ["a"],
-          message: "Invalid input: expected string, received undefined",
-        },
-        {
-          expected: "number",
-          code: "invalid_type",
-          path: ["b"],
-          message: "Invalid input: expected number, received string",
-        },
-      ]),
-    });
+    const testResult = run(result, { b: "hello", x: true });
+    expect(testResult.success).toBe(false);
+    expect(testResult.error.issues).toEqual([
+      {
+        expected: "string",
+        code: "invalid_type",
+        path: ["a"],
+        message: "Invalid input: expected string, received undefined",
+      },
+      {
+        expected: "number",
+        code: "invalid_type",
+        path: ["b"],
+        message: "Invalid input: expected number, received string",
+      },
+    ]);
   });
 
-  test("Funcional tests - properties and additionalProperties", (assert) => {
+  it("Functional tests - properties and additionalProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -486,34 +465,33 @@ suite("parseObject", (test) => {
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
 
-    assert(run(result, { b: "hello", x: "true" }), {
-      success: false,
-      error: new ZodError([
-        {
-          expected: "string",
-          code: "invalid_type",
-          path: ["a"],
-          message: "Invalid input: expected string, received undefined",
-        },
-        {
-          expected: "number",
-          code: "invalid_type",
-          path: ["b"],
-          message: "Invalid input: expected number, received string",
-        },
-        {
-          expected: "boolean",
-          code: "invalid_type",
-          path: ["x"],
-          message: "Invalid input: expected boolean, received string",
-        },
-      ]),
-    });
+    const testResult = run(result, { b: "hello", x: "true" });
+    expect(testResult.success).toBe(false);
+    expect(testResult.error.issues).toEqual([
+      {
+        expected: "string",
+        code: "invalid_type",
+        path: ["a"],
+        message: "Invalid input: expected string, received undefined",
+      },
+      {
+        expected: "number",
+        code: "invalid_type",
+        path: ["b"],
+        message: "Invalid input: expected number, received string",
+      },
+      {
+        expected: "boolean",
+        code: "invalid_type",
+        path: ["x"],
+        message: "Invalid input: expected boolean, received string",
+      },
+    ]);
   });
 
-  test("Funcional tests - properties and single-item patternProperties", (assert) => {
+  it("Functional tests - properties and single-item patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -550,10 +528,10 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
   });
 
-  test("Funcional tests - properties, additionalProperties and patternProperties", (assert) => {
+  it("Functional tests - properties, additionalProperties and patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -621,10 +599,10 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
   });
 
-  test("Funcional tests - additionalProperties", (assert) => {
+  it("Functional tests - additionalProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       additionalProperties: { type: "boolean" },
@@ -634,10 +612,10 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
   });
 
-  test("Funcional tests - additionalProperties and patternProperties", (assert) => {
+  it("Functional tests - additionalProperties and patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       additionalProperties: { type: "boolean" },
@@ -696,33 +674,32 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
 
-    assert(run(result, { x: true, ".": [], ",": [] }), {
-      success: false,
-      error: new ZodError([
-        {
-          path: [","],
-          code: "custom",
-          message: "Invalid input: Key matching regex /,/ must match schema",
-          params: {
-            issues: [
-              {
-                origin: "array",
-                code: "too_small",
-                minimum: 1,
-                inclusive: true,
-                path: [],
-                message: "Too small: expected array to have >=1 items",
-              },
-            ],
-          },
+    const testResult = run(result, { x: true, ".": [], ",": [] });
+    expect(testResult.success).toBe(false);
+    expect(testResult.error.issues).toEqual([
+      {
+        path: [","],
+        code: "custom",
+        message: "Invalid input: Key matching regex /,/ must match schema",
+        params: {
+          issues: [
+            {
+              origin: "array",
+              code: "too_small",
+              minimum: 1,
+              inclusive: true,
+              path: [],
+              message: "Too small: expected array to have >=1 items",
+            },
+          ],
         },
-      ]),
-    });
+      },
+    ]);
   });
 
-  test("Funcional tests - single-item patternProperties", (assert) => {
+  it("Functional tests - single-item patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       patternProperties: {
@@ -750,10 +727,10 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
   });
 
-  test("Funcional tests - patternProperties", (assert) => {
+  it("Functional tests - patternProperties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       patternProperties: {
@@ -795,38 +772,37 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(run(result, { ".": [] }), {
+    expect(run(result, { ".": [] })).toEqual({
       success: true,
       data: { ".": [] },
     });
 
-    assert(run(result, { ",": [] }), {
-      success: false,
-      error: new ZodError([
-        {
-          path: [","],
-          code: "custom",
-          message: "Invalid input: Key matching regex /,/ must match schema",
-          params: {
-            issues: [
-              {
-                origin: "array",
-                code: "too_small",
-                minimum: 1,
-                inclusive: true,
-                path: [],
-                message: "Too small: expected array to have >=1 items",
-              },
-            ],
-          },
+    const testResult = run(result, { ",": [] });
+    expect(testResult.success).toBe(false);
+    expect(testResult.error.issues).toEqual([
+      {
+        path: [","],
+        code: "custom",
+        message: "Invalid input: Key matching regex /,/ must match schema",
+        params: {
+          issues: [
+            {
+              origin: "array",
+              code: "too_small",
+              minimum: 1,
+              inclusive: true,
+              path: [],
+              message: "Too small: expected array to have >=1 items",
+            },
+          ],
         },
-      ]),
-    });
+      },
+    ]);
 
-    assert(result, expected);
+    expect(result).toBe(expected);
   });
 
-  test("Funcional tests - patternProperties and properties", (assert) => {
+  it("Functional tests - patternProperties and properties", () => {
     const schema: JSONSchema7 & { type: "object" } = {
       type: "object",
       required: ["a"],
@@ -877,6 +853,6 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    assert(result, expected);
+    expect(result).toBe(expected);
   });
 });

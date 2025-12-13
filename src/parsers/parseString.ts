@@ -32,23 +32,11 @@ export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
     }
   });
 
-  r += withMessage(schema, "pattern", ({ json }) => [
-    `.regex(new RegExp(${json})`,
-    ", ",
-    ")",
-  ]);
+  r += withMessage(schema, "pattern", ({ json }) => [`.regex(new RegExp(${json})`, ", ", ")"]);
 
-  r += withMessage(schema, "minLength", ({ json }) => [
-    `.min(${json}`,
-    ", ",
-    ")",
-  ]);
+  r += withMessage(schema, "minLength", ({ json }) => [`.min(${json}`, ", ", ")"]);
 
-  r += withMessage(schema, "maxLength", ({ json }) => [
-    `.max(${json}`,
-    ", ",
-    ")",
-  ]);
+  r += withMessage(schema, "maxLength", ({ json }) => [`.max(${json}`, ", ", ")"]);
 
   r += withMessage(schema, "contentEncoding", ({ value }) => {
     if (value === "base64") {
@@ -59,22 +47,18 @@ export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
   const contentMediaType = withMessage(schema, "contentMediaType", ({ value }) => {
     if (value === "application/json") {
       return [
-        ".transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: \"custom\", message: \"Invalid JSON\" }); }}",
+        '.transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}',
         ", ",
-        ")"
-      ]
+        ")",
+      ];
     }
   });
 
-  if(contentMediaType != ""){
+  if (contentMediaType != "") {
     r += contentMediaType;
-    r += withMessage(schema, "contentSchema", ({ value })=>{
-      if (value && value instanceof Object){
-        return [
-          `.pipe(${parseSchema(value)}`,
-          ", ",
-          ")"
-        ]
+    r += withMessage(schema, "contentSchema", ({ value }) => {
+      if (value && value instanceof Object) {
+        return [`.pipe(${parseSchema(value)}`, ", ", ")"];
       }
     });
   }

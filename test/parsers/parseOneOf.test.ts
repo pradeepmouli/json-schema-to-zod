@@ -1,9 +1,9 @@
+import { describe, it, expect } from "vitest";
 import { parseOneOf } from "../../src/parsers/parseOneOf";
-import { suite } from "../suite";
 
-suite("parseOneOf", (test) => {
-  test("should create a union from two or more schemas", (assert) => {
-    assert(
+describe("parseOneOf", () => {
+  it("should create a union from two or more schemas", () => {
+    expect(
       parseOneOf(
         {
           oneOf: [
@@ -15,7 +15,7 @@ suite("parseOneOf", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      `z.any().superRefine((x, ctx) => {
+    ).toBe(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
     const errors = schemas.reduce<z.ZodError[]>(
       (errors, schema) =>
@@ -33,21 +33,16 @@ suite("parseOneOf", (test) => {
         message: "Invalid input: Should pass single schema",
       });
     }
-  })`,
-    );
+  })`);
   });
 
-  test("should extract a single schema", (assert) => {
-    assert(
-      parseOneOf(
-        { oneOf: [{ type: "string" }] },
-        { path: [], seen: new Map() },
-      ),
+  it("should extract a single schema", () => {
+    expect(parseOneOf({ oneOf: [{ type: "string" }] }, { path: [], seen: new Map() })).toBe(
       "z.string()",
     );
   });
 
-  test("should return z.any() if array is empty", (assert) => {
-    assert(parseOneOf({ oneOf: [] }, { path: [], seen: new Map() }), "z.any()");
+  it("should return z.any() if array is empty", () => {
+    expect(parseOneOf({ oneOf: [] }, { path: [], seen: new Map() })).toBe("z.any()");
   });
 });

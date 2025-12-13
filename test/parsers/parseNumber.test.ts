@@ -1,76 +1,69 @@
+import { describe, it, expect } from "vitest";
 import { parseNumber } from "../../src/parsers/parseNumber";
-import { suite } from "../suite";
 
-suite("parseNumber", (test) => {
-  test("should handle integer", (assert) => {
-    assert(
+describe("parseNumber", () => {
+  it("should handle integer", () => {
+    expect(
       parseNumber({
         type: "integer",
       }),
-      `z.number().int()`
-    );
+    ).toBe(`z.number().int()`);
 
-    assert(
+    expect(
       parseNumber({
         type: "integer",
-        multipleOf: 1
+        multipleOf: 1,
       }),
-      `z.number().int()`
-    );
+    ).toBe(`z.number().int()`);
 
-    assert(
+    expect(
       parseNumber({
         type: "number",
-        multipleOf: 1
+        multipleOf: 1,
       }),
-      `z.number().int()`
-    );
+    ).toBe(`z.number().int()`);
   });
 
-  test("should handle maximum with exclusiveMinimum", (assert) => {
-    assert(
+  it("should handle maximum with exclusiveMinimum", () => {
+    expect(
       parseNumber({
         type: "number",
         exclusiveMinimum: true,
         minimum: 2,
       }),
-      `z.number().gt(2)`
-    );
+    ).toBe(`z.number().gt(2)`);
   });
 
-  test("should handle maximum with exclusiveMinimum", (assert) => {
-    assert(
+  it("should handle minimum", () => {
+    expect(
       parseNumber({
         type: "number",
         minimum: 2,
       }),
-      `z.number().gte(2)`
-    );
+    ).toBe(`z.number().gte(2)`);
   });
 
-  test("should handle maximum with exclusiveMaximum", (assert) => {
-    assert(
+  it("should handle maximum with exclusiveMaximum", () => {
+    expect(
       parseNumber({
         type: "number",
         exclusiveMaximum: true,
         maximum: 2,
       }),
-      `z.number().lt(2)`
-    );
+    ).toBe(`z.number().lt(2)`);
   });
 
-  test("should handle numeric exclusiveMaximum", (assert) => {
-    assert(
+  it("should handle numeric exclusiveMaximum", () => {
+    expect(
       parseNumber({
         type: "number",
         exclusiveMaximum: 2,
       }),
-      `z.number().lt(2)`
-    );
+    ).toBe(`z.number().lt(2)`);
   });
 
-  test("should accept errorMessage", (assert) => {
-    assert(
+  it("should accept errorMessage", () => {
+    expect(
       parseNumber({
         type: "number",
         format: "int64",
@@ -84,8 +77,6 @@ suite("parseNumber", (test) => {
           maximum: "nuts",
         },
       }),
-
-      'z.number().int("ayy").multipleOf(2, "lmao").gt(0, "deez").lte(2, "nuts")',
-    );
+    ).toBe('z.number().int("ayy").multipleOf(2, "lmao").gt(0, "deez").lte(2, "nuts")');
   });
 });

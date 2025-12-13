@@ -1,8 +1,8 @@
+import { describe, it, expect } from "vitest";
 import { half } from "../../src/utils/half";
-import { suite } from "../suite";
 
-suite("half", (test) => {
-  test("half", (assert) => {
+describe("half", () => {
+  it("half", () => {
     const [a, b] = half(["A", "B", "C", "D", "E"]);
 
     if (1 < 0) {
@@ -10,7 +10,7 @@ suite("half", (test) => {
       a[0].endsWith("");
     }
 
-    assert(a, ["A", "B"])
-    assert(b, ["C", "D", "E"])
+    expect(a).toEqual(["A", "B"]);
+    expect(b).toEqual(["C", "D", "E"]);
   });
 });

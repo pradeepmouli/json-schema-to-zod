@@ -7,9 +7,7 @@ export const jsonSchemaToZod = (
   { module, name, type, noImport, ...rest }: Options = {},
 ): string => {
   if (type && (!name || module !== "esm")) {
-    throw new Error(
-      "Option `type` requires `name` to be set and `module` to be `esm`",
-    );
+    throw new Error("Option `type` requires `name` to be set and `module` to be `esm`");
   }
 
   let result = parseSchema(schema, {
@@ -20,9 +18,10 @@ export const jsonSchemaToZod = (
     ...rest,
   });
 
-  const jsdocs = rest.withJsdocs && typeof schema !== "boolean" && schema.description
-    ? expandJsdocs(schema.description)
-    : "";
+  const jsdocs =
+    rest.withJsdocs && typeof schema !== "boolean" && schema.description
+      ? expandJsdocs(schema.description)
+      : "";
 
   if (module === "cjs") {
     result = `${jsdocs}module.exports = ${name ? `{ ${JSON.stringify(name)}: ${result} }` : result}
@@ -47,10 +46,7 @@ ${result}`;
   }
 
   if (type && name) {
-    let typeName =
-      typeof type === "string"
-        ? type
-        : `${name[0].toUpperCase()}${name.substring(1)}`;
+    let typeName = typeof type === "string" ? type : `${name[0].toUpperCase()}${name.substring(1)}`;
 
     result += `export type ${typeName} = z.infer<typeof ${name}>
 `;

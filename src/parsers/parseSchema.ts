@@ -14,13 +14,7 @@ import { parseObject } from "./parseObject.js";
 import { parseString } from "./parseString.js";
 import { parseOneOf } from "./parseOneOf.js";
 import { parseNullable } from "./parseNullable.js";
-import {
-  ParserSelector,
-  Refs,
-  JsonSchemaObject,
-  JsonSchema,
-  Serializable,
-} from "../Types.js";
+import { ParserSelector, Refs, JsonSchemaObject, JsonSchema, Serializable } from "../Types.js";
 
 export const parseSchema = (
   schema: JsonSchema,
@@ -64,7 +58,7 @@ export const parseSchema = (
       parsed = addDefaults(schema, parsed);
     }
 
-    parsed = addAnnotations(schema, parsed)
+    parsed = addAnnotations(schema, parsed);
   }
 
   seen.r = parsed;
@@ -119,10 +113,7 @@ const selectParser: ParserSelector = (schema, refs) => {
     return parseMultipleType(schema, refs);
   } else if (its.a.primitive(schema, "string")) {
     return parseString(schema);
-  } else if (
-    its.a.primitive(schema, "number") ||
-    its.a.primitive(schema, "integer")
-  ) {
+  } else if (its.a.primitive(schema, "number") || its.a.primitive(schema, "integer")) {
     return parseNumber(schema);
   } else if (its.a.primitive(schema, "boolean")) {
     return parseBoolean(schema);
@@ -139,8 +130,7 @@ export const its = {
   an: {
     object: (x: JsonSchemaObject): x is JsonSchemaObject & { type: "object" } =>
       x.type === "object",
-    array: (x: JsonSchemaObject): x is JsonSchemaObject & { type: "array" } =>
-      x.type === "array",
+    array: (x: JsonSchemaObject): x is JsonSchemaObject & { type: "array" } => x.type === "array",
     anyOf: (
       x: JsonSchemaObject,
     ): x is JsonSchemaObject & {
@@ -158,13 +148,10 @@ export const its = {
     } => x.enum !== undefined,
   },
   a: {
-    nullable: (
-      x: JsonSchemaObject,
-    ): x is JsonSchemaObject & { nullable: true } =>
+    nullable: (x: JsonSchemaObject): x is JsonSchemaObject & { nullable: true } =>
       (x as any).nullable === true,
-    multipleType: (
-      x: JsonSchemaObject,
-    ): x is JsonSchemaObject & { type: string[] } => Array.isArray(x.type),
+    multipleType: (x: JsonSchemaObject): x is JsonSchemaObject & { type: string[] } =>
+      Array.isArray(x.type),
     not: (
       x: JsonSchemaObject,
     ): x is JsonSchemaObject & {
@@ -185,10 +172,7 @@ export const its = {
       if: JsonSchema;
       then: JsonSchema;
       else: JsonSchema;
-    } =>
-      Boolean(
-        "if" in x && x.if && "then" in x && "else" in x && x.then && x.else,
-      ),
+    } => Boolean("if" in x && x.if && "then" in x && "else" in x && x.then && x.else),
     oneOf: (
       x: JsonSchemaObject,
     ): x is JsonSchemaObject & {

@@ -10,9 +10,7 @@ const ensureOriginalIndex = (arr: JsonSchema[]) => {
   for (let i = 0; i < arr.length; i++) {
     const item = arr[i];
     if (typeof item === "boolean") {
-      newArr.push(
-        item ? { [originalIndex]: i } : { [originalIndex]: i, not: {} },
-      );
+      newArr.push(item ? { [originalIndex]: i } : { [originalIndex]: i, not: {} });
     } else if (originalIndex in item) {
       return arr;
     } else {
@@ -23,10 +21,7 @@ const ensureOriginalIndex = (arr: JsonSchema[]) => {
   return newArr;
 };
 
-export function parseAllOf(
-  schema: JsonSchemaObject & { allOf: JsonSchema[] },
-  refs: Refs,
-): string {
+export function parseAllOf(schema: JsonSchemaObject & { allOf: JsonSchema[] }, refs: Refs): string {
   if (schema.allOf.length === 0) {
     return "z.never()";
   } else if (schema.allOf.length === 1) {

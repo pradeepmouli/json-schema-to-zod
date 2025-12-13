@@ -1,9 +1,9 @@
+import { describe, it, expect } from "vitest";
 import { parseNot } from "../../src/parsers/parseNot";
-import { suite } from "../suite";
 
-suite("parseNot", (test) => {
-  test("", (assert) => {
-    assert(
+describe("parseNot", () => {
+  it("", () => {
+    expect(
       parseNot(
         {
           not: {
@@ -12,6 +12,7 @@ suite("parseNot", (test) => {
         },
         { path: [], seen: new Map() },
       ),
+    ).toBe(
       'z.any().refine((value) => !z.string().safeParse(value).success, "Invalid input: Should NOT be valid against schema")',
     );
   });

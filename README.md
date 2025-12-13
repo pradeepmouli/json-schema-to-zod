@@ -93,8 +93,6 @@ export default z.object({ hello: z.string().optional() });
 ```
 
 ##### `moduleWithType`
-
-```typescript
 import { z } from "zod";
 
 export const mySchema = z.object({ hello: z.string().optional() });

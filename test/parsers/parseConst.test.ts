@@ -1,13 +1,12 @@
+import { describe, it, expect } from "vitest";
 import { parseConst } from "../../src/parsers/parseConst";
-import { suite } from "../suite";
 
-suite("parseConst", (test) => {
-  test("should handle falsy constants", (assert) => {
-    assert(
+describe("parseConst", () => {
+  it("should handle falsy constants", () => {
+    expect(
       parseConst({
         const: false,
       }),
-      "z.literal(false)",
-    );
+    ).toBe("z.literal(false)");
   });
 });

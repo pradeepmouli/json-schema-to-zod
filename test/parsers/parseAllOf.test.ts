@@ -1,39 +1,38 @@
+import { describe, it, expect } from "vitest";
 import { parseAllOf } from "../../src/parsers/parseAllOf";
-import { suite } from "../suite";
 
-suite("parseAllOf", (test) => {
-  test("should create never if empty", (assert) => {
-    assert(
+describe("parseAllOf", () => {
+  it("should create never if empty", () => {
+    expect(
       parseAllOf(
         {
           allOf: [],
         },
         { path: [], seen: new Map() },
       ),
-      "z.never()",
-    );
+    ).toBe("z.never()");
   });
 
-  test("should handle true values", (assert) => {
-    assert(
+  it("should handle true values", () => {
+    expect(
       parseAllOf(
         {
-          allOf: [{type: "string"}, true],
+          allOf: [{ type: "string" }, true],
         },
         { path: [], seen: new Map() },
       ),
-      "z.intersection(z.string(), z.any())",
-    );
+    ).toBe("z.intersection(z.string(), z.any())");
   });
 
-  test("should handle false values", (assert) => {
-    assert(
+  it("should handle false values", () => {
+    expect(
       parseAllOf(
         {
-          allOf: [{type: "string"}, false],
+          allOf: [{ type: "string" }, false],
         },
         { path: [], seen: new Map() },
       ),
+    ).toBe(
       `z.intersection(z.string(), z.any().refine((value) => !z.any().safeParse(value).success, "Invalid input: Should NOT be valid against schema"))`,
     );
   });

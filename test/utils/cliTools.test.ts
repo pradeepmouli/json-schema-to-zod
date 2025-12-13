@@ -1,45 +1,45 @@
 import { parseArgs, printParams } from "../../src/utils/cliTools";
-import { suite } from "../suite";
+import { describe, it, expect } from "vitest";
 
-suite("cliTools", (test) => {
-  test("parseArgs should handle param as optional whether false or undefined is passed", (assert) => {
-    assert(parseArgs({ test: { required: false } }, []));
-    assert(parseArgs({ test: { required: undefined } }, []));
+describe("cliTools", () => {
+  it("parseArgs should handle param as optional whether false or undefined is passed", () => {
+    expect(parseArgs({ test: { required: false } }, [])).toBeTruthy();
+    expect(parseArgs({ test: { required: undefined } }, [])).toBeTruthy();
   });
 
-  test("parseArgs should throw with missing required property", (assert) => {
+  it("parseArgs should throw with missing required property", () => {
     let caught = false;
     try {
       parseArgs({ test: { required: true } }, []);
     } catch {
       caught = true;
     }
-    assert(caught);
+    expect(caught).toBeTruthy();
   });
 
-  test("parseArgs should throw with missing required property with message", (assert) => {
+  it("parseArgs should throw with missing required property with message", () => {
     let caught = false;
     try {
       parseArgs({ test: { required: "Some message" } }, []);
     } catch {
       caught = true;
     }
-    assert(caught);
+    expect(caught).toBeTruthy();
   });
 
-  test("printParams should handle missing description", (assert) => {
+  it("printParams should handle missing description", () => {
     const log = console.log;
     let logged = false;
     console.log = () => {
       logged = true;
     };
 
-    printParams({ test: { } });
-    assert(logged);
+    printParams({ test: {} });
+    expect(logged).toBeTruthy();
     console.log = log;
   });
 
-  test("parseArgs should handle help with argument passed", (assert) => {
+  it("parseArgs should handle help with argument passed", () => {
     let ran = false;
     let logged = false;
 
@@ -53,11 +53,11 @@ suite("cliTools", (test) => {
     console.log = () => {
       logged = true;
     };
-    parseArgs({ }, ['-h'], true);
-    parseArgs({ }, ['--help'], true);
-    parseArgs({ }, ['--help'], "some help string");
-    assert(ran);
-    assert(logged);
+    parseArgs({}, ["-h"], true);
+    parseArgs({}, ["--help"], true);
+    parseArgs({}, ["--help"], "some help string");
+    expect(ran).toBeTruthy();
+    expect(logged).toBeTruthy();
     process.exit = exit;
     console.log = log;
   });
