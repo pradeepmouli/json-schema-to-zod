@@ -28,7 +28,6 @@ export function withMessage(
       if (schema.errorMessage?.[key] !== undefined) {
         r += prefix + JSON.stringify(schema.errorMessage[key]);
       }
-      r;
       r += closer;
     }
   }

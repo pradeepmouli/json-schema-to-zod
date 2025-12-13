@@ -147,5 +147,18 @@
     "dist",
     "node_modules",
     "*.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["test/**"],
+      "rules": {
+        "no-eval": "off",
+        "no-unused-expressions": "off",
+        "no-constant-condition": "off",
+        "unicorn/no-thenable": "off",
+        "no-useless-escape": "off",
+        "no-unused-vars": "off"
+      }
+    }
   ]
 }
