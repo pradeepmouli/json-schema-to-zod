@@ -102,7 +102,7 @@ export function applyBase64(zodStr: string, errorMessage?: string): string {
  */
 export function applyJsonTransform(zodStr: string, errorMessage?: string): string {
   const transformPart = `(str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}`;
-  
+
   if (errorMessage) {
     return `${zodStr}.transform(${transformPart}, ${JSON.stringify(errorMessage)})`;
   }

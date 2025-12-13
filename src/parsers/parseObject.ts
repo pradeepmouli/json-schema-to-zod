@@ -23,10 +23,10 @@ export function parseObject(
   // Step 1: Build base object from properties
   if (objectSchema.properties && Object.keys(objectSchema.properties).length > 0) {
     const propsWithJsdocs: string[] = [];
-    
+
     for (const key of Object.keys(objectSchema.properties)) {
       const propSchema = objectSchema.properties[key];
-      
+
       let propZod = parseSchema(propSchema, {
         ...refs,
         path: [...refs.path, "properties", key],
@@ -45,7 +45,7 @@ export function parseObject(
 
       // Build the property string: "key": zodSchema
       let propStr = `${JSON.stringify(key)}: ${propZod}`;
-      
+
       // Add JSDoc if enabled (prepends to the property string)
       if (refs.withJsdocs && typeof propSchema === "object") {
         propStr = addJsdocs(propSchema, propStr);
@@ -53,7 +53,7 @@ export function parseObject(
 
       propsWithJsdocs.push(propStr);
     }
-    
+
     // Build object with pre-formatted property strings
     result = `z.object({ ${propsWithJsdocs.join(", ")} })`;
   } else if (objectSchema.properties) {

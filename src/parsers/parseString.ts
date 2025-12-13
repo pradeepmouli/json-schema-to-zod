@@ -42,7 +42,7 @@ export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
   // Apply contentMediaType constraint
   if (schema.contentMediaType === "application/json") {
     r = applyJsonTransform(r, schema.errorMessage?.contentMediaType);
-    
+
     // Apply contentSchema pipe if present
     if (schema.contentSchema && typeof schema.contentSchema === "object") {
       const contentSchemaZod = parseSchema(schema.contentSchema);

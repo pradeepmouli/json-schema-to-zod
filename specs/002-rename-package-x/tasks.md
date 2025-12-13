@@ -167,59 +167,59 @@
 
 **Purpose**: Move Zod string generation rules out of parsers and into `ZodBuilder` one parser at a time.
 
-- [ ] T026 Add `ZodBuilder` scaffolding for shared primitives
+- [X] T026 Add `ZodBuilder` scaffolding for shared primitives
   - Create shared helpers only as needed to keep output identical
   **File**: `src/ZodBuilder/shared.ts` (new)
 
-- [ ] T027 Migrate `parseString` to `ZodBuilder`
+- [X] T027 Migrate `parseString` to `ZodBuilder`
   **File**: `src/parsers/parseString.ts`
 
-- [ ] T028 Run `parseString` tests
+- [X] T028 Run `parseString` tests
   ```bash
   npm test -- test/parsers/parseString.test.ts
   ```
   **File**: `test/parsers/parseString.test.ts`
 
-- [ ] T029 Migrate `parseArray` to `ZodBuilder`
+- [X] T029 Migrate `parseArray` to `ZodBuilder`
   **File**: `src/parsers/parseArray.ts`
 
-- [ ] T030 Run `parseArray` tests
+- [X] T030 Run `parseArray` tests
   ```bash
   npm test -- test/parsers/parseArray.test.ts
   ```
   **File**: `test/parsers/parseArray.test.ts`
 
-- [ ] T031 Migrate `parseObject` to `ZodBuilder`
+- [X] T031 Migrate `parseObject` to `ZodBuilder`
   **File**: `src/parsers/parseObject.ts`
 
-- [ ] T032 Run `parseObject` tests
+- [X] T032 Run `parseObject` tests
   ```bash
   npm test -- test/parsers/parseObject.test.ts
   ```
   **File**: `test/parsers/parseObject.test.ts`
 
-- [ ] T033 Migrate `parseEnum` to `ZodBuilder`
+- [X] T033 Migrate `parseEnum` to `ZodBuilder`
   **File**: `src/parsers/parseEnum.ts`
 
-- [ ] T034 Run `parseEnum` tests
+- [X] T034 Run `parseEnum` tests
   ```bash
   npm test -- test/parsers/parseEnum.test.ts
   ```
   **File**: `test/parsers/parseEnum.test.ts`
 
-- [ ] T035 Migrate `parseConst` to `ZodBuilder`
+- [X] T035 Migrate `parseConst` to `ZodBuilder`
   **File**: `src/parsers/parseConst.ts`
 
-- [ ] T036 Run `parseConst` tests
+- [X] T036 Run `parseConst` tests
   ```bash
   npm test -- test/parsers/parseConst.test.ts
   ```
   **File**: `test/parsers/parseConst.test.ts`
 
-- [ ] T037 Migrate combinator parsers (`parseAllOf`, `parseAnyOf`, `parseOneOf`) to `ZodBuilder`
+- [X] T037 Migrate combinator parsers (`parseAllOf`, `parseAnyOf`, `parseOneOf`) to `ZodBuilder`
   **Files**: `src/parsers/parseAllOf.ts`, `src/parsers/parseAnyOf.ts`, `src/parsers/parseOneOf.ts`
 
-- [ ] T038 Run combinator parser tests
+- [X] T038 Run combinator parser tests
   ```bash
   npm test -- test/parsers/parseAllOf.test.ts
   npm test -- test/parsers/parseAnyOf.test.ts
@@ -227,36 +227,36 @@
   ```
   **Files**: `test/parsers/parseAllOf.test.ts`, `test/parsers/parseAnyOf.test.ts`, `test/parsers/parseOneOf.test.ts`
 
-- [ ] T039 Migrate `parseMultipleType` and `parseNullable` to `ZodBuilder`
+- [X] T039 Migrate `parseMultipleType` and `parseNullable` to `ZodBuilder`
   **Files**: `src/parsers/parseMultipleType.ts`, `src/parsers/parseNullable.ts`
 
-- [ ] T040 Run multi-type/nullable tests
+- [X] T040 Run multi-type/nullable tests
   ```bash
   npm test -- test/parsers/parseMultipleType.test.ts
   npm test -- test/parsers/parseNullable.test.ts
   ```
   **Files**: `test/parsers/parseMultipleType.test.ts`, `test/parsers/parseNullable.test.ts`
 
-- [ ] T041 Migrate `parseNot` to `ZodBuilder`
+- [X] T041 Migrate `parseNot` to `ZodBuilder`
   **File**: `src/parsers/parseNot.ts`
 
-- [ ] T042 Run `parseNot` tests
+- [X] T042 Run `parseNot` tests
   ```bash
   npm test -- test/parsers/parseNot.test.ts
   ```
   **File**: `test/parsers/parseNot.test.ts`
 
-- [ ] T043 Keep `parseSchema` orchestration stable while delegating builder calls
+- [X] T043 Keep `parseSchema` orchestration stable while delegating builder calls
   - Ensure parser selection and recursion behavior unchanged
   **File**: `src/parsers/parseSchema.ts`
 
-- [ ] T044 Run `parseSchema` tests
+- [X] T044 Run `parseSchema` tests
   ```bash
   npm test -- test/parsers/parseSchema.test.ts
   ```
   **File**: `test/parsers/parseSchema.test.ts`
 
-- [ ] T045 Run full suite after parser migrations
+- [X] T045 Run full suite after parser migrations
   ```bash
   npm test
   ```
