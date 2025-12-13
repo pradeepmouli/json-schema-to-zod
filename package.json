@@ -1,5 +1,5 @@
 {
-  "name": "json-schema-to-zod",
+  "name": "x-to-zod",
   "version": "2.6.1",
   "description": "Converts JSON schema objects or files into Zod schemas",
   "types": "./dist/types/index.d.ts",

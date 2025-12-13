@@ -1,7 +1,7 @@
-# Json-Schema-to-Zod
+# X-to-Zod
 
-[![NPM Version](https://img.shields.io/npm/v/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
-[![NPM Downloads](https://img.shields.io/npm/dw/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
+[![NPM Version](https://img.shields.io/npm/v/x-to-zod.svg)](https://npmjs.org/package/x-to-zod)
+[![NPM Downloads](https://img.shields.io/npm/dw/x-to-zod.svg)](https://npmjs.org/package/x-to-zod)
 
 _Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
 
@@ -17,28 +17,28 @@ Since v2 the CLI supports piped JSON.
 
 ### Online
 
-[Just paste your JSON schemas here!](https://stefanterdell.github.io/json-schema-to-zod-react/)
+[Just paste your JSON schemas here!](https://stefanterdell.github.io/x-to-zod-react/)
 
 ### CLI
 
 #### Simplest example
 
 ```console
-npm i -g json-schema-to-zod
+npm i -g x-to-zod
 ```
 
 ```console
-json-schema-to-zod -i mySchema.json -o mySchema.ts
+x-to-zod -i mySchema.json -o mySchema.ts
 ```
 
 #### Example with `$refs` resolved and output formatted
 
 ```console
-npm i -g json-schema-to-zod json-refs prettier
+npm i -g x-to-zod json-refs prettier
 ```
 
 ```console
-json-refs resolve mySchema.json | json-schema-to-zod | prettier --parser typescript > mySchema.ts
+json-refs resolve mySchema.json | x-to-zod | prettier --parser typescript > mySchema.ts
 ```
 
 #### Options
@@ -59,7 +59,7 @@ json-refs resolve mySchema.json | json-schema-to-zod | prettier --parser typescr
 #### Simple example
 
 ```typescript
-import { jsonSchemaToZod } from "json-schema-to-zod";
+import { jsonSchemaToZod } from "x-to-zod";
 
 const myObject = {
   type: "object",
@@ -119,7 +119,7 @@ z.object({ hello: z.string().optional() });
 import { z } from "zod";
 import { resolveRefs } from "json-refs";
 import { format } from "prettier";
-import jsonSchemaToZod from "json-schema-to-zod";
+import jsonSchemaToZod from "x-to-zod";
 
 async function example(jsonSchema: Record<string, unknown>): Promise<string> {
   const { resolved } = await resolveRefs(jsonSchema);

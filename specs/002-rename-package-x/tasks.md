@@ -10,44 +10,44 @@
 
 **Purpose**: Establish a behavior and metrics baseline before any code moves.
 
-- [ ] T001 Verify dependencies install cleanly
+- [x] T001 Verify dependencies install cleanly
   ```bash
   npm install
   ```
   **File**: `package.json` (verification only)
 
-- [ ] T002 Verify all tests pass (baseline)
+- [x] T002 Verify all tests pass (baseline)
   ```bash
   npm test
   ```
   **File**: N/A (verification only)
 
-- [ ] T003 Capture baseline metrics (before)
+- [x] T003 Capture baseline metrics (before)
   ```bash
   .specify/extensions/workflows/refactor/measure-metrics.sh --before --dir "specs/002-rename-package-x"
   ```
   **File**: `specs/002-rename-package-x/metrics-before.md`
 
-- [ ] T004 Capture baseline library output for snapshot Behavior 1
+- [x] T004 Capture baseline library output for snapshot Behavior 1
   ```bash
-  node -e "import('./dist/esm/index.js').then(m=>console.log(m.default({type:'string'},{module:'esm'})))" || true
+  npx tsx -e "import { jsonSchemaToZod } from './src/jsonSchemaToZod.ts'; console.log(jsonSchemaToZod({ type: 'string' }, { module: 'esm' }));"
   ```
-  **File**: `specs/refactor-002-rename-package-x/behavioral-snapshot.md` (reference only)
+  **File**: `specs/002-rename-package-x/behavioral-snapshot.md` (reference only)
 
-- [ ] T005 Capture baseline CLI output (spot-check)
+- [x] T005 Capture baseline CLI output (spot-check)
   ```bash
   echo '{"type":"string"}' > /tmp/refactor-002.schema.json
-  tsx src/cli.ts -i /tmp/refactor-002.schema.json
+  npx tsx src/cli.ts -i /tmp/refactor-002.schema.json
   ```
   **File**: `src/cli.ts` (verification only)
 
-- [ ] T006 Create git baseline tag
+- [x] T006 Create git baseline tag
   ```bash
   git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + JsonSchema/ZodBuilder namespaces"
   ```
   **File**: Git tag (repository state)
 
-- [ ] T007 Confirm behavioral snapshot “before” sections are accurate
+- [X] T007 Confirm behavioral snapshot "before" sections are accurate
   - Ensure Behavior 1 “Actual Output (before)” matches current output formatting
   - Ensure Behavior 2 “Actual Output (before)” matches current `parseNumber` formatting
   **File**: `specs/002-rename-package-x/behavioral-snapshot.md`
@@ -60,24 +60,24 @@
 
 **Purpose**: Rename published artifact to `x-to-zod` without changing runtime exports or behavior.
 
-- [ ] T008 Update package name
+- [X] T008 Update package name
   - Set `name` to `x-to-zod`
   **File**: `package.json`
 
-- [ ] T009 Verify `exports`/entrypoints remain equivalent
+- [X] T009 Verify `exports`/entrypoints remain equivalent
   - Confirm existing ESM/CJS exports map to the same runtime API
   **File**: `package.json`
 
-- [ ] T010 Update README install/import examples (package name only)
+- [X] T010 Update README install/import examples (package name only)
   **File**: `README.md`
 
-- [ ] T011 Verify tests after rename
+- [X] T011 Verify tests after rename
   ```bash
   npm test
   ```
   **File**: N/A (verification only)
 
-- [ ] T012 Verify CLI behavior unchanged
+- [X] T012 Verify CLI behavior unchanged
   ```bash
   tsx src/cli.ts -i /tmp/refactor-002.schema.json
   ```
@@ -91,35 +91,35 @@
 
 **Purpose**: Centralize Zod-string construction rules and modifier application.
 
-- [ ] T013 Create `ZodBuilder` module scaffold
+- [X] T013 Create `ZodBuilder` module scaffold
   - Create directory and entrypoint
   **File**: `src/ZodBuilder/index.ts`
 
-- [ ] T014 Add number builder API (minimum viable)
+- [X] T014 Add number builder API (minimum viable)
   - Implement helpers that can reproduce `parseNumber` output exactly
   **File**: `src/ZodBuilder/number.ts` (new)
 
-- [ ] T015 Add `ZodBuilder` re-exports
+- [X] T015 Add `ZodBuilder` re-exports
   - Keep internal-only until later phases unless explicitly exported
   **File**: `src/ZodBuilder/index.ts`
 
-- [ ] T016 Refactor `parseNumber` to delegate string building to `ZodBuilder`
+- [X] T016 Refactor `parseNumber` to delegate string building to `ZodBuilder`
   - Preserve modifier order, message wiring, and keyword precedence
   **File**: `src/parsers/parseNumber.ts`
 
-- [ ] T017 Run focused number parser tests
+- [X] T017 Run focused number parser tests
   ```bash
   npm test -- test/parsers/parseNumber.test.ts
   ```
   **File**: `test/parsers/parseNumber.test.ts`
 
-- [ ] T018 Run integration suite that exercises number generation
+- [X] T018 Run integration suite that exercises number generation
   ```bash
   npm test -- test/jsonSchemaToZod.test.ts
   ```
   **File**: `test/jsonSchemaToZod.test.ts`
 
-- [ ] T019 Verify behavioral snapshot Behavior 2 (after)
+- [X] T019 Verify behavioral snapshot Behavior 2 (after)
   - Fill “Actual Output (after)” with identical output string
   **File**: `specs/002-rename-package-x/behavioral-snapshot.md`
 
@@ -131,31 +131,31 @@
 
 **Purpose**: Make schema traversal/orchestration explicit while preserving the public API.
 
-- [ ] T020 Create `JsonSchema` entrypoint facade
+- [X] T020 Create `JsonSchema` entrypoint facade
   - Add a namespace-like module that can host orchestration
   **File**: `src/JsonSchema/index.ts`
 
-- [ ] T021 Move orchestration implementation behind `JsonSchema`
+- [X] T021 Move orchestration implementation behind `JsonSchema`
   - Keep implementation initially as thin delegation (no behavior change)
   **File**: `src/JsonSchema/jsonSchemaToZod.ts` (new)
 
-- [ ] T022 Convert `src/jsonSchemaToZod.ts` into a shim over `JsonSchema`
+- [X] T022 Convert `src/jsonSchemaToZod.ts` into a shim over `JsonSchema`
   - Preserve default export
   - Preserve named export `jsonSchemaToZod`
   - Preserve exact formatting (imports/newlines)
   **File**: `src/jsonSchemaToZod.ts`
 
-- [ ] T023 Ensure `src/index.ts` keeps current exports stable
+- [X] T023 Ensure `src/index.ts` keeps current exports stable
   - Avoid breaking imports; re-export shims if needed
   **File**: `src/index.ts`
 
-- [ ] T024 Run focused tests for library output formatting
+- [X] T024 Run focused tests for library output formatting
   ```bash
   npm test -- test/jsonSchemaToZod.test.ts
   ```
   **File**: `test/jsonSchemaToZod.test.ts`
 
-- [ ] T025 Verify behavioral snapshot Behavior 1 (after)
+- [X] T025 Verify behavioral snapshot Behavior 1 (after)
   - Fill “Actual Output (after)” with identical output
   **File**: `specs/002-rename-package-x/behavioral-snapshot.md`
 
@@ -270,24 +270,24 @@
 
 **Purpose**: Close the loop on behavior preservation and record metrics.
 
-- [ ] T046 Run full test suite (final)
+- [X] T046 Run full test suite (final)
   ```bash
   npm test
   ```
   **File**: N/A (verification only)
 
-- [ ] T047 Capture metrics (after)
+- [X] T047 Capture metrics (after)
   ```bash
   .specify/extensions/workflows/refactor/measure-metrics.sh --after --dir "specs/002-rename-package-x"
   ```
   **Files**: `specs/002-rename-package-x/metrics-after.md`, `specs/002-rename-package-x/metrics-before.md`
 
-- [ ] T048 Complete behavioral snapshot checklist
+- [X] T048 Complete behavioral snapshot checklist
   - Check all verification boxes
   - Paste “after” outputs for Behavior 1 and Behavior 2
   **File**: `specs/002-rename-package-x/behavioral-snapshot.md`
 
-- [ ] T049 Update refactor spec status checkboxes
+- [X] T049 Update refactor spec status checkboxes
   - Mark Baseline Captured / In Progress / Validation / Complete as appropriate
   **File**: `specs/002-rename-package-x/refactor-spec.md`
 

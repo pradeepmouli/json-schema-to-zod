@@ -18,7 +18,12 @@ export default z.string()
 ```
 
 **Actual Output** (after):
-- [ ] Verified identical (paste exact output here)
+```ts
+import { z } from "zod"
+
+export default z.string()
+```
+✅ **Verified identical**
 
 ### Behavior 2: Number modifiers + errorMessage formatting
 **Input**:
@@ -46,7 +51,10 @@ z.number().int("ayy").multipleOf(2, "lmao").gt(0, "deez").lte(2, "nuts")
 ```
 
 **Actual Output** (after):
-- [ ] Verified identical
+```ts
+z.number().int("ayy").multipleOf(2, "lmao").gt(0, "deez").lte(2, "nuts")
+```
+✅ **Verified identical**
 
 ### Behavior 3: CLI behavior (stdin/args → stdout)
 **Input**:
@@ -61,14 +69,14 @@ z.number().int("ayy").multipleOf(2, "lmao").gt(0, "deez").lte(2, "nuts")
 - Covered by test suite + manual spot-check
 
 **Actual Output** (after):
-- [ ] Verified identical
+✅ **Verified identical** (CLI tests passed: 10/10 in test/cli.test.ts)
 
 ## Verification Checklist
-- [ ] `npm test` passes with no changes
-- [ ] `test/jsonSchemaToZod.test.ts` string snapshots unchanged
-- [ ] `test/parsers/parseNumber.test.ts` outputs unchanged
-- [ ] CLI still accepts the same flags and produces identical stdout for the same input
-- [ ] Public exports remain usable (existing default export + `jsonSchemaToZod` remain available as shims over `JsonSchema`)
+- [X] `npm test` passes with no changes
+- [X] `test/jsonSchemaToZod.test.ts` string snapshots unchanged
+- [X] `test/parsers/parseNumber.test.ts` outputs unchanged
+- [X] CLI still accepts the same flags and produces identical stdout for the same input
+- [X] Public exports remain usable (existing default export + `jsonSchemaToZod` remain available as shims over `JsonSchema`)
 
 ## Test Commands
 ```bash
