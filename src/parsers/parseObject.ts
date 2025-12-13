@@ -85,7 +85,7 @@ export function parseObject(
     // Build the base schema for pattern properties
     if (result) {
       // We have properties, so add catchall
-      const catchallSchemas = [...Object.values(parsedPatternProps)];
+      const catchallSchemas = Object.values(parsedPatternProps);
       if (additionalPropertiesZod) {
         catchallSchemas.push(additionalPropertiesZod);
       }
@@ -97,7 +97,7 @@ export function parseObject(
       }
     } else {
       // No properties, build a record
-      const valueSchemas = [...Object.values(parsedPatternProps)];
+      const valueSchemas = Object.values(parsedPatternProps);
       if (additionalPropertiesZod) {
         valueSchemas.push(additionalPropertiesZod);
       }
