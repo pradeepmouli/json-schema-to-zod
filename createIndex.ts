@@ -27,11 +27,7 @@ const exportPaths = checkSrcDir("src");
 
 // Create a new project and source file using ts-morph
 const project = new Project();
-const sourceFile: SourceFile = project.createSourceFile(
-  "./src/index.ts",
-  "",
-  { overwrite: true },
-);
+const sourceFile: SourceFile = project.createSourceFile("./src/index.ts", "", { overwrite: true });
 
 // Add all the export statements
 for (const exportPath of exportPaths) {

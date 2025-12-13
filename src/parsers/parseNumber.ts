@@ -1,5 +1,11 @@
 import { JsonSchemaObject } from "../Types.js";
-import { buildNumber, applyInt, applyMultipleOf, applyNumberMin, applyNumberMax } from "../ZodBuilder/index.js";
+import {
+  buildNumber,
+  applyInt,
+  applyMultipleOf,
+  applyNumberMin,
+  applyNumberMax,
+} from "../ZodBuilder/index.js";
 
 export const parseNumber = (schema: JsonSchemaObject & { type: "number" | "integer" }) => {
   let r = buildNumber();
@@ -18,14 +24,24 @@ export const parseNumber = (schema: JsonSchemaObject & { type: "number" | "integ
 
   // Apply minimum constraint
   if (typeof schema.minimum === "number") {
-    r = applyNumberMin(r, schema.minimum, schema.exclusiveMinimum === true, schema.errorMessage?.minimum);
+    r = applyNumberMin(
+      r,
+      schema.minimum,
+      schema.exclusiveMinimum === true,
+      schema.errorMessage?.minimum,
+    );
   } else if (typeof schema.exclusiveMinimum === "number") {
     r = applyNumberMin(r, schema.exclusiveMinimum, true, schema.errorMessage?.exclusiveMinimum);
   }
 
   // Apply maximum constraint
   if (typeof schema.maximum === "number") {
-    r = applyNumberMax(r, schema.maximum, schema.exclusiveMaximum === true, schema.errorMessage?.maximum);
+    r = applyNumberMax(
+      r,
+      schema.maximum,
+      schema.exclusiveMaximum === true,
+      schema.errorMessage?.maximum,
+    );
   } else if (typeof schema.exclusiveMaximum === "number") {
     r = applyNumberMax(r, schema.exclusiveMaximum, true, schema.errorMessage?.exclusiveMaximum);
   }

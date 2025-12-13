@@ -8,7 +8,7 @@ export const parseArray = (schema: JsonSchemaObject & { type: "array" }, refs: R
   // Handle tuple (array of schemas) vs array (single schema)
   if (Array.isArray(schema.items)) {
     const itemSchemas = schema.items.map((v, i) =>
-      parseSchema(v, { ...refs, path: [...refs.path, "items", i] })
+      parseSchema(v, { ...refs, path: [...refs.path, "items", i] }),
     );
     r = buildTuple(itemSchemas);
   } else {

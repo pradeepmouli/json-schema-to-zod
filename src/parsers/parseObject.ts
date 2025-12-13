@@ -61,13 +61,14 @@ export function parseObject(
     result = buildObject({});
   } else {
     result = "";
-  }  // Step 2: Handle additionalProperties
-  const additionalPropertiesZod = objectSchema.additionalProperties !== undefined
-    ? parseSchema(objectSchema.additionalProperties, {
-        ...refs,
-        path: [...refs.path, "additionalProperties"],
-      })
-    : undefined;
+  } // Step 2: Handle additionalProperties
+  const additionalPropertiesZod =
+    objectSchema.additionalProperties !== undefined
+      ? parseSchema(objectSchema.additionalProperties, {
+          ...refs,
+          path: [...refs.path, "additionalProperties"],
+        })
+      : undefined;
 
   // Step 3: Handle patternProperties
   if (objectSchema.patternProperties) {
@@ -78,7 +79,7 @@ export function parseObject(
           ...refs,
           path: [...refs.path, "patternProperties", pattern],
         }),
-      ])
+      ]),
     );
 
     // Build the base schema for pattern properties
@@ -116,7 +117,9 @@ export function parseObject(
 
     if (additionalPropertiesZod) {
       if (objectSchema.properties && Object.keys(objectSchema.properties).length > 0) {
-        const propKeys = Object.keys(objectSchema.properties).map(k => JSON.stringify(k)).join(", ");
+        const propKeys = Object.keys(objectSchema.properties)
+          .map((k) => JSON.stringify(k))
+          .join(", ");
         refineFn += `let evaluated = [${propKeys}].includes(key)\n`;
       } else {
         refineFn += "let evaluated = false\n";
@@ -174,10 +177,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
+            : x,
         ) as any,
       },
-      refs
+      refs,
     );
     result = applyAnd(result, anyOfZod);
   }
@@ -191,10 +194,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
+            : x,
         ) as any,
       },
-      refs
+      refs,
     );
     result = applyAnd(result, oneOfZod);
   }
@@ -208,10 +211,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
+            : x,
         ) as any,
       },
-      refs
+      refs,
     );
     result = applyAnd(result, allOfZod);
   }

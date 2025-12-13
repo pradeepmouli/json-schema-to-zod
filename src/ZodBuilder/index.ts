@@ -20,12 +20,7 @@ export {
   applyJsonTransform,
   applyPipe,
 } from "./string.js";
-export {
-  buildArray,
-  buildTuple,
-  applyMinItems,
-  applyMaxItems,
-} from "./array.js";
+export { buildArray, buildTuple, applyMinItems, applyMaxItems } from "./array.js";
 export {
   buildObject,
   buildRecord,
