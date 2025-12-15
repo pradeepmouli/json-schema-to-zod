@@ -1,5 +1,5 @@
 import { JsonSchemaObject, Refs } from "../Types.js";
-import { ArrayBuilder, buildTuple, applyMinItems, applyMaxItems } from "../ZodBuilder/index.js";
+import { build, buildTuple, applyMinItems, applyMaxItems } from "../ZodBuilder/index.js";
 import { parseSchema } from "./parseSchema.js";
 
 export const parseArray = (schema: JsonSchemaObject & { type: "array" }, refs: Refs) => {
@@ -24,7 +24,7 @@ export const parseArray = (schema: JsonSchemaObject & { type: "array" }, refs: R
       ? "z.any()"
       : parseSchema(schema.items, { ...refs, path: [...refs.path, "items"] });
 
-    const builder = new ArrayBuilder(itemSchema);
+    const builder = build.array(itemSchema);
 
     // Apply minItems constraint
     if (schema.minItems !== undefined) {

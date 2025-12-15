@@ -1,6 +1,6 @@
 import { JsonSchemaObject } from "../Types.js";
-import { NullBuilder } from "../ZodBuilder/index.js";
+import { build } from "../ZodBuilder/index.js";
 
 export const parseNull = (_schema: JsonSchemaObject & { type: "null" }) => {
-  return new NullBuilder().done();
+  return build.null().done();
 };

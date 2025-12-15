@@ -1,5 +1,6 @@
 import { JsonSchemaObject, Refs } from "../Types.js";
 import {
+  build,
   buildRecord,
   ObjectBuilder,
   applyOptional,
@@ -58,11 +59,11 @@ export function parseObject(
     if (refs.withJsdocs) {
       result = `z.object({ ${propsWithJsdocs.join(", ")} })`;
     } else {
-      result = new ObjectBuilder(properties).done();
+      result = build.object(properties).done();
     }
   } else if (objectSchema.properties) {
     // Empty properties object
-    result = new ObjectBuilder({}).done();
+    result = build.object({}).done();
   } else {
     result = "";
   } // Step 2: Handle additionalProperties
