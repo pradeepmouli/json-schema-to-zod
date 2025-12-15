@@ -53,6 +53,15 @@ Feature: Fluent Zod-like Builders for ZodBuilder
 
 ## Phase 7: Validation
 
+- [ ] T024 Re-measure metrics (after)
+- [ ] T025 Compare behavioral snapshot outputs (identical)
+- [ ] T026 Code review checklist compliance
+ - [ ] T030 Validate ESM/CJS parity (build both, verify post-build outputs unchanged)
+ - [ ] T031 Validate CLI parity (run CLI on sample schemas and compare to baseline outputs)
+ - [ ] T032 Final export/index verification in src/ZodBuilder/index.ts
+
+## Phase 7: Validation
+
 - [X] T024 Re-measure metrics (after)
 - [X] T025 Compare behavioral snapshot outputs (identical, 107/107 tests passing)
 - [ ] T026 Code review checklist compliance
