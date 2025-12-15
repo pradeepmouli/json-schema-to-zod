@@ -59,11 +59,11 @@ export function parseObject(
     if (refs.withJsdocs) {
       result = `z.object({ ${propsWithJsdocs.join(", ")} })`;
     } else {
-      result = build.object(properties).done();
+      result = build.object(properties).text();
     }
   } else if (objectSchema.properties) {
     // Empty properties object
-    result = build.object({}).done();
+    result = build.object({}).text();
   } else {
     result = "";
   } // Step 2: Handle additionalProperties
@@ -101,7 +101,7 @@ export function parseObject(
       } else if (catchallSchemas.length === 1) {
         builder.catchall(catchallSchemas[0]);
       }
-      result = builder.done();
+      result = builder.text();
     } else {
       // No properties, build a record
       const valueSchemas = Object.values(parsedPatternProps);
@@ -157,14 +157,14 @@ export function parseObject(
     refineFn += "}\n";
     refineFn += "}";
 
-    result = ObjectBuilder.fromCode(result).superRefine(refineFn).done();
+    result = ObjectBuilder.fromCode(result).superRefine(refineFn).text();
   } else if (result && additionalPropertiesZod) {
     // No pattern properties, but we have additionalProperties
     const builder = ObjectBuilder.fromCode(result);
     if (additionalPropertiesZod === "z.never()") {
-      result = builder.strict().done();
+      result = builder.strict().text();
     } else {
-      result = builder.catchall(additionalPropertiesZod).done();
+      result = builder.catchall(additionalPropertiesZod).text();
     }
   } else if (!result) {
     // No properties, no patternProperties
@@ -229,5 +229,5 @@ export function parseObject(
     builder.and(allOfZod);
   }
 
-  return builder.done();
+  return builder.text();
 }

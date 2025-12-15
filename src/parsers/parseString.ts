@@ -41,5 +41,5 @@ export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
     }
   }
 
-  return builder.done();
+  return builder.text();
 };

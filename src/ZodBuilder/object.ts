@@ -4,17 +4,12 @@ import { BaseBuilder } from "./BaseBuilder.js";
  * Fluent ObjectBuilder: wraps a Zod object schema string and provides chainable methods.
  */
 export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
-  constructor(properties: Record<string, string> = {}) {
-    let code: string;
-    if (Object.keys(properties).length === 0) {
-      code = "z.object({})";
-    } else {
-      const propStrings = Object.entries(properties).map(
-        ([key, zodStr]) => `${JSON.stringify(key)}: ${zodStr}`,
-      );
-      code = `z.object({ ${propStrings.join(", ")} })`;
-    }
-    super(code);
+
+  readonly _properties: Record<string, BaseBuilder<any>>;
+  constructor(properties: Record<string, BaseBuilder<any>> = {}) {
+
+    super('');
+	this._properties = properties;
   }
 
   /**
@@ -23,15 +18,26 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
    */
   static fromCode(code: string): ObjectBuilder {
     const builder = new ObjectBuilder({});
-    builder.code = code;
+    builder._baseText = code;
     return builder;
+  }
+
+  override text(): string {
+	if (this._baseText) {
+	  return super.text();
+	}
+    const propStrings = Object.entries(this._properties).map(
+      ([key, builder]) => `${JSON.stringify(key)}: ${builder.text()}`,
+    );
+    this._baseText = `z.object({ ${propStrings.join(", ")} })`;
+	return super.text();
   }
 
   /**
    * Apply strict mode (no additional properties allowed).
    */
   strict(): this {
-    this.code = applyStrict(this.code);
+    this._baseText = applyStrict(this._baseText);
     return this;
   }
 
@@ -39,7 +45,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
    * Apply catchall schema for additional properties.
    */
   catchall(catchallSchemaZod: string): this {
-    this.code = applyCatchall(this.code, catchallSchemaZod);
+    this._baseText = applyCatchall(this._baseText, catchallSchemaZod);
     return this;
   }
 
@@ -47,7 +53,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
    * Apply loose mode (allow additional properties). Uses .loose() for Zod v4.
    */
   loose(): this {
-    this.code = applyLoose(this.code);
+    this._baseText = applyLoose(this._baseText);
     return this;
   }
 
@@ -55,7 +61,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
    * Apply superRefine for pattern properties validation.
    */
   superRefine(refineFn: string): this {
-    this.code = applySuperRefine(this.code, refineFn);
+    this._baseText = applySuperRefine(this._baseText, refineFn);
     return this;
   }
 
@@ -63,7 +69,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
    * Apply and combinator (merge with another schema).
    */
   and(otherSchemaZod: string): this {
-    this.code = applyAnd(this.code, otherSchemaZod);
+    this._baseText = applyAnd(this._baseText, otherSchemaZod);
     return this;
   }
 }

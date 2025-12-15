@@ -30,5 +30,5 @@ export const parseNumber = (schema: JsonSchemaObject & { type: "number" | "integ
     builder.max(schema.exclusiveMaximum, true, schema.errorMessage?.exclusiveMaximum);
   }
 
-  return builder.done();
+  return builder.text();
 };

@@ -4,6 +4,10 @@ import { BaseBuilder } from "./BaseBuilder.js";
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
 export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
+
+  _minItems?: { value: number; errorMessage?: string } = undefined;
+  _maxItems?: { value: number; errorMessage?: string } = undefined;
+
   constructor(itemSchemaZod: string) {
     super(`z.array(${itemSchemaZod})`);
   }
@@ -12,7 +16,9 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
    * Apply minItems constraint.
    */
   min(value: number, errorMessage?: string): this {
-    this.code = applyMinItems(this.code, value, errorMessage);
+    if (this._minItems === undefined || this._minItems.value > value) {
+      this._minItems = { value, errorMessage };
+    }
     return this;
   }
 
@@ -20,8 +26,27 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
    * Apply maxItems constraint.
    */
   max(value: number, errorMessage?: string): this {
-    this.code = applyMaxItems(this.code, value, errorMessage);
+    if (this._maxItems === undefined || this._maxItems.value < value) {
+      this._maxItems = { value, errorMessage };
+    }
     return this;
+  }
+
+  /**
+   * Unwrap and return the final Zod code string.
+   */
+  text(): string {
+    let result = this._baseText;
+
+    if (this._minItems !== undefined) {
+      result = applyMinItems(result, this._minItems.value, this._minItems.errorMessage);
+    }
+    if (this._maxItems !== undefined) {
+      result = applyMaxItems(result, this._maxItems.value, this._maxItems.errorMessage);
+    }
+
+    this._baseText = result;
+    return super.text();
   }
 }
 

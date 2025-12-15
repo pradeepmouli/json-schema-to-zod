@@ -36,7 +36,7 @@ export const parseArray = (schema: JsonSchemaObject & { type: "array" }, refs: R
       builder.max(schema.maxItems, schema.errorMessage?.maxItems);
     }
 
-    r = builder.done();
+    r = builder.text();
   }
 
   return r;

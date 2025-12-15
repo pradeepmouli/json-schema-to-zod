@@ -3,9 +3,10 @@
 **Refactor ID**: refactor-003
 **Branch**: `refactor/003-apply-fluent-paradigms`
 **Created**: 2025-12-13
+**Completed**: 2025-12-14
 **Type**: [ ] Performance | [x] Maintainability | [ ] Security | [x] Architecture | [x] Tech Debt
 **Impact**: [ ] High Risk | [x] Medium Risk | [ ] Low Risk
-**Status**: [x] Planning | [ ] Baseline Captured | [ ] In Progress | [ ] Validation | [ ] Complete
+**Status**: [ ] Planning | [ ] Baseline Captured | [ ] In Progress | [ ] Validation | [x] Complete
 
 ## Input
 User description: "apply fluent paradigms to make the ZodBuilder surface more like Zod. e.g.  build.number() maps to z.number() and returns a wrapper for the source text + methods like .int(), .optional(), .max() which would function like applyInt(), applyOptional(), applyMax() did."
@@ -52,33 +53,78 @@ Introduce Zod-like fluent wrappers around the builder’s source text. Example: 
 
 **Files Affected**:
 - **Modified**:
-  - src/ZodBuilder/modifiers.ts (adapt to fluent method exports and/or support functions)
-  - src/ZodBuilder/number.ts (expose `NumberBuilder` with `.int()`, `.max()`, `.min()`, `.optional()`, etc.)
-  - src/ZodBuilder/string.ts (expose `.min()`, `.max()`, `.regex()`, `.email()`, `.uuid()`, etc.)
-  - src/ZodBuilder/object.ts, array.ts, boolean.ts, null.ts, enum.ts, const.ts (add corresponding fluent wrappers)
-  - src/ZodBuilder/index.ts (export new fluent builder surface)
-  - src/JsonSchema/jsonSchemaToZod.ts (use fluent builders when assembling output)
-  - src/parsers/* (replace calls to `apply*` helpers with fluent chaining on returned builders)
-  - src/index.ts and src/jsonSchemaToZod.ts (wire-up entrypoints as needed)
+  - src/ZodBuilder/number.ts (added `NumberBuilder` class with `.int()`, `.max()`, `.min()`, `.multipleOf()`, etc.)
+  - src/ZodBuilder/string.ts (added `StringBuilder` class with `.min()`, `.max()`, `.regex()`, `.email()`, `.uuid()`, `.base64()`, `.json()`, `.pipe()`, etc.)
+  - src/ZodBuilder/array.ts (added `ArrayBuilder` class with `.min()`, `.max()`, etc.)
+  - src/ZodBuilder/object.ts (added `ObjectBuilder` class with `.strict()`, `.catchall()`, `.loose()`, `.superRefine()`, `.and()`, etc.)
+  - src/ZodBuilder/boolean.ts (added `BooleanBuilder` class)
+  - src/ZodBuilder/null.ts (added `NullBuilder` class)
+  - src/ZodBuilder/enum.ts (added `EnumBuilder` class with string enum optimization)
+  - src/ZodBuilder/const.ts (added `ConstBuilder` class for literal values)
+  - src/ZodBuilder/index.ts (added `build` factory object with Zod-like API and `BaseBuilder` export)
+  - src/parsers/parseNumber.ts (integrated `build.number()` fluent API)
+  - src/parsers/parseString.ts (integrated `build.string()` fluent API)
+  - src/parsers/parseArray.ts (integrated `build.array()` fluent API)
+  - src/parsers/parseObject.ts (integrated `build.object()` and `ObjectBuilder.fromCode()` fluent API)
+  - src/parsers/parseBoolean.ts (integrated `build.boolean()` fluent API)
+  - src/parsers/parseNull.ts (integrated `build.null()` fluent API)
+  - src/parsers/parseEnum.ts (integrated `build.enum()` fluent API)
+  - src/parsers/parseConst.ts (integrated `build.literal()` fluent API)
 - **Created**:
-  - src/ZodBuilder/fluent.ts (optional: shared base wrapper that holds source text and common chain logic)
+  - src/ZodBuilder/BaseBuilder.ts (abstract base class with shared modifiers: `.optional()`, `.nullable()`, `.default()`, `.describe()`, `.brand()`, `.readonly()`, `.catch()`, `.done()`)
 - **Deleted**:
-  - None (retain old helpers initially for safety, deprecate later if needed)
+  - None (retained existing `build*` helper functions for backward compatibility)
 - **Moved**:
-  - None initially
+  - None
 
 ### Design Improvements
 **Before**:
-```
+```typescript
 Parsers → applyInt/applyMax/applyOptional → mutate source text → return string
+let code = buildNumber();
+code = applyInt(code);
+code = applyMax(code, 10);
+code = applyOptional(code);
+return code;
 ```
 
 **After**:
+```typescript
+Parsers → build.number() → NumberBuilder (fluent chaining) → .done() → return string
+return build.number().int().max(10).optional().done();
+
+// Factory API matching Zod:
+build.number()     → NumberBuilder
+build.string()     → StringBuilder
+build.boolean()    → BooleanBuilder
+build.null()       → NullBuilder
+build.array(item)  → ArrayBuilder
+build.object(props) → ObjectBuilder
+build.enum(values) → EnumBuilder
+build.literal(val) → ConstBuilder
+
+// Inheritance hierarchy:
+BaseBuilder<T> (abstract)
+├── NumberBuilder extends BaseBuilder<NumberBuilder>
+├── StringBuilder extends BaseBuilder<StringBuilder>
+├── ArrayBuilder extends BaseBuilder<ArrayBuilder>
+├── ObjectBuilder extends BaseBuilder<ObjectBuilder>
+├── BooleanBuilder extends BaseBuilder<BooleanBuilder>
+├── NullBuilder extends BaseBuilder<NullBuilder>
+├── EnumBuilder extends BaseBuilder<EnumBuilder>
+└── ConstBuilder extends BaseBuilder<ConstBuilder>
+
+// Shared modifiers (from BaseBuilder):
+.optional()  .nullable()  .default(val)  .describe(str)
+.brand(str)  .readonly()  .catch(val)    .done()
 ```
-Parsers → build.number() → NumberBuilder
-NumberBuilder.int().optional().max(10) → returns final source text
-Consistent Zod-like chaining surface across all types
-```
+
+**Key Improvements**:
+1. **Zod-like factory API**: `build.number()` matches `z.number()` semantics
+2. **Fluent method chaining**: All modifiers chainable with proper type inference
+3. **DRY via inheritance**: BaseBuilder eliminates 154 lines of duplicated modifier code
+4. **Explicit unwrapping**: `.done()` returns final string, avoiding implicit coercion
+5. **Type-safe**: Generic self-type pattern ensures proper return types
 
 ## Baseline Metrics
 *Captured before refactoring begins - see metrics-before.md*

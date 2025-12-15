@@ -5,6 +5,14 @@ import { BaseBuilder } from "./BaseBuilder.js";
  * that delegate to the existing apply* functions.
  */
 export class NumberBuilder extends BaseBuilder<NumberBuilder> {
+
+  _int: boolean |{ errorMessage: string } = false;
+  _multipleOf: number | { value: number; errorMessage?: string } | undefined = undefined;
+
+  _min: { value: number; exclusive: boolean; errorMessage?: string } | undefined = undefined;
+
+  _max: { value: number; exclusive: boolean; errorMessage?: string } | undefined = undefined;
+
   constructor() {
     super("z.number()");
   }
@@ -13,7 +21,9 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
    * Apply integer constraint.
    */
   int(errorMessage?: string): this {
-    this.code = applyInt(this.code, errorMessage);
+    if(this._int === false) {
+		this._int = errorMessage ? { errorMessage } : true;
+	}
     return this;
   }
 
@@ -21,7 +31,10 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
    * Apply multipleOf constraint.
    */
   multipleOf(value: number, errorMessage?: string): this {
-    this.code = applyMultipleOf(this.code, value, errorMessage);
+	this._multipleOf = { value, errorMessage };
+	if(this._int === false) {
+		this._int = true;
+	}
     return this;
   }
 
@@ -29,7 +42,9 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
    * Apply minimum constraint (gte by default).
    */
   min(value: number, exclusive: boolean = false, errorMessage?: string): this {
-    this.code = applyMin(this.code, value, exclusive, errorMessage);
+	if(this._min === undefined || this._min.value > value || (this._min.value === value && this._min.exclusive && !exclusive)) {
+		this._min = { value, exclusive, errorMessage };
+	}
     return this;
   }
 
@@ -37,52 +52,57 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
    * Apply maximum constraint (lte by default).
    */
   max(value: number, exclusive: boolean = false, errorMessage?: string): this {
-    this.code = applyMax(this.code, value, exclusive, errorMessage);
+	if(this._max === undefined || this._max.value < value || (this._max.value === value && this._max.exclusive && !exclusive))
+	this._max = { value, exclusive, errorMessage };
+
     return this;
   }
 
   /**
    * Apply optional constraint.
    */
-  optional(): this {
-    // Import at method call to avoid circular dependency
-    const { applyOptional } = require("./modifiers.js");
-    this.code = applyOptional(this.code);
-    return this;
-  }
 
   /**
    * Apply nullable constraint.
    */
-  nullable(): this {
-    const { applyNullable } = require("./modifiers.js");
-    this.code = applyNullable(this.code);
-    return this;
-  }
 
   /**
    * Apply default value.
    */
-  default(value: any): this {
-    const { applyDefault } = require("./modifiers.js");
-    this.code = applyDefault(this.code, value);
-    return this;
-  }
+
 
   /**
    * Apply describe modifier.
    */
-  describe(description: string): this {
-    const { applyDescribe } = require("./modifiers.js");
-    this.code = applyDescribe(this.code, description);
-    return this;
-  }
+
 
   /**
    * Unwrap and return the final Zod code string.
    */
-  done(): string {
-    return this.code;
+  text(): string {
+    let result = this._baseText;
+	if(this._int !== false) {
+		if(typeof this._int === "object") {
+			result = applyInt(result, this._int.errorMessage);
+		} else {
+			result = applyInt(result);
+		}
+	}
+	if(this._multipleOf !== undefined) {
+		if(typeof this._multipleOf === "number") {
+			result = applyMultipleOf(result, this._multipleOf);
+		} else
+		result = applyMultipleOf(result, this._multipleOf.value, this._multipleOf.errorMessage);
+	}
+	if(this._min !== undefined) {
+		result = applyMin(result, this._min.value, this._min.exclusive, this._min.errorMessage);
+	}
+	if(this._max !== undefined) {
+		result = applyMax(result, this._max.value, this._max.exclusive, this._max.errorMessage);
+	}
+	this._baseText = result;
+	return super.text();
+
   }
 }
 
