@@ -1,7 +1,6 @@
 import { jsonSchemaToZod } from "./jsonSchemaToZod.js";
 
 export * from "./JsonSchema/index.js";
-export * from "./JsonSchema/jsonSchemaToZod.js";
 export * from "./Types.js";
 export * from "./ZodBuilder/array.js";
 export * from "./ZodBuilder/boolean.js";
@@ -13,7 +12,6 @@ export * from "./ZodBuilder/null.js";
 export * from "./ZodBuilder/number.js";
 export * from "./ZodBuilder/object.js";
 export * from "./ZodBuilder/string.js";
-export * from "./jsonSchemaToZod.js";
 export * from "./parsers/parseAllOf.js";
 export * from "./parsers/parseAnyOf.js";
 export * from "./parsers/parseArray.js";
