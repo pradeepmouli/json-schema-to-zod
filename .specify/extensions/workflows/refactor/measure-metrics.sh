@@ -81,12 +81,9 @@ OUTPUT_FILE="$REFACTOR_DIR/metrics-${MODE}.md"
 echo "Capturing ${MODE} metrics to: $OUTPUT_FILE"
 echo ""
 
-# Bash 3.2 compatibility (macOS default): avoid ${var^}
-MODE_TITLE=$(printf '%s' "$MODE" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
-
 # Start output file
 cat > "$OUTPUT_FILE" << EOF
-# Metrics Captured ${MODE_TITLE} Refactoring
+# Metrics Captured ${MODE^} Refactoring
 
 **Timestamp**: $(date)
 **Git Commit**: $(git rev-parse --short HEAD 2>/dev/null || echo "N/A")
@@ -105,18 +102,18 @@ echo "### Lines of Code" >> "$OUTPUT_FILE"
 if command -v cloc &> /dev/null; then
     echo "Running cloc analysis..." >&2
     echo '```' >> "$OUTPUT_FILE"
-    cloc src/ test/ --quiet --csv --csv-delimiter='|' 2>/dev/null | head -20 >> "$OUTPUT_FILE" || echo "cloc failed" >> "$OUTPUT_FILE"
+    cloc app/ --quiet --csv --csv-delimiter='|' 2>/dev/null | head -20 >> "$OUTPUT_FILE" || echo "cloc failed" >> "$OUTPUT_FILE"
     echo '```' >> "$OUTPUT_FILE"
 else
     echo "Manual count needed (cloc not installed):" >> "$OUTPUT_FILE"
-    find src/ test/ -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" 2>/dev/null | wc -l >> "$OUTPUT_FILE" || echo "0" >> "$OUTPUT_FILE"
+    find app/ -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" 2>/dev/null | wc -l >> "$OUTPUT_FILE" || echo "0" >> "$OUTPUT_FILE"
 fi
 echo "" >> "$OUTPUT_FILE"
 
 # Function/File sizes
 echo "### File Sizes" >> "$OUTPUT_FILE"
 echo '```' >> "$OUTPUT_FILE"
-find src/ test/ -type f \( -name "*.ts" -o -name "*.tsx" \) -exec wc -l {} \; 2>/dev/null | sort -rn | head -10 >> "$OUTPUT_FILE" || echo "No files found" >> "$OUTPUT_FILE"
+find app/ -type f \( -name "*.ts" -o -name "*.tsx" \) -exec wc -l {} \; 2>/dev/null | sort -rn | head -10 >> "$OUTPUT_FILE" || echo "No files found" >> "$OUTPUT_FILE"
 echo '```' >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
@@ -191,11 +188,7 @@ echo "" >> "$OUTPUT_FILE"
 echo "## Test Suite" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
-if [ -d "test" ]; then
-    TEST_FILES=$(find test/ -name "*.test.ts" -o -name "*.test.tsx" -o -name "*.spec.ts" 2>/dev/null | wc -l)
-else
-    TEST_FILES=$(find tests/ -name "*.test.ts" -o -name "*.test.tsx" -o -name "*.spec.ts" 2>/dev/null | wc -l)
-fi
+TEST_FILES=$(find tests/ -name "*.test.ts" -o -name "*.test.tsx" -o -name "*.spec.ts" 2>/dev/null | wc -l)
 echo "- **Test Files**: $TEST_FILES" >> "$OUTPUT_FILE"
 
 if [ "$MODE" = "before" ]; then
@@ -210,13 +203,8 @@ echo "## Git Statistics" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
 if git rev-parse --git-dir > /dev/null 2>&1; then
-    BASE_TAG=$(git tag --list 'pre-refactor-*' --sort=-creatordate | head -1)
-    if [ -n "$BASE_TAG" ]; then
-        FILES_CHANGED=$(git diff --name-only "$BASE_TAG"...HEAD 2>/dev/null | wc -l 2>/dev/null || echo "0")
-        echo "- **Files Modified**: $FILES_CHANGED (since $BASE_TAG)" >> "$OUTPUT_FILE"
-    else
-        echo "- **Files Modified**: 0 (no pre-refactor tag found)" >> "$OUTPUT_FILE"
-    fi
+    FILES_CHANGED=$(git diff --name-only ${MODE} | wc -l 2>/dev/null || echo "0")
+    echo "- **Files Modified**: $FILES_CHANGED (since start of refactoring)" >> "$OUTPUT_FILE"
 else
     echo "- **Git**: Not a git repository" >> "$OUTPUT_FILE"
 fi
