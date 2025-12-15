@@ -78,6 +78,10 @@ Feature: Fluent Zod-like Builders for ZodBuilder
 - [X] T036 Create Zod-like factory API (`build.number()`, `build.string()`, etc.)
 - [X] T037 Update all parsers to use factory API instead of direct constructors
 - [X] T038 Implement ObjectBuilder.fromCode() for wrapping existing schemas
+- [X] T039 Implement lazy evaluation pattern: Store constraint metadata, defer code generation to .text()
+- [X] T040 Add smart constraint merging for NumberBuilder, StringBuilder, ArrayBuilder
+- [X] T041 Fix BaseBuilder.text() to properly assign modifier results
+- [X] T042 Establish .text() + super.text() delegation pattern for all builders
 
 ## Final Phase: Polish & Cross-Cutting
 

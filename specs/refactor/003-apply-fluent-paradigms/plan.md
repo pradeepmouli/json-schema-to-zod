@@ -17,8 +17,45 @@ Refactored internal builder surfaces to be fluent and match Zod chaining semanti
 - ✅ Zod-like factory API: `build.number()`, `build.string()`, `build.array()`, etc.
 - ✅ All parsers integrated with fluent builders
 - ✅ 154 lines of duplicated code eliminated
-- ✅ Explicit `.done()` unwrapping contract
+- ✅ Lazy evaluation pattern: Builders store constraint metadata and defer code generation to `.text()` method
+- ✅ Smart constraint merging: Multiple modifier calls intelligently merge (keeps strictest values)
+- ✅ Explicit `.text()` unwrapping contract with `super.text()` delegation pattern
 - ✅ ObjectBuilder.fromCode() for wrapping existing schemas
+
+## Implementation Architecture
+
+**Lazy Evaluation Pattern**:
+All builders follow a consistent pattern where:
+1. Constructor initializes `_baseText` with base schema (e.g., `"z.number()"`)
+2. Modifier methods store constraint metadata in private fields (e.g., `_min`, `_max`, `_format`)
+3. `.text()` method generates code by:
+   - Applying type-specific constraints to `_baseText`
+   - Updating `this._baseText` with result
+   - Calling `super.text()` to apply shared modifiers from BaseBuilder
+4. BaseBuilder.text() applies modifiers stored in its own fields (`_optional`, `_nullable`, etc.)
+
+**Smart Constraint Merging**:
+- Multiple calls to same modifier merge intelligently
+- `.min(5).min(10)` → keeps strictest (10)
+- `.max(20).max(15)` → keeps strictest (15)
+- `.int().multipleOf(3)` → multipleOf implies int, no duplication
+
+**Example Flow**:
+```typescript
+// User code:
+build.number().int().max(10).optional()
+
+// Step 1: build.number() creates NumberBuilder with _baseText="z.number()"
+// Step 2: .int() sets _int=true, returns this
+// Step 3: .max(10) sets _max={value:10, exclusive:false}, returns this  
+// Step 4: .optional() (from BaseBuilder) sets _optional=true, returns this
+// Step 5: .text() called:
+//   - NumberBuilder.text() applies _int and _max to "z.number()" → "z.number().int().max(10)"
+//   - Sets this._baseText = "z.number().int().max(10)"
+//   - Calls super.text()
+//   - BaseBuilder.text() applies _optional → "z.number().int().max(10).optional()"
+//   - Returns final string
+```
 
 ## Technical Context
 

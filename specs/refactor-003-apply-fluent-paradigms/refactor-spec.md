@@ -88,10 +88,12 @@ code = applyOptional(code);
 return code;
 ```
 
-**After**:
+**After** (with lazy evaluation):
 ```typescript
-Parsers → build.number() → NumberBuilder (fluent chaining) → .done() → return string
-return build.number().int().max(10).optional().done();
+Parsers → build.number() → NumberBuilder → .int()/.max() store metadata → .text() generates code → super.text() applies shared modifiers
+const builder = build.number().int().max(10).optional();
+// At this point, only metadata is stored: _int=true, _max={value:10}, _optional=true
+return builder.text(); // Now code is generated: "z.number().int().max(10).optional()"
 
 // Factory API matching Zod:
 build.number()     → NumberBuilder
@@ -116,15 +118,39 @@ BaseBuilder<T> (abstract)
 
 // Shared modifiers (from BaseBuilder):
 .optional()  .nullable()  .default(val)  .describe(str)
-.brand(str)  .readonly()  .catch(val)    .done()
+.brand(str)  .readonly()  .catch(val)    .text()
+
+// Implementation Architecture:
+NumberBuilder:
+  - Stores: _int, _multipleOf, _min, _max
+  - .text() applies type-specific constraints, then calls super.text()
+  
+StringBuilder:
+  - Stores: _format, _pattern, _minLength, _maxLength, _base64, _json, _pipe
+  - .text() applies string constraints, then calls super.text()
+  
+ArrayBuilder:
+  - Stores: _minItems, _maxItems
+  - .text() applies array constraints, then calls super.text()
+  
+ObjectBuilder:
+  - Stores: _properties (Record<string, BaseBuilder<any>>)
+  - .text() builds object from properties, then calls super.text()
+  - .fromCode() static method for wrapping existing object schemas
+  
+BaseBuilder.text():
+  - Applies shared modifiers: optional, nullable, default, describe, brand, readonly, catch
+  - Child classes set this._baseText and call super.text() for final output
 ```
 
 **Key Improvements**:
 1. **Zod-like factory API**: `build.number()` matches `z.number()` semantics
 2. **Fluent method chaining**: All modifiers chainable with proper type inference
 3. **DRY via inheritance**: BaseBuilder eliminates 154 lines of duplicated modifier code
-4. **Explicit unwrapping**: `.done()` returns final string, avoiding implicit coercion
-5. **Type-safe**: Generic self-type pattern ensures proper return types
+4. **Lazy evaluation pattern**: Builders store constraint metadata and defer code generation to `.text()` method
+5. **Smart constraint merging**: Multiple calls intelligently merge (e.g., keeps strictest min/max)
+6. **Explicit unwrapping**: `.text()` returns final string, calling `super.text()` for shared modifiers
+7. **Type-safe**: Generic self-type pattern ensures proper return types
 
 ## Baseline Metrics
 *Captured before refactoring begins - see metrics-before.md*
