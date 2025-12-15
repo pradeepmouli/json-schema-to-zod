@@ -124,20 +124,20 @@ BaseBuilder<T> (abstract)
 NumberBuilder:
   - Stores: _int, _multipleOf, _min, _max
   - .text() applies type-specific constraints, then calls super.text()
-  
+
 StringBuilder:
   - Stores: _format, _pattern, _minLength, _maxLength, _base64, _json, _pipe
   - .text() applies string constraints, then calls super.text()
-  
+
 ArrayBuilder:
   - Stores: _minItems, _maxItems
   - .text() applies array constraints, then calls super.text()
-  
+
 ObjectBuilder:
   - Stores: _properties (Record<string, BaseBuilder<any>>)
   - .text() builds object from properties, then calls super.text()
   - .fromCode() static method for wrapping existing object schemas
-  
+
 BaseBuilder.text():
   - Applies shared modifiers: optional, nullable, default, describe, brand, readonly, catch
   - Child classes set this._baseText and call super.text() for final output

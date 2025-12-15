@@ -47,7 +47,7 @@ build.number().int().max(10).optional()
 
 // Step 1: build.number() creates NumberBuilder with _baseText="z.number()"
 // Step 2: .int() sets _int=true, returns this
-// Step 3: .max(10) sets _max={value:10, exclusive:false}, returns this  
+// Step 3: .max(10) sets _max={value:10, exclusive:false}, returns this
 // Step 4: .optional() (from BaseBuilder) sets _optional=true, returns this
 // Step 5: .text() called:
 //   - NumberBuilder.text() applies _int and _max to "z.number()" → "z.number().int().max(10)"

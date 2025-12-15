@@ -13,6 +13,67 @@ Before v2 it used [`prettier`](https://www.npmjs.com/package/prettier) for forma
 
 Since v2 the CLI supports piped JSON.
 
+## Developer Notes
+
+### Internal Architecture: Fluent Zod-like Builders
+
+This section documents the internal builder architecture for contributors working on the codebase.
+
+#### Builder Pattern
+
+The internal `ZodBuilder` system uses a fluent interface pattern matching Zod's API:
+
+```typescript
+// Factory API (mirrors Zod)
+build.number()     → NumberBuilder
+build.string()     → StringBuilder  
+build.array(item)  → ArrayBuilder
+build.object(props) → ObjectBuilder
+build.enum(values) → EnumBuilder
+build.literal(val) → ConstBuilder
+build.boolean()    → BooleanBuilder
+build.null()       → NullBuilder
+```
+
+#### Lazy Evaluation Pattern
+
+All builders follow a consistent lazy evaluation pattern:
+
+1. **Constructor** initializes `_baseText` with base schema (e.g., `"z.number()"`)
+2. **Modifier methods** store constraint metadata in private fields (e.g., `_min`, `_max`, `_format`)
+3. **`.text()` method** generates code by:
+   - Applying type-specific constraints to `_baseText`
+   - Updating `this._baseText` with result
+   - Calling `super.text()` to apply shared modifiers from BaseBuilder
+4. **BaseBuilder.text()** applies shared modifiers (`_optional`, `_nullable`, etc.)
+
+**Example Flow:**
+```typescript
+build.number().int().max(10).optional().text()
+
+// Step 1: build.number() creates NumberBuilder with _baseText="z.number()"
+// Step 2: .int() sets _int=true, returns this (no code generation yet)
+// Step 3: .max(10) sets _max={value:10}, returns this
+// Step 4: .optional() sets _optional=true, returns this  
+// Step 5: .text() generates: "z.number().int().max(10).optional()"
+```
+
+#### Smart Constraint Merging
+
+Multiple calls to the same modifier intelligently merge:
+
+- `.min(5).min(10)` → keeps strictest (10)
+- `.max(20).max(15)` → keeps strictest (15)
+- `.multipleOf(3)` → automatically sets `_int = true`
+
+#### BaseBuilder Inheritance
+
+All builders extend `BaseBuilder<T>` which provides 8 shared modifiers:
+- `.optional()`, `.nullable()`, `.default(val)`, `.describe(str)`
+- `.brand(str)`, `.readonly()`, `.catch(val)`, `.text()`
+
+This eliminates 154 lines of duplicated code and ensures consistent behavior across all builder types.
+
 ## Usage
 
 ### Online
