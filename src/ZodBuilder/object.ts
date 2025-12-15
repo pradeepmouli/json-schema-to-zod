@@ -26,14 +26,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	if (this._baseText) {
 	  return super.text();
 	}
-    const propStrings = Object.entries(this._properties).map(
-      ([key, zodStr]) => `${JSON.stringify(key)}: ${zodStr}`,
-    );
-    if (propStrings.length === 0) {
-      this._baseText = `z.object({})`;
-    } else {
-      this._baseText = `z.object({ ${propStrings.join(", ")} })`;
-    }
+    this._baseText = buildObject(this._properties);
 	return super.text();
   }
 
