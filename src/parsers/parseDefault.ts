@@ -1,5 +1,5 @@
-import { JsonSchemaObject } from "../Types.js";
+import { JsonSchemaObject } from '../Types.js';
 
 export const parseDefault = (_schema: JsonSchemaObject) => {
-  return "z.any()";
+	return 'z.any()';
 };

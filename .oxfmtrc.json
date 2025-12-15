@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "indent_width": 2,
+  "useTabs": true,
+  "arrowParens":"always",
+  "singleQuote": true,
+  "printWidth": 80
+}

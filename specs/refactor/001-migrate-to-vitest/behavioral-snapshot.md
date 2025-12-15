@@ -9,6 +9,7 @@
 ### 1. Core API Behavior: jsonSchemaToZod Function
 
 **Function Signature**:
+
 ```typescript
 function jsonSchemaToZod(
   schema: any,
@@ -17,6 +18,7 @@ function jsonSchemaToZod(
 ```
 
 **JsonSchemaToZodOptions**:
+
 ```typescript
 type JsonSchemaToZodOptions = {
   // Module syntax for generated code: 'esm' | 'cjs' | undefined
@@ -39,7 +41,9 @@ type JsonSchemaToZodOptions = {
 **Test Cases**:
 
 #### Test 1.1: Simple String Schema
+
 **Input**:
+
 ```json
 {
   "type": "string"
@@ -47,6 +51,7 @@ type JsonSchemaToZodOptions = {
 ```
 
 **Expected Output**:
+
 ```typescript
 import { z } from 'zod';
 export default z.string();
@@ -55,7 +60,9 @@ export default z.string();
 **Verification**: Output must be valid TypeScript that compiles and produces equivalent validation logic before/after refactoring.
 
 #### Test 1.2: Object with Multiple Properties
+
 **Input**:
+
 ```json
 {
   "type": "object",
@@ -68,6 +75,7 @@ export default z.string();
 ```
 
 **Expected Output** (contains):
+
 - Import statement: `import { z } from 'zod';`
 - Object definition with `z.object({...})`
 - `name` property: `z.string()`
@@ -76,7 +84,9 @@ export default z.string();
 **Verification**: Generated object structure and property types must be identical.
 
 #### Test 1.3: With Module Option (ESM)
+
 **Input**:
+
 ```json
 {
   "type": "string"
@@ -84,11 +94,13 @@ export default z.string();
 ```
 
 **Options**:
+
 ```typescript
 { module: "esm", name: "mySchema" }
 ```
 
 **Expected Output** (contains):
+
 - ESM import: `import { z } from 'zod';`
 - Named export: `export const mySchema = z.string();`
 - NOT default export
@@ -96,12 +108,15 @@ export default z.string();
 **Verification**: Module format (ESM vs CJS) must be correctly applied.
 
 #### Test 1.4: With Module Option (CJS)
+
 **Options**:
+
 ```typescript
 { module: "cjs", name: "mySchema" }
 ```
 
 **Expected Output** (contains):
+
 - CJS import: `const { z } = require('zod');`
 - CJS export: `module.exports = z.string();`
 
@@ -112,12 +127,15 @@ export default z.string();
 **Command**: `json-schema-to-zod [options]`
 
 #### Test 2.1: File Input/Output
+
 **Command**:
+
 ```bash
 json-schema-to-zod -i test-schema.json -o output.ts
 ```
 
 **Expected Behavior**:
+
 - Reads JSON schema from `test-schema.json`
 - Parses the schema
 - Generates TypeScript code
@@ -127,12 +145,15 @@ json-schema-to-zod -i test-schema.json -o output.ts
 **Verification**: Generated file must exist and contain valid TypeScript.
 
 #### Test 2.2: Piped Input
+
 **Command**:
+
 ```bash
 cat test-schema.json | json-schema-to-zod
 ```
 
 **Expected Behavior**:
+
 - Reads JSON from stdin
 - Generates TypeScript code
 - Writes to stdout
@@ -141,12 +162,15 @@ cat test-schema.json | json-schema-to-zod
 **Verification**: Output must be valid TypeScript written to stdout.
 
 #### Test 2.3: CLI with Name Option
+
 **Command**:
+
 ```bash
 json-schema-to-zod -i schema.json -n "UserSchema" -m esm -t
 ```
 
 **Expected Behavior**:
+
 - Generates named export: `export const UserSchema = ...`
 - Also generates type export: `export type UserSchema = ...`
 - Uses ESM syntax
@@ -158,11 +182,13 @@ json-schema-to-zod -i schema.json -n "UserSchema" -m esm -t
 **Command**: `npm run gen`
 
 **Expected Behavior**:
+
 - Scans `src/` directory (excluding specific files)
 - Generates `src/index.ts` with exports from all parser modules
 - Output must be deterministic (same input → same output always)
 
 **Verification Steps**:
+
 1. Run `npm run gen` twice in succession
 2. Compare generated files: `diff src/index.ts <(npm run gen > /tmp/gen-output.ts)`
 3. Result: No differences (idempotent)
@@ -170,7 +196,9 @@ json-schema-to-zod -i schema.json -n "UserSchema" -m esm -t
 **Test Cases**:
 
 #### Test 3.1: Generated Index Contains All Parsers
+
 **Expected Content**:
+
 - `export * from "./parsers/parseAllOf.js"`
 - `export * from "./parsers/parseAnyOf.js"`
 - `export * from "./parsers/parseArray.js"`
@@ -185,7 +213,9 @@ json-schema-to-zod -i schema.json -n "UserSchema" -m esm -t
 **Verification**: All expected exports present, no spurious exports, proper file references.
 
 #### Test 3.2: Excluded Files Not Exported
+
 **Expected Behavior**:
+
 - `src/index.ts` itself NOT re-exported
 - `src/cli.ts` NOT re-exported (CLI-only module)
 - `src/utils/cliTools.ts` NOT re-exported (CLI-only utility)
@@ -195,7 +225,9 @@ json-schema-to-zod -i schema.json -n "UserSchema" -m esm -t
 ### 4. Module Export Contracts
 
 #### Test 4.1: ESM Exports
+
 **Test Code**:
+
 ```typescript
 import { jsonSchemaToZod } from "json-schema-to-zod";
 import defaultExport from "json-schema-to-zod";
@@ -207,7 +239,9 @@ import { parseObject, parseString } from "json-schema-to-zod";
 **Expected Behavior**: ESM import syntax works; default export = jsonSchemaToZod function; named exports available.
 
 #### Test 4.2: CJS Exports
+
 **Test Code**:
+
 ```javascript
 const { jsonSchemaToZod } = require("json-schema-to-zod");
 const defaultExport = require("json-schema-to-zod");
@@ -218,6 +252,7 @@ const defaultExport = require("json-schema-to-zod");
 ## Verification Checklist Before/After Refactoring
 
 ### Pre-Refactoring Verification
+
 - [ ] Run full test suite: `npm test` → all tests pass
 - [ ] Run code generation: `npm run gen` → src/index.ts generated without errors
 - [ ] Test CLI with sample schema → valid output produced
@@ -226,6 +261,7 @@ const defaultExport = require("json-schema-to-zod");
 - [ ] Document actual outputs for comparison
 
 ### Post-Refactoring Verification
+
 - [ ] Run full test suite with Vitest: `npm test` → all tests pass (MUST match pre-refactor assertions)
 - [ ] Run code generation: `npm run gen` → src/index.ts generated; compare to pre-refactor version (MUST match byte-for-byte)
 - [ ] Test CLI with identical sample schema → output identical to pre-refactor
@@ -244,12 +280,14 @@ const defaultExport = require("json-schema-to-zod");
 ## Measurement Strategy
 
 ### Before Refactoring (Baseline)
+
 1. Run all tests; capture exit code and assertion count
 2. Save output of: `npm run gen > /tmp/index.baseline.ts`
 3. Run CLI on 3-5 standard test schemas; save outputs
 4. Document any formatting/linting issues observed
 
 ### After Refactoring (Validation)
+
 1. Run all tests; verify exit code and assertion count MATCH
 2. Run: `npm run gen > /tmp/index.refactored.ts`
 3. Diff: `diff /tmp/index.baseline.ts /tmp/index.refactored.ts` → MUST be empty

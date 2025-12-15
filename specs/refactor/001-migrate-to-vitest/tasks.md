@@ -12,44 +12,56 @@
 **Purpose**: Establish metrics baseline before any code changes
 
 - [ ] T001 Verify all tests pass with current setup
+
   ```bash
   npm test
   # Expected: All tests pass with current tsx runner
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T002 Capture baseline test count
+
   ```bash
   npm test 2>&1 | tee /tmp/baseline-test-output.txt
   # Count: approximately 30+ test cases across 17 test files
   ```
+
   **File**: N/A (metrics-before.md will store count)
 
 - [ ] T003 Measure baseline test execution time
+
   ```bash
   time npm test
   # Record total time in seconds
   ```
+
   **File**: `specs/refactor-001-migrate-to-vitest/metrics-before.md` (populate with result)
 
 - [ ] T004 Capture baseline code generation output
+
   ```bash
   npm run gen
   cp src/index.ts /tmp/index.baseline.ts
   ```
+
   **File**: `/tmp/index.baseline.ts` (saved for comparison)
 
 - [ ] T005 Verify CLI behavior with test schema
+
   ```bash
   echo '{"type":"string"}' > /tmp/test.json
   tsx src/cli.ts -i /tmp/test.json -o /tmp/baseline-output.ts
   ```
+
   **File**: `/tmp/baseline-output.ts` (saved for CLI comparison)
 
 - [ ] T006 Create git tag for baseline state
+
   ```bash
   git tag pre-refactor-001 -m "Baseline before refactor-001: Vitest, oxfmt/oxlint, ts-morph migration"
   ```
+
   **File**: Git tag (repository state)
 
 - [ ] T007 Populate metrics-before.md with baseline measurements
@@ -91,6 +103,7 @@
   **File**: `vitest.config.ts`
 
   **Content**:
+
   ```typescript
   import { defineConfig } from 'vitest/config';
 
@@ -113,6 +126,7 @@
   **File**: `.oxfmtrc.json`
 
   **Content**:
+
   ```json
   {
     "indentation": "Space",
@@ -131,6 +145,7 @@
   **File**: `.oxlintrc.json`
 
   **Content**:
+
   ```json
   {
     "env": {
@@ -177,9 +192,11 @@
   - Keep `"gen": "tsx ./createIndex.ts"` unchanged
 
 - [x] T015 Run npm install to fetch new dependencies
+
   ```bash
   npm install
   ```
+
   **Verification**: All packages installed; no peer dependency warnings
 
   **File**: `package.json`, `package-lock.json`
@@ -200,10 +217,12 @@
 **Purpose**: Migrate test files to Vitest without changing test logic
 
 - [x] T017 Identify all test files in test/ directory
+
   ```bash
   find test/ -name "*.test.ts" -o -name "*.test.js"
   # Expected: 17+ test files
   ```
+
   **Files**: All test files in `test/` directory
 
 - [x] T018 Verify test file naming conventions
@@ -216,10 +235,12 @@
   **Files**: All files in `test/` directory
 
 - [x] T019 Check for Jest-specific API usage in test files
+
   ```bash
   grep -r "jest\." test/ || echo "No jest. references found"
   grep -r "jest\(" test/ || echo "No jest( references found"
   ```
+
   **Expected**: No matches (Vitest is compatible with Jest syntax)
 
   **Files**: All test files
@@ -231,39 +252,49 @@
   **Files**: All test files in `test/`
 
 - [x] T021 Delete test/index.ts (manual test aggregation no longer needed)
+
   ```bash
   rm test/index.ts
   ```
+
   **File**: `test/index.ts` (deleted)
 
 - [x] T022 Run Vitest to discover all tests
+
   ```bash
   npx vitest --list
   # Expected: Lists all test files and test cases (~30+)
   ```
+
   **File**: N/A (verification only)
 
 - [x] T023 Verify test count matches baseline
+
   ```bash
   npx vitest --list 2>&1 | grep -c "✓" || echo "Manual count required"
   # Expected: Count >= 17 test files, ~30+ test cases
   ```
+
   **File**: N/A (verification only)
 
 - [x] T024 Run full test suite in Vitest (non-watch mode)
+
   ```bash
   npm test
   # Expected: All tests pass with 100% pass rate
   ```
+
   **Verification**: No test assertions modified; all pass unmodified
 
   **File**: N/A (verification only)
 
 - [x] T025 Run tests in watch mode to verify HMR functionality
+
   ```bash
   npm run test:watch
   # Let it run for a few seconds; press Ctrl+C to exit
   ```
+
   **Verification**: Watch mode works; test re-runs on file changes
 
   **File**: N/A (verification only)
@@ -322,39 +353,47 @@
   - Verify imports/exports valid TypeScript
 
 - [x] T030 Verify generated output matches baseline
+
   ```bash
   npm run gen
   diff /tmp/index.baseline.ts src/index.ts
   # Expected: No differences (output identical)
   ```
+
   **File**: `src/index.ts` (should match baseline)
 
 - [x] T031 Test createIndex.ts idempotency
+
   ```bash
   npm run gen > /tmp/gen-1.txt
   npm run gen > /tmp/gen-2.txt
   diff /tmp/gen-1.txt /tmp/gen-2.txt
   # Expected: No differences (idempotent)
   ```
+
   **File**: N/A (verification only)
 
 - [x] T032 Verify all parsers are exported from generated index.ts
+
   ```bash
   grep "export.*parseAllOf" src/index.ts
   grep "export.*parseAnyOf" src/index.ts
   grep "export.*parseArray" src/index.ts
   # ... check all parser exports
   ```
+
   **Expected**: All 14+ parser exports present
 
   **File**: `src/index.ts`
 
 - [x] T033 Verify excluded files are NOT exported
+
   ```bash
   grep "src/index.ts" src/index.ts && echo "ERROR: index.ts re-exports itself" || echo "OK"
   grep "src/cli.ts" src/index.ts && echo "ERROR: cli.ts exported" || echo "OK"
   grep "cliTools" src/index.ts && echo "ERROR: cliTools exported" || echo "OK"
   ```
+
   **Expected**: No matches (excluded files not exported)
 
   **File**: `src/index.ts`
@@ -375,10 +414,12 @@
 **Purpose**: Apply new tooling to codebase
 
 - [ ] T035 Run oxlint analysis on entire project
+
   ```bash
   npm run lint
   # Review output; identify any critical errors
   ```
+
   **Expected**: Some warnings/style issues (this is normal)
 
   **Files**: All files in `src/` and `test/`
@@ -392,38 +433,48 @@
   **Files**: Varies based on linting findings
 
 - [ ] T037 Run oxfmt to format code
+
   ```bash
   npm run format
   # This applies formatting in-place
   ```
+
   **File**: All source files in `src/` and `test/`, plus root .ts files
 
 - [ ] T038 Verify formatting was applied correctly
+
   ```bash
   npm run format:check
   # Expected: All files formatted (no additional changes needed)
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T039 Run tests after formatting
+
   ```bash
   npm test
   # Expected: 100% pass rate (formatting doesn't change behavior)
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T040 Commit formatting changes with appropriate message
+
   ```bash
   git add -A
   git commit -m "style: apply oxfmt and oxlint formatting rules"
   ```
+
   **File**: All modified source files
 
 - [ ] T041 Verify linting in CI context
+
   ```bash
   npm run lint -- --format=json > /tmp/lint-results.json
   # Check for P0/P1 severity issues
   ```
+
   **Expected**: No critical blocking issues
 
   **File**: N/A (verification only)
@@ -437,13 +488,16 @@
 **Purpose**: Comprehensive validation that refactoring succeeded and behavior preserved
 
 - [ ] T042 Run full test suite with detailed output
+
   ```bash
   npm test -- --reporter=verbose
   # Expected: All tests pass; output shows test names/timing
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T043 Verify API behavior - simple string schema
+
   ```bash
   node -e "
     const { jsonSchemaToZod } = require('./dist/cjs/index.js');
@@ -452,9 +506,11 @@
   "
   # Expected: Valid TypeScript code with z.string()
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T044 Verify API behavior - complex object schema
+
   ```bash
   node -e "
     const { jsonSchemaToZod } = require('./dist/cjs/index.js');
@@ -468,32 +524,40 @@
   "
   # Expected: Object with name and age properties
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T045 Verify code generation idempotency
+
   ```bash
   npm run gen > /tmp/gen-verify.txt
   diff /tmp/index.baseline.ts src/index.ts
   # Expected: No differences
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T046 Verify CLI with file I/O
+
   ```bash
   npm run build  # Build distribution first
   dist/cjs/cli.js -i /tmp/test.json -o /tmp/cli-output.ts
   # Verify /tmp/cli-output.ts contains valid TypeScript
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T047 Verify CLI with piped input
+
   ```bash
   echo '{"type":"string"}' | dist/cjs/cli.js
   # Expected: Valid TypeScript output to stdout
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T048 Verify ESM exports work
+
   ```bash
   node --input-type=module -e "
     import { jsonSchemaToZod } from './dist/esm/index.js';
@@ -501,9 +565,11 @@
   "
   # Expected: Valid output; no import errors
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T049 Verify CJS exports work
+
   ```bash
   node -e "
     const { jsonSchemaToZod } = require('./dist/cjs/index.js');
@@ -511,6 +577,7 @@
   "
   # Expected: 'function'
   ```
+
   **File**: N/A (verification only)
 
 - [ ] T050 Compare behavioral snapshot - API calls
@@ -528,12 +595,14 @@
   **File**: `specs/refactor-001-migrate-to-vitest/behavioral-snapshot.md`
 
 - [ ] T052 Measure post-refactoring metrics
+
   ```bash
   time npm test  # Measure test execution time
   npm run gen    # Measure code generation time
   du -sh src/    # Check source code size
   npm ls         # Count dependencies
   ```
+
   **File**: `specs/refactor-001-migrate-to-vitest/metrics-after.md`
 
 - [ ] T053 Compare performance metrics
@@ -566,9 +635,11 @@
 **Purpose**: Update documentation and finalize refactoring
 
 - [ ] T055 Delete legacy jest.config.js
+
   ```bash
   rm jest.config.js
   ```
+
   **File**: `jest.config.js` (deleted)
 
 - [ ] T056 Update README.md with tooling changes
@@ -616,6 +687,7 @@
   - Formatting applied to all files
 
 - [ ] T060 Create final refactoring commit
+
   ```bash
   git add -A
   git commit -m "refactor: migrate to vitest, oxfmt/oxlint, ts-morph
@@ -633,13 +705,16 @@
   Fixes: tech-debt-001 (outdated testing framework)
   "
   ```
+
   **File**: All modified/deleted files
 
 - [ ] T061 Verify git history is clean
+
   ```bash
   git log --oneline -5
   # Expected: Last commit is refactor commit; history is clean
   ```
+
   **File**: N/A (git verification only)
 
 - [ ] T062 Create or update CHANGELOG.md entry (if applicable)
@@ -662,15 +737,15 @@
 
 ### Task Breakdown by Phase
 
-| Phase | Tasks | Purpose |
-|-------|-------|---------|
-| **0** | T001-T007 | Baseline capture (7 tasks) |
-| **1** | T008-T016 | Tool installation & config (9 tasks) |
-| **2** | T017-T026 | Test migration (10 tasks) |
+| Phase | Tasks     | Purpose                               |
+| ----- | --------- | ------------------------------------- |
+| **0** | T001-T007 | Baseline capture (7 tasks)            |
+| **1** | T008-T016 | Tool installation & config (9 tasks)  |
+| **2** | T017-T026 | Test migration (10 tasks)             |
 | **3** | T027-T034 | Code generation refactoring (8 tasks) |
-| **4** | T035-T041 | Linting & formatting (7 tasks) |
-| **5** | T042-T054 | Verification & validation (13 tasks) |
-| **6** | T055-T062 | Documentation & cleanup (8 tasks) |
+| **4** | T035-T041 | Linting & formatting (7 tasks)        |
+| **5** | T042-T054 | Verification & validation (13 tasks)  |
+| **6** | T055-T062 | Documentation & cleanup (8 tasks)     |
 
 ### Execution Order
 
@@ -687,6 +762,7 @@
 ### Parallelizable Tasks (within Phase 1)
 
 These tasks can run in parallel (no dependencies):
+
 - T008: Add Vitest
 - T009: Add ts-morph
 - T010: Remove ts-jest

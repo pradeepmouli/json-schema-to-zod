@@ -1,6 +1,6 @@
 # Implementation Plan: Rename package + introduce JsonSchema/ZodBuilder namespaces
 
-**Branch**: `refactor/002-rename-package-x` | **Date**: 2025-12-12 | **Spec**: `specs/refactor-002-rename-package-x/refactor-spec.md`
+**Branch**: `002-rename-package-x` | **Date**: 2025-12-12 | **Spec**: `specs/002-rename-package-x/refactor-spec.md`
 
 ## Summary
 
@@ -14,6 +14,7 @@ This refactor also changes the published package name to `x-to-zod` while preser
 **Project Type**: Single library + CLI tool
 **Behavior Contract**: Output strings are treated as snapshots (byte-for-byte equality)
 **Constraints**:
+
 - No changes to runtime behavior or output strings
 - No changes to CLI flags/behavior
 - Preserve existing `jsonSchemaToZod` export and default export via shims
@@ -53,16 +54,18 @@ src/
 **Goal**: Establish a baseline before any refactoring.
 
 **Tasks**:
+
 1. Run tests and ensure 100% pass rate
 2. Capture baseline metrics into `metrics-before.md`
 3. Create a git tag for baseline state
 4. Confirm behavioral snapshot “before” outputs match documented examples
 
 **Commands**:
+
 ```bash
 npm test
 
-.specify/extensions/workflows/refactor/measure-metrics.sh --before --dir "specs/refactor-002-rename-package-x"
+.specify/extensions/workflows/refactor/measure-metrics.sh --before --dir "specs/002-rename-package-x"
 
 git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + JsonSchema/ZodBuilder namespaces"
 ```
@@ -76,6 +79,7 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
 **Goal**: Rename the published package name to `x-to-zod` while keeping runtime behavior and exports stable.
 
 **Tasks**:
+
 1. Update `package.json`:
    - `name`: `x-to-zod`
    - Preserve existing `exports`/entrypoints and dual-module output
@@ -83,6 +87,7 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
 3. Ensure `src/index.ts` continues exporting the same runtime symbols
 
 **Verification**:
+
 - `npm test` passes
 - No generated output changes
 
@@ -95,10 +100,12 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
 **Goal**: Create a centralized module that constructs Zod strings and applies modifiers/messages without changing output.
 
 **Approach**:
+
 - Implement builder helpers that operate on the existing string-building style (string concatenation) but isolate rules.
 - Start with the most sensitive, well-specified behavior: number modifiers like `parseNumber`.
 
 **Initial scope**:
+
 - Base type factories: `number()`, `string()`, etc. (only as needed)
 - Modifier helpers:
   - `.int()` decisions
@@ -107,6 +114,7 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
   - Preserve error-message integration behavior (through `withMessage` or a delegated equivalent)
 
 **Verification**:
+
 - Focus tests:
   - `test/parsers/parseNumber.test.ts`
   - `test/jsonSchemaToZod.test.ts`
@@ -120,6 +128,7 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
 **Goal**: Make schema traversal/orchestration explicit without changing the public API.
 
 **Tasks**:
+
 1. Create `src/JsonSchema/index.ts` exposing a `JsonSchema` namespace-like object (or named exports) that wraps the existing orchestration.
 2. Update `src/jsonSchemaToZod.ts` to delegate to `JsonSchema` while preserving:
    - existing default export
@@ -128,6 +137,7 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
 3. Update `src/index.ts` exports as needed, ensuring existing imports keep working.
 
 **Verification**:
+
 - `npm test`
 - Behavioral Snapshot Behavior 1 output unchanged
 
@@ -140,11 +150,13 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
 **Goal**: Move Zod string generation logic out of `src/parsers/*` and into `ZodBuilder`, one parser at a time.
 
 **Rules**:
+
 - Keep modifier order identical.
 - Preserve message attachment logic and keyword precedence.
 - Prefer one-parser-per-commit, with tests run after each.
 
 **Suggested order**:
+
 1. `parseNumber` (already guarded by snapshot)
 2. `parseString`
 3. `parseArray`
@@ -160,16 +172,18 @@ git tag pre-refactor-002 -m "Baseline before refactor-002: package rename + Json
 **Goal**: Confirm behavior preservation and document metrics.
 
 **Tasks**:
+
 1. Run full test suite
 2. Fill in “after” section of behavioral snapshot
 3. Capture “after” metrics
 4. Ensure documentation reflects new package name and (optional) new namespaces without changing old entrypoints
 
 **Commands**:
+
 ```bash
 npm test
 
-.specify/extensions/workflows/refactor/measure-metrics.sh --after --dir "specs/refactor-002-rename-package-x"
+.specify/extensions/workflows/refactor/measure-metrics.sh --after --dir "specs/002-rename-package-x"
 ```
 
 **Gate**: Tests pass; behavioral snapshot verified; metrics captured.
@@ -187,6 +201,7 @@ npm test
 ## Rollback Strategy
 
 If any step causes output drift or export breakage, revert the last atomic commit and re-run:
+
 ```bash
 npm test
 ```

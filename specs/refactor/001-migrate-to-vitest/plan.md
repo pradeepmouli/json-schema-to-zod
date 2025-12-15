@@ -25,6 +25,7 @@ Refactor the project's tooling and build infrastructure to align with modern Typ
 The proposed refactoring is **fully aligned** with the json-schema-to-zod constitution:
 
 ### Core Principles Alignment
+
 - **Principle I (Parser Architecture)**: ✅ No changes to parser structure; all parsers remain discrete, testable units
 - **Principle II (Dual-Module Export)**: ✅ ESM/CJS structure preserved; Vitest supports both seamlessly
 - **Principle III (CLI-First Contract)**: ✅ CLI behavior unchanged; Vitest can test both programmatic and CLI interfaces
@@ -32,6 +33,7 @@ The proposed refactoring is **fully aligned** with the json-schema-to-zod consti
 - **Principle V (Type Safety)**: ✅ TypeScript strict mode maintained; ts-morph ensures type-safe AST generation
 
 ### Technology Stack Compliance
+
 - **Language**: ✅ TypeScript (strict mode) maintained
 - **Package Manager**: ✅ pnpm (no change needed)
 - **Testing**: ✅ Jest → Vitest (explicit requirement from constitution + ts.instructions.md)
@@ -40,6 +42,7 @@ The proposed refactoring is **fully aligned** with the json-schema-to-zod consti
 - **Code Generation**: ✅ String concat → ts-morph (improves safety and maintainability)
 
 ### Code Organization Standards Compliance
+
 - **Parsers**: ✅ `src/parsers/*.ts` unchanged; continue as pure, stateless functions
 - **Utils**: ✅ `src/utils/*.ts` unchanged; continue as shared utilities
 - **Types**: ✅ `src/Types.ts` unchanged; centralized type definitions preserved
@@ -48,6 +51,7 @@ The proposed refactoring is **fully aligned** with the json-schema-to-zod consti
 - **Index Generation**: ✅ `createIndex.ts` rewritten with ts-morph (safer, more maintainable)
 
 ### Governance Compliance
+
 - **No principle violations**: All core principles remain satisfied
 - **No external contract changes**: API, CLI, exports, schema generation unchanged
 - **Behavior preservation**: Comprehensive behavioral snapshot documents key invariants
@@ -116,6 +120,7 @@ test/index.ts                 # DELETE (replaced by Vitest discovery)
 **Goal**: Establish baseline and prepare for refactoring.
 
 **Tasks**:
+
 1. ✅ Create refactor specification (refactor-spec.md)
 2. ✅ Document behavioral snapshot (behavioral-snapshot.md)
 3. ✅ Create this implementation plan
@@ -137,12 +142,14 @@ test/index.ts                 # DELETE (replaced by Vitest discovery)
 **Tasks**:
 
 #### 1.1: Update package.json Dependencies
+
 - Add `vitest`: ^1.0.0
 - Add `ts-morph`: ^21.0.0
 - Remove `ts-jest` (if separate from jest)
 - Keep `typescript`, `zod`, all others unchanged
 
 #### 1.2: Create Vitest Configuration
+
 **File**: `vitest.config.ts`
 
 ```typescript
@@ -163,12 +170,14 @@ export default defineConfig({
 ```
 
 Rationale:
+
 - `globals: true`: Matches current test style (no explicit imports of describe/it)
 - `environment: 'node'`: Appropriate for Node.js library
 - `include` glob: Discovers all .test.ts files under test/ directory
 - `typecheck: enabled`: Ensures types are correct during test run
 
 #### 1.3: Create Oxfmt Configuration
+
 **File**: `.oxfmtrc.json`
 
 ```json
@@ -187,6 +196,7 @@ Rationale:
 Rationale: Aligns with user preferences from ts.instructions.md (2-space indent, single quotes, no trailing commas, semicolons).
 
 #### 1.4: Create Oxlint Configuration
+
 **File**: `.oxlintrc.json`
 
 ```json
@@ -223,7 +233,9 @@ Rationale: Aligns with user preferences from ts.instructions.md (2-space indent,
 Rationale: Enforce naming conventions from constitution (camelCase functions, PascalCase types, etc.).
 
 #### 1.5: Update package.json Scripts
+
 **Changes**:
+
 ```json
 {
   "scripts": {
@@ -240,6 +252,7 @@ Rationale: Enforce naming conventions from constitution (camelCase functions, Pa
 ```
 
 Rationale:
+
 - `test`: Vitest run command (non-watch mode for CI)
 - `test:watch` & `dev`: Watch mode for development
 - `test:ui`: Visual dashboard (optional but useful)
@@ -247,6 +260,7 @@ Rationale:
 - `gen`: Unchanged (still uses tsx to run TypeScript script)
 
 #### 1.6: Verify npm install completes
+
 ```bash
 npm install
 ```
@@ -262,10 +276,12 @@ npm install
 **Tasks**:
 
 #### 2.1: Remove test/index.ts
+
 - Delete `test/index.ts` (manual test imports)
 - Rationale: Vitest's glob pattern (`include: ['test/**/*.test.ts']`) replaces manual imports
 
 #### 2.2: Verify All Test Files Use Correct Extensions
+
 - All test files must use `.test.ts` extension (not `.test.js`)
 - Files to check:
   - ✅ `test/jsonSchemaToZod.test.ts`
@@ -276,12 +292,15 @@ npm install
   - ✅ All files in `test/utils/*.test.ts`
 
 #### 2.3: Update Test Imports (if needed)
+
 Vitest should auto-detect globals (`describe`, `it`, `expect`), but verify:
+
 - No tests import from `jest` module
 - No tests use Jest-specific APIs (e.g., `jest.mock`, `jest.spyOn`)
 - If any Jest mocks present, migrate to Vitest equivalents
 
 #### 2.4: Run Test Suite
+
 ```bash
 npm test
 ```
@@ -299,7 +318,9 @@ npm test
 **Tasks**:
 
 #### 3.1: Understand Current createIndex.ts Behavior
+
 Current implementation (33 lines):
+
 - Recursively scans `src/` directory
 - Ignores specific files: `src/index.ts`, `src/cli.ts`, `src/utils/cliTools.ts`
 - For each `.ts` file: generates `export * from "./path/to/file.js"`
@@ -308,6 +329,7 @@ Current implementation (33 lines):
 Output to `src/index.ts`.
 
 #### 3.2: Design ts-morph Implementation
+
 ```typescript
 import { Project, SourceFileStructure, StatementStructures } from 'ts-morph';
 
@@ -342,17 +364,20 @@ project.saveSync();
 ```
 
 Rationale:
+
 - **Type Safety**: AST builders prevent syntax errors; final output guaranteed valid
 - **Maintainability**: Code is clearer; intent obvious (not string concat)
 - **Consistency**: Output formatted by ts-morph; consistent style
 - **Deterministic**: Same AST → same formatted output (idempotent)
 
 #### 3.3: Implement ts-morph version
+
 - Create new `createIndex.ts` using ts-morph
 - Preserve same logic and file ignore list
 - Verify output is deterministic (run twice; diff output)
 
 #### 3.4: Verify Output Matches Previous
+
 ```bash
 npm run gen
 # Compare src/index.ts to pre-refactor snapshot
@@ -362,6 +387,7 @@ diff <(pre-refactor-output) <(npm run gen | cat src/index.ts)
 **Expected**: Zero differences; byte-identical output.
 
 #### 3.5: Update createIndex.ts in src/index.ts ignore list (if already ignored)
+
 - Verify `src/index.ts` still NOT exported by createIndex.ts
 
 **Verification Gate**: Generated `src/index.ts` byte-identical to pre-refactor; idempotent (run twice, same output).
@@ -375,6 +401,7 @@ diff <(pre-refactor-output) <(npm run gen | cat src/index.ts)
 **Tasks**:
 
 #### 4.1: Run oxlint Analysis
+
 ```bash
 npm run lint
 ```
@@ -382,10 +409,12 @@ npm run lint
 Expected: Some warnings/errors (likely naming, import ordering, etc.).
 
 #### 4.2: Fix Critical Issues
+
 - Address any linting errors that block compilation
 - Use `oxlint --fix` if available, or manual fixes
 
 #### 4.3: Run oxfmt to Format Code
+
 ```bash
 npm run format
 ```
@@ -393,6 +422,7 @@ npm run format
 Expected: Code reformatted to match `.oxfmtrc.json` rules.
 
 #### 4.4: Verify Tests Still Pass After Formatting
+
 ```bash
 npm test
 ```
@@ -400,6 +430,7 @@ npm test
 **Expected**: 100% pass rate (formatting should not change behavior).
 
 #### 4.5: Commit Formatting Changes
+
 ```bash
 git add -A
 git commit -m "style: apply oxfmt and oxlint formatting"
@@ -416,21 +447,25 @@ git commit -m "style: apply oxfmt and oxlint formatting"
 **Tasks**:
 
 #### 5.1: Comprehensive Test Suite Run
+
 ```bash
 npm test
 ```
 
 **Expected**:
+
 - All 17+ tests pass
 - Zero test modifications needed
 - Vitest execution time 20-40% faster than Jest baseline
 
 #### 5.2: API Behavior Verification
+
 - Generate schema with test inputs
 - Compare CLI output to pre-refactor baseline
 - Verify ESM/CJS exports work
 
 **Test Command**:
+
 ```bash
 # Test API
 node -e "const { jsonSchemaToZod } = require('./dist/cjs/index.js'); console.log(jsonSchemaToZod({ type: 'string' }))"
@@ -439,6 +474,7 @@ node --input-type=module -e "import { jsonSchemaToZod } from './dist/esm/index.j
 ```
 
 #### 5.3: Code Generation Verification
+
 ```bash
 npm run gen
 # Diff against baseline
@@ -448,6 +484,7 @@ diff /tmp/index.baseline.ts src/index.ts
 **Expected**: Zero differences.
 
 #### 5.4: CLI Verification
+
 ```bash
 # Test file I/O
 echo '{"type":"string"}' > /tmp/test.json
@@ -457,11 +494,13 @@ node dist/cjs/cli.js -i /tmp/test.json -o /tmp/output.ts
 ```
 
 #### 5.5: Behavioral Snapshot Validation
+
 - Re-run all behavioral snapshot tests
 - Verify outputs match pre-refactor baseline
 - Document any expected differences (should be none)
 
 #### 5.6: Capture Post-Refactoring Metrics
+
 ```bash
 # Measure test execution time
 npm test -- --reporter=verbose
@@ -469,6 +508,7 @@ npm test -- --reporter=verbose
 ```
 
 **Expected metrics**:
+
 - Test count: ≥17 (no tests removed)
 - Test pass rate: 100%
 - Execution time: 20-40% improvement over Jest baseline
@@ -486,30 +526,36 @@ npm test -- --reporter=verbose
 **Tasks**:
 
 #### 6.1: Delete Legacy Files
+
 ```bash
 rm jest.config.js
 rm test/index.ts  # Already removed in Phase 2
 ```
 
 #### 6.2: Update README (if needed)
+
 - Note: Testing now uses Vitest instead of Jest
 - Mention: Code formatted with oxfmt; linted with oxlint
 - Link to `.oxfmtrc.json` and `.oxlintrc.json` for configuration details
 
 #### 6.3: Update Contributing.md (if needed)
+
 - Specify: `npm test` runs Vitest
 - Specify: `npm run format` uses oxfmt
 - Specify: `npm run lint` uses oxlint
 - Add: `npm run gen` regenerates index.ts with ts-morph
 
 #### 6.4: Populate metrics-after.md
+
 Document final metrics:
+
 - Test execution time post-refactoring
 - Any performance improvements observed
 - Dependency count changes
 - Summary of changes made
 
 #### 6.5: Final git Commit
+
 ```bash
 git add -A
 git commit -m "refactor: migrate to vitest, oxfmt/oxlint, ts-morph
@@ -527,6 +573,7 @@ Fixes constitution alignment gap (refs: vitest, oxlint, oxfmt requirements)"
 ```
 
 #### 6.6: Create Release Notes (if applicable)
+
 - Summarize refactoring goals and achievements
 - Note: No API changes; purely internal tooling improvement
 - Recommend users update their local dev environment
@@ -538,31 +585,41 @@ Fixes constitution alignment gap (refs: vitest, oxlint, oxfmt requirements)"
 ## Risk Mitigation Strategies
 
 ### Risk: Vitest Test Discovery Incomplete
+
 **Mitigation**:
+
 - Run `vitest --list` to verify all tests discovered
 - Compare count to pre-refactor (must be ≥17)
 - If missing: verify `.test.ts` extension; check glob pattern
 
 ### Risk: ts-morph Output Differs from Original
+
 **Mitigation**:
+
 - Byte-for-byte diff before/after
 - If differs: adjust AST builder options (formatting, sorting, etc.)
 - Keep original createIndex.ts as fallback
 
 ### Risk: Vitest Compatibility with ESM/CJS Exports
+
 **Mitigation**:
+
 - Test both `import` and `require()` syntax in test files
 - Use Vitest's `environment: 'node'` setting
 - If issues: pin Vitest version; check release notes for ESM support
 
 ### Risk: Oxlint/Oxfmt Compatibility Issues
+
 **Mitigation**:
+
 - Start with recommended preset (oxlint/recommended)
 - If conflicts: disable specific rules in .oxlintrc.json
 - Verify all tests pass after formatting
 
 ### Risk: Performance Degradation
+
 **Mitigation**:
+
 - Measure baseline execution time before refactoring
 - Measure post-refactoring execution time
 - If degraded >5%: investigate Vitest configuration (may need thread pooling tuning)
@@ -611,18 +668,18 @@ Fixes constitution alignment gap (refs: vitest, oxlint, oxfmt requirements)"
 
 ## Timeline Estimate
 
-| Phase | Task | Duration |
-|-------|------|----------|
-| Phase 0 | Setup & validation | 30 min |
-| Phase 1 | Tool installation & config | 1-2 hours |
-| Phase 2 | Test migration | 1-2 hours |
-| Phase 3 | Code generation refactor | 2-3 hours |
-| Phase 4 | Linting & formatting | 1-2 hours |
-| Phase 5 | Verification & validation | 1-2 hours |
-| Phase 6 | Documentation & cleanup | 30-45 min |
-| **Total** | | **7-13 hours** |
+| Phase     | Task                       | Duration       |
+| --------- | -------------------------- | -------------- |
+| Phase 0   | Setup & validation         | 30 min         |
+| Phase 1   | Tool installation & config | 1-2 hours      |
+| Phase 2   | Test migration             | 1-2 hours      |
+| Phase 3   | Code generation refactor   | 2-3 hours      |
+| Phase 4   | Linting & formatting       | 1-2 hours      |
+| Phase 5   | Verification & validation  | 1-2 hours      |
+| Phase 6   | Documentation & cleanup    | 30-45 min      |
+| **Total** |                            | **7-13 hours** |
 
-*Note: Estimates assume no major blockers; actual time may vary based on discovered issues.*
+_Note: Estimates assume no major blockers; actual time may vary based on discovered issues._
 
 ---
 
@@ -639,6 +696,7 @@ Fixes constitution alignment gap (refs: vitest, oxlint, oxfmt requirements)"
 7. ⏳ Phase 6: Documentation & Cleanup (finalize)
 
 **Why this order**:
+
 - Phase 0 captures baseline; all subsequent phases measured against it
 - Phase 1 installs dependencies; later phases require them
 - Phase 2 moves tests to new framework; Phase 3 refactors generation

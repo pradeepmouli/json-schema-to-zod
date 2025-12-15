@@ -1,6 +1,8 @@
-import { JsonSchemaObject, Serializable } from "../Types.js";
-import { buildLiteral } from "../ZodBuilder/index.js";
+import { JsonSchemaObject, Serializable } from '../Types.js';
+import { build } from '../ZodBuilder/index.js';
 
-export const parseConst = (schema: JsonSchemaObject & { const: Serializable }) => {
-  return buildLiteral(schema.const);
+export const parseConst = (
+	schema: JsonSchemaObject & { const: Serializable },
+) => {
+	return build.literal(schema.const).text();
 };

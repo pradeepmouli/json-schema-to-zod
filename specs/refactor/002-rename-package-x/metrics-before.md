@@ -1,6 +1,6 @@
-# Metrics Captured After Refactoring
+# Metrics Captured Before Refactoring
 
-**Timestamp**: Sat Dec 13 00:06:42 EST 2025
+**Timestamp**: Fri Dec 12 23:44:31 EST 2025
 **Git Commit**: b85c110
 **Branch**: 002-rename-package-x
 
@@ -9,10 +9,12 @@
 ## Code Complexity
 
 ### Lines of Code
+
 Manual count needed (cloc not installed):
-      51
+47
 
 ### File Sizes
+
 ```
      858 test/parsers/parseObject.test.ts
      350 test/jsonSchemaToZod.test.ts
@@ -29,6 +31,7 @@ Manual count needed (cloc not installed):
 ## Test Coverage
 
 Coverage data not found. Run tests with coverage:
+
 ```bash
 npm run test:coverage  # or equivalent command
 ```
@@ -36,9 +39,11 @@ npm run test:coverage  # or equivalent command
 ## Performance
 
 ### Build Time
-- **Build Time**: Run `npm run build` and time it
+
+- **Build Time**: 5 seconds
 
 ### Bundle Size
+
 - **Bundle Size**: Build directory not found (run build first)
 
 ## Dependencies
@@ -49,21 +54,17 @@ npm run test:coverage  # or equivalent command
 
 ## Test Suite
 
-- **Test Files**:       19
-- **Test Pass Rate**: Should be 100% (verify with `npm test`)
+- **Test Files**: 19
+- **Test Pass Rate**: Run `npm test` to verify 100%
 
 ## Git Statistics
 
-- **Files Modified**:        0 (since pre-refactor-002)
+- **Files Modified**: 0 (no pre-refactor tag found)
 
 ## Summary
 
-Metrics captured after refactoring at Sat Dec 13 00:06:43 EST 2025.
+Metrics captured before refactoring at Fri Dec 12 23:44:36 EST 2025.
 
-**Next Steps**:
-1. Compare with metrics-before.md
-2. Verify improvements achieved
-3. Check no unexpected regressions
-4. Document improvements in refactor-spec.md
 ---
-*Metrics captured using measure-metrics.sh*
+
+_Metrics captured using measure-metrics.sh_

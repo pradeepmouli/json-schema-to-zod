@@ -1,223 +1,245 @@
-import { JsonSchemaObject, Refs } from "../Types.js";
+import { JsonSchemaObject, Refs } from '../Types.js';
 import {
-  buildObject,
-  buildRecord,
-  applyStrict,
-  applyCatchall,
-  applySuperRefine,
-  applyAnd,
-  applyOptional,
-} from "../ZodBuilder/index.js";
-import { addJsdocs } from "../utils/jsdocs.js";
-import { parseAnyOf } from "./parseAnyOf.js";
-import { parseOneOf } from "./parseOneOf.js";
-import { its, parseSchema } from "./parseSchema.js";
-import { parseAllOf } from "./parseAllOf.js";
+	build,
+	buildRecord,
+	ObjectBuilder,
+	applyOptional,
+} from '../ZodBuilder/index.js';
+import { addJsdocs } from '../utils/jsdocs.js';
+import { parseAnyOf } from './parseAnyOf.js';
+import { parseOneOf } from './parseOneOf.js';
+import { its, parseSchema } from './parseSchema.js';
+import { parseAllOf } from './parseAllOf.js';
 
 export function parseObject(
-  objectSchema: JsonSchemaObject & { type: "object" },
-  refs: Refs,
+	objectSchema: JsonSchemaObject & { type: 'object' },
+	refs: Refs,
 ): string {
-  let result: string;
+	let result: string;
 
-  // Step 1: Build base object from properties
-  if (objectSchema.properties && Object.keys(objectSchema.properties).length > 0) {
-    const propsWithJsdocs: string[] = [];
+	// Step 1: Build base object from properties
+	if (
+		objectSchema.properties &&
+		Object.keys(objectSchema.properties).length > 0
+	) {
+		const properties: Record<string, string> = {};
+		const propsWithJsdocs: string[] = [];
 
-    for (const key of Object.keys(objectSchema.properties)) {
-      const propSchema = objectSchema.properties[key];
+		for (const key of Object.keys(objectSchema.properties)) {
+			const propSchema = objectSchema.properties[key];
 
-      let propZod = parseSchema(propSchema, {
-        ...refs,
-        path: [...refs.path, "properties", key],
-      });
+			let propZod = parseSchema(propSchema, {
+				...refs,
+				path: [...refs.path, 'properties', key],
+			});
 
-      // Determine if property is optional
-      const hasDefault = typeof propSchema === "object" && propSchema.default !== undefined;
-      const required = Array.isArray(objectSchema.required)
-        ? objectSchema.required.includes(key)
-        : typeof propSchema === "object" && propSchema.required === true;
-      const optional = !hasDefault && !required;
+			// Determine if property is optional
+			const hasDefault =
+				typeof propSchema === 'object' && propSchema.default !== undefined;
+			const required = Array.isArray(objectSchema.required)
+				? objectSchema.required.includes(key)
+				: typeof propSchema === 'object' && propSchema.required === true;
+			const optional = !hasDefault && !required;
 
-      if (optional) {
-        propZod = applyOptional(propZod);
-      }
+			if (optional) {
+				propZod = applyOptional(propZod);
+			}
 
-      // Build the property string: "key": zodSchema
-      let propStr = `${JSON.stringify(key)}: ${propZod}`;
+			// Store in properties object for builder
+			properties[key] = propZod;
 
-      // Add JSDoc if enabled (prepends to the property string)
-      if (refs.withJsdocs && typeof propSchema === "object") {
-        propStr = addJsdocs(propSchema, propStr);
-      }
+			// Build the property string for JSDoc: "key": zodSchema
+			let propStr = `${JSON.stringify(key)}: ${propZod}`;
 
-      propsWithJsdocs.push(propStr);
-    }
+			// Add JSDoc if enabled (prepends to the property string)
+			if (refs.withJsdocs && typeof propSchema === 'object') {
+				propStr = addJsdocs(propSchema, propStr);
+			}
 
-    // Build object with pre-formatted property strings
-    result = `z.object({ ${propsWithJsdocs.join(", ")} })`;
-  } else if (objectSchema.properties) {
-    // Empty properties object
-    result = buildObject({});
-  } else {
-    result = "";
-  } // Step 2: Handle additionalProperties
-  const additionalPropertiesZod =
-    objectSchema.additionalProperties !== undefined
-      ? parseSchema(objectSchema.additionalProperties, {
-          ...refs,
-          path: [...refs.path, "additionalProperties"],
-        })
-      : undefined;
+			propsWithJsdocs.push(propStr);
+		}
 
-  // Step 3: Handle patternProperties
-  if (objectSchema.patternProperties) {
-    const parsedPatternProps = Object.fromEntries(
-      Object.entries(objectSchema.patternProperties).map(([pattern, propSchema]) => [
-        pattern,
-        parseSchema(propSchema, {
-          ...refs,
-          path: [...refs.path, "patternProperties", pattern],
-        }),
-      ]),
-    );
+		// Build object - if JSDoc enabled, build manually; otherwise use ObjectBuilder
+		if (refs.withJsdocs) {
+			result = `z.object({ ${propsWithJsdocs.join(', ')} })`;
+		} else {
+			result = build.object(properties).text();
+		}
+	} else if (objectSchema.properties) {
+		// Empty properties object
+		result = build.object({}).text();
+	} else {
+		result = '';
+	} // Step 2: Handle additionalProperties
+	const additionalPropertiesZod =
+		objectSchema.additionalProperties !== undefined
+			? parseSchema(objectSchema.additionalProperties, {
+					...refs,
+					path: [...refs.path, 'additionalProperties'],
+				})
+			: undefined;
 
-    // Build the base schema for pattern properties
-    if (result) {
-      // We have properties, so add catchall
-      const catchallSchemas = Object.values(parsedPatternProps);
-      if (additionalPropertiesZod) {
-        catchallSchemas.push(additionalPropertiesZod);
-      }
+	// Step 3: Handle patternProperties
+	if (objectSchema.patternProperties) {
+		const parsedPatternProps = Object.fromEntries(
+			Object.entries(objectSchema.patternProperties).map(
+				([pattern, propSchema]) => [
+					pattern,
+					parseSchema(propSchema, {
+						...refs,
+						path: [...refs.path, 'patternProperties', pattern],
+					}),
+				],
+			),
+		);
 
-      if (catchallSchemas.length > 1) {
-        result = applyCatchall(result, `z.union([${catchallSchemas.join(", ")}])`);
-      } else if (catchallSchemas.length === 1) {
-        result = applyCatchall(result, catchallSchemas[0]);
-      }
-    } else {
-      // No properties, build a record
-      const valueSchemas = Object.values(parsedPatternProps);
-      if (additionalPropertiesZod) {
-        valueSchemas.push(additionalPropertiesZod);
-      }
+		// Build the base schema for pattern properties
+		if (result) {
+			// We have properties, so add catchall
+			const catchallSchemas = Object.values(parsedPatternProps);
+			if (additionalPropertiesZod) {
+				catchallSchemas.push(additionalPropertiesZod);
+			}
 
-      if (valueSchemas.length > 1) {
-        result = buildRecord("z.string()", `z.union([${valueSchemas.join(", ")}])`);
-      } else if (valueSchemas.length === 1) {
-        result = buildRecord("z.string()", valueSchemas[0]);
-      }
-    }
+			const builder = ObjectBuilder.fromCode(result);
+			if (catchallSchemas.length > 1) {
+				builder.catchall(`z.union([${catchallSchemas.join(', ')}])`);
+			} else if (catchallSchemas.length === 1) {
+				builder.catchall(catchallSchemas[0]);
+			}
+			result = builder.text();
+		} else {
+			// No properties, build a record
+			const valueSchemas = Object.values(parsedPatternProps);
+			if (additionalPropertiesZod) {
+				valueSchemas.push(additionalPropertiesZod);
+			}
 
-    // Build superRefine for pattern validation
-    const refineFnLines: string[] = [];
+			if (valueSchemas.length > 1) {
+				result = buildRecord(
+					'z.string()',
+					`z.union([${valueSchemas.join(', ')}])`,
+				);
+			} else if (valueSchemas.length === 1) {
+				result = buildRecord('z.string()', valueSchemas[0]);
+			}
+		}
 
-    let refineFn = "(value, ctx) => {\n";
-    refineFn += "for (const key in value) {\n";
+		// Build superRefine for pattern validation
+		const refineFnLines: string[] = [];
 
-    if (additionalPropertiesZod) {
-      if (objectSchema.properties && Object.keys(objectSchema.properties).length > 0) {
-        const propKeys = Object.keys(objectSchema.properties)
-          .map((k) => JSON.stringify(k))
-          .join(", ");
-        refineFn += `let evaluated = [${propKeys}].includes(key)\n`;
-      } else {
-        refineFn += "let evaluated = false\n";
-      }
-    }
+		let refineFn = '(value, ctx) => {\n';
+		refineFn += 'for (const key in value) {\n';
 
-    for (const [pattern, patternZod] of Object.entries(parsedPatternProps)) {
-      refineFn += `if (key.match(new RegExp(${JSON.stringify(pattern)}))) {\n`;
-      if (additionalPropertiesZod) {
-        refineFn += "evaluated = true\n";
-      }
-      refineFn += `const result = ${patternZod}.safeParse(value[key])\n`;
-      refineFn += "if (!result.success) {\n";
-      refineFn += `ctx.addIssue({\n          path: [key],\n          code: 'custom',\n          message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,\n          params: {\n            issues: result.error.issues\n          }\n        })\n`;
-      refineFn += "}\n";
-      refineFn += "}\n";
-    }
+		if (additionalPropertiesZod) {
+			if (
+				objectSchema.properties &&
+				Object.keys(objectSchema.properties).length > 0
+			) {
+				const propKeys = Object.keys(objectSchema.properties)
+					.map((k) => JSON.stringify(k))
+					.join(', ');
+				refineFn += `let evaluated = [${propKeys}].includes(key)\n`;
+			} else {
+				refineFn += 'let evaluated = false\n';
+			}
+		}
 
-    if (additionalPropertiesZod) {
-      refineFn += "if (!evaluated) {\n";
-      refineFn += `const result = ${additionalPropertiesZod}.safeParse(value[key])\n`;
-      refineFn += "if (!result.success) {\n";
-      refineFn += `ctx.addIssue({\n          path: [key],\n          code: 'custom',\n          message: \`Invalid input: must match catchall schema\`,\n          params: {\n            issues: result.error.issues\n          }\n        })\n`;
-      refineFn += "}\n";
-      refineFn += "}\n";
-    }
+		for (const [pattern, patternZod] of Object.entries(parsedPatternProps)) {
+			refineFn += `if (key.match(new RegExp(${JSON.stringify(pattern)}))) {\n`;
+			if (additionalPropertiesZod) {
+				refineFn += 'evaluated = true\n';
+			}
+			refineFn += `const result = ${patternZod}.safeParse(value[key])\n`;
+			refineFn += 'if (!result.success) {\n';
+			refineFn += `ctx.addIssue({\n          path: [key],\n          code: 'custom',\n          message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,\n          params: {\n            issues: result.error.issues\n          }\n        })\n`;
+			refineFn += '}\n';
+			refineFn += '}\n';
+		}
 
-    refineFn += "}\n";
-    refineFn += "}";
+		if (additionalPropertiesZod) {
+			refineFn += 'if (!evaluated) {\n';
+			refineFn += `const result = ${additionalPropertiesZod}.safeParse(value[key])\n`;
+			refineFn += 'if (!result.success) {\n';
+			refineFn += `ctx.addIssue({\n          path: [key],\n          code: 'custom',\n          message: \`Invalid input: must match catchall schema\`,\n          params: {\n            issues: result.error.issues\n          }\n        })\n`;
+			refineFn += '}\n';
+			refineFn += '}\n';
+		}
 
-    result = applySuperRefine(result, refineFn);
-  } else if (result && additionalPropertiesZod) {
-    // No pattern properties, but we have additionalProperties
-    if (additionalPropertiesZod === "z.never()") {
-      result = applyStrict(result);
-    } else {
-      result = applyCatchall(result, additionalPropertiesZod);
-    }
-  } else if (!result) {
-    // No properties, no patternProperties
-    if (additionalPropertiesZod) {
-      result = buildRecord("z.string()", additionalPropertiesZod);
-    } else {
-      result = buildRecord("z.string()", "z.any()");
-    }
-  }
+		refineFn += '}\n';
+		refineFn += '}';
 
-  // Step 4: Handle combinators (anyOf, oneOf, allOf)
-  if (its.an.anyOf(objectSchema)) {
-    const anyOfZod = parseAnyOf(
-      {
-        ...objectSchema,
-        anyOf: objectSchema.anyOf!.map((x) =>
-          typeof x === "object" &&
-          !x.type &&
-          (x.properties || x.additionalProperties || x.patternProperties)
-            ? { ...x, type: "object" }
-            : x,
-        ) as any,
-      },
-      refs,
-    );
-    result = applyAnd(result, anyOfZod);
-  }
+		result = ObjectBuilder.fromCode(result).superRefine(refineFn).text();
+	} else if (result && additionalPropertiesZod) {
+		// No pattern properties, but we have additionalProperties
+		const builder = ObjectBuilder.fromCode(result);
+		if (additionalPropertiesZod === 'z.never()') {
+			result = builder.strict().text();
+		} else {
+			result = builder.catchall(additionalPropertiesZod).text();
+		}
+	} else if (!result) {
+		// No properties, no patternProperties
+		if (additionalPropertiesZod) {
+			result = buildRecord('z.string()', additionalPropertiesZod);
+		} else {
+			result = buildRecord('z.string()', 'z.any()');
+		}
+	}
 
-  if (its.a.oneOf(objectSchema)) {
-    const oneOfZod = parseOneOf(
-      {
-        ...objectSchema,
-        oneOf: objectSchema.oneOf!.map((x) =>
-          typeof x === "object" &&
-          !x.type &&
-          (x.properties || x.additionalProperties || x.patternProperties)
-            ? { ...x, type: "object" }
-            : x,
-        ) as any,
-      },
-      refs,
-    );
-    result = applyAnd(result, oneOfZod);
-  }
+	// Step 4: Handle combinators (anyOf, oneOf, allOf)
+	let builder = ObjectBuilder.fromCode(result);
 
-  if (its.an.allOf(objectSchema)) {
-    const allOfZod = parseAllOf(
-      {
-        ...objectSchema,
-        allOf: objectSchema.allOf!.map((x) =>
-          typeof x === "object" &&
-          !x.type &&
-          (x.properties || x.additionalProperties || x.patternProperties)
-            ? { ...x, type: "object" }
-            : x,
-        ) as any,
-      },
-      refs,
-    );
-    result = applyAnd(result, allOfZod);
-  }
+	if (its.an.anyOf(objectSchema)) {
+		const anyOfZod = parseAnyOf(
+			{
+				...objectSchema,
+				anyOf: objectSchema.anyOf!.map((x) =>
+					typeof x === 'object' &&
+					!x.type &&
+					(x.properties || x.additionalProperties || x.patternProperties)
+						? { ...x, type: 'object' }
+						: x,
+				) as any,
+			},
+			refs,
+		);
+		builder.and(anyOfZod);
+	}
 
-  return result;
+	if (its.a.oneOf(objectSchema)) {
+		const oneOfZod = parseOneOf(
+			{
+				...objectSchema,
+				oneOf: objectSchema.oneOf!.map((x) =>
+					typeof x === 'object' &&
+					!x.type &&
+					(x.properties || x.additionalProperties || x.patternProperties)
+						? { ...x, type: 'object' }
+						: x,
+				) as any,
+			},
+			refs,
+		);
+		builder.and(oneOfZod);
+	}
+
+	if (its.an.allOf(objectSchema)) {
+		const allOfZod = parseAllOf(
+			{
+				...objectSchema,
+				allOf: objectSchema.allOf!.map((x) =>
+					typeof x === 'object' &&
+					!x.type &&
+					(x.properties || x.additionalProperties || x.patternProperties)
+						? { ...x, type: 'object' }
+						: x,
+				) as any,
+			},
+			refs,
+		);
+		builder.and(allOfZod);
+	}
+
+	return builder.text();
 }
