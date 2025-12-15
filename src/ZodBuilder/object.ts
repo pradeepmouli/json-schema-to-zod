@@ -5,8 +5,8 @@ import { BaseBuilder } from "./BaseBuilder.js";
  */
 export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 
-  readonly _properties: Record<string, BaseBuilder<any>>;
-  constructor(properties: Record<string, BaseBuilder<any>> = {}) {
+  readonly _properties: Record<string, string>;
+  constructor(properties: Record<string, string> = {}) {
 
     super('');
 	this._properties = properties;
@@ -26,10 +26,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	if (this._baseText) {
 	  return super.text();
 	}
-    const propStrings = Object.entries(this._properties).map(
-      ([key, builder]) => `${JSON.stringify(key)}: ${builder.text()}`,
-    );
-    this._baseText = `z.object({ ${propStrings.join(", ")} })`;
+    this._baseText = buildObject(this._properties);
 	return super.text();
   }
 
