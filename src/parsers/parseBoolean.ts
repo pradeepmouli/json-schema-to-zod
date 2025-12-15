@@ -1,6 +1,8 @@
-import { JsonSchemaObject } from "../Types.js";
-import { build } from "../ZodBuilder/index.js";
+import { JsonSchemaObject } from '../Types.js';
+import { build } from '../ZodBuilder/index.js';
 
-export const parseBoolean = (_schema: JsonSchemaObject & { type: "boolean" }) => {
-  return build.boolean().text();
+export const parseBoolean = (
+	_schema: JsonSchemaObject & { type: 'boolean' },
+) => {
+	return build.boolean().text();
 };
