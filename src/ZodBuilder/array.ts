@@ -4,11 +4,11 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
 export class ArrayBuilder extends BaseBuilder {
-	private readonly _itemSchema: BaseBuilder;
+	private readonly _itemSchema: BaseBuilder | BaseBuilder[];
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchema: BaseBuilder) {
+	constructor(itemSchema: BaseBuilder | BaseBuilder[]) {
 		super();
 		this._itemSchema = itemSchema;
 	}
@@ -37,6 +37,11 @@ export class ArrayBuilder extends BaseBuilder {
 	 * Compute the base array schema.
 	 */
 	protected override base(): string {
+		if (Array.isArray(this._itemSchema)) {
+			const itemStrs = this._itemSchema.map((item) => item.text());
+			return `z.tuple([${itemStrs.join(',')}])`; // No space after comma
+		}
+
 		const itemStr = this._itemSchema.text();
 		return `z.array(${itemStr})`;
 	}

@@ -1,12 +1,5 @@
 import { JsonSchemaObject, Refs } from '../Types.js';
-import {
-	build,
-	buildTuple,
-	applyMinItems,
-	applyMaxItems,
-	BaseBuilder,
-	GenericBuilder,
-} from '../ZodBuilder/index.js';
+import { build, BaseBuilder } from '../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
 export const parseArray = (
@@ -20,24 +13,17 @@ export const parseArray = (
 		const itemSchemas = schema.items.map((v, i) =>
 			parseSchema(v, { ...refs, path: [...refs.path, 'items', i] }),
 		);
-		let tupleSchema = buildTuple(itemSchemas);
 
-		// For tuples, apply modifiers directly (no ArrayBuilder yet)
+		const builder = build.array(itemSchemas);
+
 		if (schema.minItems !== undefined) {
-			tupleSchema = applyMinItems(
-				tupleSchema,
-				schema.minItems,
-				schema.errorMessage?.minItems,
-			);
+			builder.min(schema.minItems, schema.errorMessage?.minItems);
 		}
 		if (schema.maxItems !== undefined) {
-			tupleSchema = applyMaxItems(
-				tupleSchema,
-				schema.maxItems,
-				schema.errorMessage?.maxItems,
-			);
+			builder.max(schema.maxItems, schema.errorMessage?.maxItems);
 		}
-		r = new GenericBuilder(tupleSchema);
+
+		r = builder;
 	} else {
 		const itemSchema = !schema.items
 			? build.any()
