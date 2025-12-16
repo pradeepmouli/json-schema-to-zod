@@ -57,7 +57,10 @@ export type JsonSchemaObject = {
 	errorMessage?: { [key: string]: string | undefined };
 } & { [key: string]: any };
 
-export type ParserSelector = (schema: JsonSchemaObject, refs: Refs) => string;
+export type ParserSelector = (
+	schema: JsonSchemaObject,
+	refs: Refs,
+) => string;
 export type ParserOverride = (
 	schema: JsonSchemaObject,
 	refs: Refs,
