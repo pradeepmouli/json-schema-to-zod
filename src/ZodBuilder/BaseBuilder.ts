@@ -85,14 +85,14 @@ export abstract class BaseBuilder {
 
 	/**
 	 * Compute the type-specific base schema string.
-	 * 
+	 *
 	 * This is the core abstract method in the template method pattern.
 	 * Subclasses must implement this to provide their type-specific schema string
 	 * (e.g., "z.string()", "z.number()", "z.object({...})").
-	 * 
+	 *
 	 * The base schema string returned by this method will then have shared modifiers
 	 * applied via the `modify()` method when `text()` is called.
-	 * 
+	 *
 	 * @returns The base Zod schema string without any modifiers applied
 	 */
 	protected abstract base(): string;

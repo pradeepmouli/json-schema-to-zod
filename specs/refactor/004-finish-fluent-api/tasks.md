@@ -120,7 +120,7 @@
 
 ### Phase 2.3: Update Other Builders & Modifiers
 
-- [ ] T045 [P] Update src/ZodBuilder/modifiers.ts: Update helper functions to accept union types where needed
+- [x] T045 [P] Update src/ZodBuilder/modifiers.ts: Update helper functions to accept union types where needed
 - [x] T046 [P] Verify all builder tests pass: `npm test -- test/parsers/`
 
 **Gate**: All tests pass, union types correctly handled

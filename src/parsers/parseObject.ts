@@ -3,7 +3,6 @@ import {
 	build,
 	buildRecord,
 	ObjectBuilder,
-	applyOptional,
 	BaseBuilder,
 } from '../ZodBuilder/index.js';
 import { addJsdocs } from '../utils/jsdocs.js';
@@ -23,7 +22,7 @@ export function parseObject(
 		objectSchema.properties &&
 		Object.keys(objectSchema.properties).length > 0
 	) {
-		const properties: Record<string, BaseBuilder<any>> = {};
+		const properties: Record<string, BaseBuilder> = {};
 		const propsWithJsdocs: string[] = [];
 
 		for (const key of Object.keys(objectSchema.properties)) {
@@ -127,7 +126,6 @@ export function parseObject(
 		}
 
 		// Build superRefine for pattern validation
-		const refineFnLines: string[] = [];
 
 		let refineFn = '(value, ctx) => {\n';
 		refineFn += 'for (const key in value) {\n';
