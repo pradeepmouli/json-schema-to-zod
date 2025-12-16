@@ -4,8 +4,8 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent ObjectBuilder: wraps a Zod object schema string and provides chainable methods.
  */
 export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
-	readonly _properties: Record<string, string>;
-	constructor(properties: Record<string, string> = {}) {
+	readonly _properties: Record<string, BaseBuilder<any> | string>;
+	constructor(properties: Record<string, BaseBuilder<any> | string> = {}) {
 		super('');
 		this._properties = properties;
 	}
@@ -71,15 +71,18 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 
 /**
  * Build a Zod object schema string from property definitions.
- * Properties should already have Zod schema strings as values.
+ * Properties can be either BaseBuilder instances or Zod schema strings.
  */
-export function buildObject(properties: Record<string, string>): string {
+export function buildObject(properties: Record<string, BaseBuilder<any> | string>): string {
 	if (Object.keys(properties).length === 0) {
 		return 'z.object({})';
 	}
 
 	const props = Object.entries(properties)
-		.map(([key, zodStr]) => `${JSON.stringify(key)}: ${zodStr}`)
+		.map(([key, val]) => {
+			const zodStr = typeof val === 'string' ? val : val.text();
+			return `${JSON.stringify(key)}: ${zodStr}`;
+		})
 		.join(', ');
 
 	return `z.object({ ${props} })`;
@@ -87,12 +90,15 @@ export function buildObject(properties: Record<string, string>): string {
 
 /**
  * Build a Zod record schema string.
+ * Key and value schemas can be either BaseBuilder instances or Zod schema strings.
  */
 export function buildRecord(
-	keySchemaZod: string,
-	valueSchemaZod: string,
+	keySchemaZod: BaseBuilder<any> | string,
+	valueSchemaZod: BaseBuilder<any> | string,
 ): string {
-	return `z.record(${keySchemaZod}, ${valueSchemaZod})`;
+	const keyStr = typeof keySchemaZod === 'string' ? keySchemaZod : keySchemaZod.text();
+	const valueStr = typeof valueSchemaZod === 'string' ? valueSchemaZod : valueSchemaZod.text();
+	return `z.record(${keyStr}, ${valueStr})`;
 }
 
 /**

@@ -46,7 +46,8 @@ export function parseObject(
 				propZod = propZod.optional();
 			}
 
-			// Store in properties object for builder (convert to string for now)
+			// Store in properties object for builder (convert to string)
+			// Note: We call .text() to convert builder to string to avoid state mutation issues
 			properties[key] = propZod.text();
 
 			// Build the property string for JSDoc: "key": zodSchema

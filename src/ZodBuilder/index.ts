@@ -71,8 +71,8 @@ export const build = {
 	string: () => new StringBuilder(),
 	boolean: () => new BooleanBuilder(),
 	null: () => new NullBuilder(),
-	array: (itemSchemaZod: string) => new ArrayBuilder(itemSchemaZod),
-	object: (properties: Record<string, string> = {}) =>
+	array: (itemSchemaZod: import('./BaseBuilder.js').BaseBuilder<any> | string) => new ArrayBuilder(itemSchemaZod),
+	object: (properties: Record<string, import('./BaseBuilder.js').BaseBuilder<any> | string> = {}) =>
 		new ObjectBuilder(properties),
 	enum: (values: import('../Types.js').Serializable[]) =>
 		new EnumBuilder(values),

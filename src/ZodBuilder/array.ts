@@ -7,8 +7,9 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchemaZod: string) {
-		super(`z.array(${itemSchemaZod})`);
+	constructor(itemSchemaZod: BaseBuilder<any> | string) {
+		const itemStr = typeof itemSchemaZod === 'string' ? itemSchemaZod : itemSchemaZod.text();
+		super(`z.array(${itemStr})`);
 	}
 
 	/**
@@ -59,16 +60,22 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 
 /**
  * Build a Zod array schema string from an item schema.
+ * Item schema can be either a BaseBuilder instance or a Zod schema string.
  */
-export function buildArray(itemSchemaZod: string): string {
-	return `z.array(${itemSchemaZod})`;
+export function buildArray(itemSchemaZod: BaseBuilder<any> | string): string {
+	const itemStr = typeof itemSchemaZod === 'string' ? itemSchemaZod : itemSchemaZod.text();
+	return `z.array(${itemStr})`;
 }
 
 /**
  * Build a Zod tuple schema string from item schemas.
+ * Item schemas can be either BaseBuilder instances or Zod schema strings.
  */
-export function buildTuple(itemSchemasZod: string[]): string {
-	return `z.tuple([${itemSchemasZod.join(',')}])`; // No space after comma
+export function buildTuple(itemSchemasZod: (BaseBuilder<any> | string)[]): string {
+	const itemStrs = itemSchemasZod.map(item => 
+		typeof item === 'string' ? item : item.text()
+	);
+	return `z.tuple([${itemStrs.join(',')}])`; // No space after comma
 }
 
 /**
