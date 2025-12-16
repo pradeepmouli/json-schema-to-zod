@@ -1,5 +1,10 @@
 import { BaseBuilder } from './BaseBuilder.js';
 
+type Buildable = BaseBuilder<any> | string;
+
+const toText = (schema: Buildable): string =>
+	typeof schema === 'string' ? schema : schema.text();
+
 /**
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
@@ -7,8 +12,8 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchemaZod: string) {
-		super(`z.array(${itemSchemaZod})`);
+	constructor(itemSchema: Buildable) {
+		super(`z.array(${toText(itemSchema)})`);
 	}
 
 	/**
@@ -60,15 +65,15 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 /**
  * Build a Zod array schema string from an item schema.
  */
-export function buildArray(itemSchemaZod: string): string {
-	return `z.array(${itemSchemaZod})`;
+export function buildArray(itemSchema: Buildable): string {
+	return `z.array(${toText(itemSchema)})`;
 }
 
 /**
  * Build a Zod tuple schema string from item schemas.
  */
-export function buildTuple(itemSchemasZod: string[]): string {
-	return `z.tuple([${itemSchemasZod.join(',')}])`; // No space after comma
+export function buildTuple(itemSchemas: Buildable[]): string {
+	return `z.tuple([${itemSchemas.map(toText).join(',')}])`; // No space after comma
 }
 
 /**

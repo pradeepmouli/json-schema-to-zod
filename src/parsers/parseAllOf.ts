@@ -1,7 +1,6 @@
 import { parseSchema } from './parseSchema.js';
-import { half } from '../utils/half.js';
 import { JsonSchemaObject, JsonSchema, Refs } from '../Types.js';
-import { BaseBuilder } from '../ZodBuilder/index.js';
+import { BaseBuilder, IntersectionBuilder } from '../ZodBuilder/index.js';
 
 const originalIndex = Symbol('Original index');
 
@@ -30,23 +29,22 @@ export function parseAllOf(
 ): BaseBuilder<any> {
 	if (schema.allOf.length === 0) {
 		return new BaseBuilder('z.never()');
-	} else if (schema.allOf.length === 1) {
-		const item = schema.allOf[0];
+	}
 
+	const items = ensureOriginalIndex(schema.allOf);
+	if (items.length === 1) {
+		const item = items[0];
 		return parseSchema(item, {
 			...refs,
 			path: [...refs.path, 'allOf', (item as any)[originalIndex]],
 		});
-	} else {
-		const [left, right] = half(ensureOriginalIndex(schema.allOf)) as any;
-
-		return new BaseBuilder(
-			`z.intersection(${parseAllOf({ allOf: left }, refs).text()}, ${parseAllOf(
-				{
-					allOf: right,
-				},
-				refs,
-			).text()})`,
-		);
 	}
+
+	const parts = items.map((sub: any) =>
+		parseSchema(sub, {
+			...refs,
+			path: [...refs.path, 'allOf', sub[originalIndex]],
+		}),
+	);
+	return new IntersectionBuilder(parts);
 }

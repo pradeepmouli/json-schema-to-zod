@@ -44,6 +44,7 @@ export {
 	applyAnd,
 } from './object.js';
 
+
 // Import builder classes for the factory
 import { NumberBuilder } from './number.js';
 import { StringBuilder } from './string.js';
@@ -79,3 +80,10 @@ export const build = {
 	literal: (value: import('../Types.js').Serializable) =>
 		new ConstBuilder(value),
 };
+
+export { UnionBuilder } from './union.js';
+export { IntersectionBuilder } from './intersection.js';
+export { AnyBuilder } from './any.js';
+export { NeverBuilder } from './never.js';
+export { UnknownBuilder } from './unknown.js';
+export { LiteralBuilder } from './literal.js';

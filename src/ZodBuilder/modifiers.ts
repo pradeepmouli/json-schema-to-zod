@@ -2,51 +2,57 @@
  * Generic modifiers that can be applied to any Zod schema.
  */
 
+type Buildable = string | { text(): string };
+
+const toText = (schema: Buildable): string =>
+	typeof schema === 'string' ? schema : schema.text();
+
 /**
  * Apply optional modifier to a schema.
  */
-export function applyOptional<T extends string>(zodStr: T): `${T}.optional()` {
-	return `${zodStr}.optional()`;
+export function applyOptional(zod: Buildable): string {
+	const base = toText(zod);
+	return `${base}.optional()`;
 }
 
 /**
  * Apply nullable modifier to a schema.
  */
-export function applyNullable(zodStr: string): string {
-	return `${zodStr}.nullable()`;
+export function applyNullable(zod: Buildable): string {
+	return `${toText(zod)}.nullable()`;
 }
 
 /**
  * Apply default value to a schema.
  */
-export function applyDefault(zodStr: string, defaultValue: any): string {
-	return `${zodStr}.default(${JSON.stringify(defaultValue)})`;
+export function applyDefault(zod: Buildable, defaultValue: any): string {
+	return `${toText(zod)}.default(${JSON.stringify(defaultValue)})`;
 }
 
 /**
  * Apply describe modifier to a schema.
  */
-export function applyDescribe(zodStr: string, description: string): string {
-	return `${zodStr}.describe(${JSON.stringify(description)})`;
+export function applyDescribe(zod: Buildable, description: string): string {
+	return `${toText(zod)}.describe(${JSON.stringify(description)})`;
 }
 
 /**
  * Apply brand to a schema.
  */
-export function applyBrand(zodStr: string, brand: string): string {
-	return `${zodStr}.brand(${JSON.stringify(brand)})`;
+export function applyBrand(zod: Buildable, brand: string): string {
+	return `${toText(zod)}.brand(${JSON.stringify(brand)})`;
 }
 
 /**
  * Apply readonly modifier to a schema.
  */
-export function applyReadonly(zodStr: string): string {
-	return `${zodStr}.readonly()`;
+export function applyReadonly(zod: Buildable): string {
+	return `${toText(zod)}.readonly()`;
 }
 
 /**
  * Apply catch modifier with fallback value.
  */
-export function applyCatch(zodStr: string, fallbackValue: any): string {
-	return `${zodStr}.catch(${JSON.stringify(fallbackValue)})`;
+export function applyCatch(zod: Buildable, fallbackValue: any): string {
+	return `${toText(zod)}.catch(${JSON.stringify(fallbackValue)})`;
 }

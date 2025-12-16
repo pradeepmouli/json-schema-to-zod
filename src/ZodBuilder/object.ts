@@ -1,11 +1,16 @@
 import { BaseBuilder } from './BaseBuilder.js';
 
+type Buildable = BaseBuilder<any> | string;
+
+const toText = (value: Buildable): string =>
+	typeof value === 'string' ? value : value.text();
+
 /**
  * Fluent ObjectBuilder: wraps a Zod object schema string and provides chainable methods.
  */
 export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
-	readonly _properties: Record<string, string>;
-	constructor(properties: Record<string, string> = {}) {
+	readonly _properties: Record<string, Buildable>;
+	constructor(properties: Record<string, Buildable> = {}) {
 		super('');
 		this._properties = properties;
 	}
@@ -39,8 +44,8 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	/**
 	 * Apply catchall schema for additional properties.
 	 */
-	catchall(catchallSchemaZod: string): this {
-		this._baseText = applyCatchall(this._baseText, catchallSchemaZod);
+	catchall(catchallSchema: Buildable): this {
+		this._baseText = applyCatchall(this._baseText, catchallSchema);
 		return this;
 	}
 
@@ -63,8 +68,8 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	/**
 	 * Apply and combinator (merge with another schema).
 	 */
-	and(otherSchemaZod: string): this {
-		this._baseText = applyAnd(this._baseText, otherSchemaZod);
+	and(otherSchema: Buildable): this {
+		this._baseText = applyAnd(this._baseText, otherSchema);
 		return this;
 	}
 }
@@ -73,13 +78,13 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
  * Build a Zod object schema string from property definitions.
  * Properties should already have Zod schema strings as values.
  */
-export function buildObject(properties: Record<string, string>): string {
+export function buildObject(properties: Record<string, Buildable>): string {
 	if (Object.keys(properties).length === 0) {
 		return 'z.object({})';
 	}
 
 	const props = Object.entries(properties)
-		.map(([key, zodStr]) => `${JSON.stringify(key)}: ${zodStr}`)
+		.map(([key, schema]) => `${JSON.stringify(key)}: ${toText(schema)}`)
 		.join(', ');
 
 	return `z.object({ ${props} })`;
@@ -89,10 +94,10 @@ export function buildObject(properties: Record<string, string>): string {
  * Build a Zod record schema string.
  */
 export function buildRecord(
-	keySchemaZod: string,
-	valueSchemaZod: string,
+	keySchema: Buildable,
+	valueSchema: Buildable,
 ): string {
-	return `z.record(${keySchemaZod}, ${valueSchemaZod})`;
+	return `z.record(${toText(keySchema)}, ${toText(valueSchema)})`;
 }
 
 /**
@@ -107,9 +112,9 @@ export function applyStrict(zodStr: string): string {
  */
 export function applyCatchall(
 	zodStr: string,
-	catchallSchemaZod: string,
+	catchallSchema: Buildable,
 ): string {
-	return `${zodStr}.catchall(${catchallSchemaZod})`;
+	return `${zodStr}.catchall(${toText(catchallSchema)})`;
 }
 
 /**
@@ -138,6 +143,6 @@ export function applySuperRefine(zodStr: string, refineFn: string): string {
 /**
  * Apply and combinator (merge with another schema).
  */
-export function applyAnd(zodStr: string, otherSchemaZod: string): string {
-	return `${zodStr}.and(${otherSchemaZod})`;
+export function applyAnd(zodStr: string, otherSchema: Buildable): string {
+	return `${zodStr}.and(${toText(otherSchema)})`;
 }
