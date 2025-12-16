@@ -5,7 +5,7 @@ import { BaseBuilder } from './BaseBuilder.js';
  */
 export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	readonly _properties: Record<string, BaseBuilder<any> | string>;
-	private _fromCode?: string; // Store code from fromCode()
+	private _precomputedSchema?: string; // Store pre-built schema string from fromCode()
 	private _strict: boolean = false;
 	private _loose: boolean = false;
 	private _catchallSchema?: string;
@@ -23,7 +23,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	 */
 	static fromCode(code: string): ObjectBuilder {
 		const builder = new ObjectBuilder({});
-		builder._fromCode = code;
+		builder._precomputedSchema = code;
 		return builder;
 	}
 
@@ -71,8 +71,8 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	 * Compute the base object schema with type-specific modifiers.
 	 */
 	protected override base(): string {
-		// Use fromCode if available, otherwise build from properties
-		let result = this._fromCode ?? buildObject(this._properties);
+		// Use precomputed schema if available, otherwise build from properties
+		let result = this._precomputedSchema ?? buildObject(this._properties);
 
 		// Apply object-specific modifiers
 		if (this._strict) {
