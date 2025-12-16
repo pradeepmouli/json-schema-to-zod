@@ -8,6 +8,7 @@ export * from "./ZodBuilder/boolean.js";
 export * from "./ZodBuilder/const.js";
 export * from "./ZodBuilder/discriminatedUnion.js";
 export * from "./ZodBuilder/enum.js";
+export * from "./ZodBuilder/generic.js";
 export * from "./ZodBuilder/index.js";
 export * from "./ZodBuilder/intersection.js";
 export * from "./ZodBuilder/literal.js";
