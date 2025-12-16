@@ -10,7 +10,7 @@
 
 ## Phase 0: Setup & Baseline Validation (Prerequisite)
 
-- [x] T001 [P] Verify baseline test suite passes: Run `npm test` and confirm 104 tests passing
+- [x] T001 [P] Verify baseline test suite passes: Run `npm test` and confirm all tests passing
 - [x] T002 Verify TypeScript compilation succeeds: Run `npm run build`
 - [x] T003 [P] Document baseline generated output: Run test schemas through current parser and save outputs to `specs/refactor/004-finish-fluent-api/baseline-outputs/` directory for later comparison
 - [x] T004 [P] Confirm git status clean: `git status` shows no uncommitted changes on refactor/004 branch
@@ -81,7 +81,7 @@
 - [x] T031a [P] **CLI Validation (Constitution Principle III)**: Test CLI with file I/O: `npm run build && npm run cli -- --input test/all.json --output /tmp/refactor-test-output.ts` and verify output matches baseline (use comparable flags like `--module none --noImport` if baseline has no wrapper).
 - [x] T032 [P] Verify integration tests pass: Run `npm test -- jsonSchemaToZod.test.ts`
 
-**Gate**: Full test suite passes: `npm test` shows 104 tests passing
+**Gate**: Full test suite passes: `npm test` shows all tests passing
 
 ### Phase 3+4.5: Comprehensive Validation
 
@@ -266,7 +266,7 @@ export class UnionBuilder extends BaseBuilder<UnionBuilder> {
 ### Testing Strategy
 
 **After Phase 3+4 completion**:
-- `npm test` must show 104 passing tests
+- `npm test` must show all passing tests
 - Baseline output comparison: All generated strings must be byte-identical
 - No test modifications allowed
 
@@ -295,7 +295,7 @@ All changes must pass `npm run build` with zero errors. No `any` types allowed.
 
 ## Success Checklist (Final Gate)
 
-- [ ] ✅ All 104 tests passing (0 failures)
+- [ ] ✅ All tests passing (0 failures)
 - [ ] ✅ TypeScript strict mode succeeds
 - [ ] ✅ All 16 parsers return `BaseBuilder`
 - [ ] ✅ All 11 existing builders accept `BaseBuilder | string`
