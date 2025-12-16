@@ -13,7 +13,7 @@ export const parseArray = (
 	schema: JsonSchemaObject & { type: 'array' },
 	refs: Refs,
 ) => {
-	let r: BaseBuilder<any>;
+	let r: BaseBuilder;
 
 	// Handle tuple (array of schemas) vs array (single schema)
 	if (Array.isArray(schema.items)) {

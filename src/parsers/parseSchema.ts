@@ -27,7 +27,7 @@ export const parseSchema = (
 	schema: JsonSchema,
 	refs: Refs = { seen: new Map(), path: [] },
 	blockMeta?: boolean,
-): BaseBuilder<any> => {
+): BaseBuilder => {
 	if (typeof schema !== 'object')
 		return schema ? new AnyBuilder() : new NeverBuilder();
 
@@ -80,8 +80,8 @@ export const parseSchema = (
 
 const addDescribes = (
 	schema: JsonSchemaObject,
-	builder: BaseBuilder<any>,
-): BaseBuilder<any> => {
+	builder: BaseBuilder,
+): BaseBuilder => {
 	if (schema.description) {
 		return builder.describe(schema.description);
 	}
@@ -91,8 +91,8 @@ const addDescribes = (
 
 const addDefaults = (
 	schema: JsonSchemaObject,
-	builder: BaseBuilder<any>,
-): BaseBuilder<any> => {
+	builder: BaseBuilder,
+): BaseBuilder => {
 	if (schema.default !== undefined) {
 		return builder.default(schema.default);
 	}
@@ -102,8 +102,8 @@ const addDefaults = (
 
 const addAnnotations = (
 	schema: JsonSchemaObject,
-	builder: BaseBuilder<any>,
-): BaseBuilder<any> => {
+	builder: BaseBuilder,
+): BaseBuilder => {
 	if (schema.readOnly) {
 		return builder.readonly();
 	}

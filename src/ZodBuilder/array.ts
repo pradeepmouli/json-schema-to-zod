@@ -3,12 +3,12 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
-export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
-	private readonly _itemSchemaZod: BaseBuilder<any> | string;
+export class ArrayBuilder extends BaseBuilder {
+	private readonly _itemSchemaZod: BaseBuilder | string;
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchemaZod: BaseBuilder<any> | string) {
+	constructor(itemSchemaZod: BaseBuilder | string) {
 		super();
 		this._itemSchemaZod = itemSchemaZod;
 	}
@@ -65,7 +65,7 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
  * Build a Zod array schema string from an item schema.
  * Item schema can be either a BaseBuilder instance or a Zod schema string.
  */
-export function buildArray(itemSchemaZod: BaseBuilder<any> | string): string {
+export function buildArray(itemSchemaZod: BaseBuilder | string): string {
 	const itemStr = typeof itemSchemaZod === 'string' ? itemSchemaZod : itemSchemaZod.text();
 	return `z.array(${itemStr})`;
 }
@@ -74,7 +74,7 @@ export function buildArray(itemSchemaZod: BaseBuilder<any> | string): string {
  * Build a Zod tuple schema string from item schemas.
  * Item schemas can be either BaseBuilder instances or Zod schema strings.
  */
-export function buildTuple(itemSchemasZod: (BaseBuilder<any> | string)[]): string {
+export function buildTuple(itemSchemasZod: (BaseBuilder | string)[]): string {
 	const itemStrs = itemSchemasZod.map(item => 
 		typeof item === 'string' ? item : item.text()
 	);

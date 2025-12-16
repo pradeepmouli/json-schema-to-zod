@@ -4,7 +4,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent EnumBuilder: wraps a Zod enum schema string and provides chainable methods.
  */
-export class EnumBuilder extends BaseBuilder<EnumBuilder> {
+export class EnumBuilder extends BaseBuilder {
 	private readonly _values: Serializable[];
 
 	constructor(values: Serializable[]) {

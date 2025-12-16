@@ -17,7 +17,7 @@ import {
  * - modify(): Applies shared modifiers to the base schema
  * - text(): Orchestrates base() and modify() to produce final output
  */
-export abstract class BaseBuilder<T extends BaseBuilder<T>> {
+export abstract class BaseBuilder {
 	_optional: boolean = false;
 	_nullable: boolean = false;
 	_readonly: boolean = false;
@@ -30,57 +30,57 @@ export abstract class BaseBuilder<T extends BaseBuilder<T>> {
 	/**
 	 * Apply optional constraint.
 	 */
-	optional(): T {
+	optional(): this {
 		this._optional = true;
-		return this as unknown as T;
+		return this;
 	}
 
 	/**
 	 * Apply nullable constraint.
 	 */
-	nullable(): T {
+	nullable(): this {
 		this._nullable = true;
-		return this as unknown as T;
+		return this;
 	}
 
 	/**
 	 * Apply default value.
 	 */
-	default(value: any): T {
+	default(value: any): this {
 		this._defaultValue = value;
-		return this as unknown as T;
+		return this;
 	}
 
 	/**
 	 * Apply describe modifier.
 	 */
-	describe(description: string): T {
+	describe(description: string): this {
 		this._describeText = description;
-		return this as unknown as T;
+		return this;
 	}
 
 	/**
 	 * Apply brand modifier.
 	 */
-	brand(brand: string): T {
+	brand(brand: string): this {
 		this._brandText = brand;
-		return this as unknown as T;
+		return this;
 	}
 
 	/**
 	 * Apply readonly modifier.
 	 */
-	readonly(): T {
+	readonly(): this {
 		this._readonly = true;
-		return this as unknown as T;
+		return this;
 	}
 
 	/**
 	 * Apply catch modifier.
 	 */
-	catch(fallback: any): T {
+	catch(fallback: any): this {
 		this._fallbackText = fallback;
-		return this as unknown as T;
+		return this;
 	}
 
 	/**

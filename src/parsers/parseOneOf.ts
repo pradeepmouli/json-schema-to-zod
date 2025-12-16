@@ -5,7 +5,7 @@ import { parseSchema } from './parseSchema.js';
 export const parseOneOf = (
 	schema: JsonSchemaObject & { oneOf: JsonSchema[] },
 	refs: Refs,
-): BaseBuilder<any> => {
+): BaseBuilder => {
 	return schema.oneOf.length
 		? schema.oneOf.length === 1
 			? parseSchema(schema.oneOf[0], {

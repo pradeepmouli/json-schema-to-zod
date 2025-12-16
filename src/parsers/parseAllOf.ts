@@ -27,7 +27,7 @@ const ensureOriginalIndex = (arr: JsonSchema[]) => {
 export function parseAllOf(
 	schema: JsonSchemaObject & { allOf: JsonSchema[] },
 	refs: Refs,
-): BaseBuilder<any> {
+): BaseBuilder {
 	if (schema.allOf.length === 0) {
 		return new NeverBuilder();
 	} else if (schema.allOf.length === 1) {

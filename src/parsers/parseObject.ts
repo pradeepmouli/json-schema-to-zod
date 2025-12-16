@@ -15,7 +15,7 @@ import { parseAllOf } from './parseAllOf.js';
 export function parseObject(
 	objectSchema: JsonSchemaObject & { type: 'object' },
 	refs: Refs,
-): BaseBuilder<any> {
+): BaseBuilder {
 	let result: string;
 
 	// Step 1: Build base object from properties
