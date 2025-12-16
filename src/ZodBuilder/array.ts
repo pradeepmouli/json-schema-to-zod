@@ -4,12 +4,13 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
 export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
+	private readonly _itemSchemaZod: BaseBuilder<any> | string;
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
 	constructor(itemSchemaZod: BaseBuilder<any> | string) {
-		const itemStr = typeof itemSchemaZod === 'string' ? itemSchemaZod : itemSchemaZod.text();
-		super(`z.array(${itemStr})`);
+		super();
+		this._itemSchemaZod = itemSchemaZod;
 	}
 
 	/**
@@ -33,10 +34,13 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 	}
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the base array schema with type-specific constraints.
 	 */
-	text(): string {
-		let result = this._baseText;
+	protected override base(): string {
+		const itemStr = typeof this._itemSchemaZod === 'string' 
+			? this._itemSchemaZod 
+			: this._itemSchemaZod.text();
+		let result = `z.array(${itemStr})`;
 
 		if (this._minItems !== undefined) {
 			result = applyMinItems(
@@ -53,8 +57,7 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 			);
 		}
 
-		this._baseText = result;
-		return super.text();
+		return result;
 	}
 }
 

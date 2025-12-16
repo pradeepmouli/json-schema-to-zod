@@ -5,6 +5,7 @@ import {
 	applyMinItems,
 	applyMaxItems,
 	BaseBuilder,
+	GenericBuilder,
 } from '../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
@@ -36,7 +37,7 @@ export const parseArray = (
 				schema.errorMessage?.maxItems,
 			);
 		}
-		r = new BaseBuilder(tupleSchema);
+		r = new GenericBuilder(tupleSchema);
 	} else {
 		const itemSchema = !schema.items
 			? 'z.any()'

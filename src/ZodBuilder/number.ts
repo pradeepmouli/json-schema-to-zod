@@ -18,7 +18,7 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
 		| undefined = undefined;
 
 	constructor() {
-		super('z.number()');
+		super();
 	}
 
 	/**
@@ -87,10 +87,10 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
 	 */
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the base number schema with type-specific constraints.
 	 */
-	text(): string {
-		let result = this._baseText;
+	protected override base(): string {
+		let result = 'z.number()';
 		if (this._int !== false) {
 			if (typeof this._int === 'object') {
 				result = applyInt(result, this._int.errorMessage);
@@ -124,8 +124,7 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
 				this._max.errorMessage,
 			);
 		}
-		this._baseText = result;
-		return super.text();
+		return result;
 	}
 }
 

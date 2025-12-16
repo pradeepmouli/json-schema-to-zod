@@ -5,10 +5,19 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Accepts two schemas and creates an intersection type.
  */
 export class IntersectionBuilder extends BaseBuilder<IntersectionBuilder> {
+	private readonly _left: BaseBuilder<any> | string;
+	private readonly _right: BaseBuilder<any> | string;
+
 	constructor(left: BaseBuilder<any> | string, right: BaseBuilder<any> | string) {
-		const leftStr = typeof left === 'string' ? left : left.text();
-		const rightStr = typeof right === 'string' ? right : right.text();
-		super(`z.intersection(${leftStr}, ${rightStr})`);
+		super();
+		this._left = left;
+		this._right = right;
+	}
+
+	protected override base(): string {
+		const leftStr = typeof this._left === 'string' ? this._left : this._left.text();
+		const rightStr = typeof this._right === 'string' ? this._right : this._right.text();
+		return `z.intersection(${leftStr}, ${rightStr})`;
 	}
 }
 

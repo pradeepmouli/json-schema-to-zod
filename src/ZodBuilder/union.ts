@@ -5,9 +5,16 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Accepts multiple schemas and creates a union type.
  */
 export class UnionBuilder extends BaseBuilder<UnionBuilder> {
+	private readonly _schemas: (BaseBuilder<any> | string)[];
+
 	constructor(schemas: (BaseBuilder<any> | string)[]) {
-		const schemaStrings = schemas.map(s => typeof s === 'string' ? s : s.text());
-		super(`z.union([${schemaStrings.join(', ')}])`);
+		super();
+		this._schemas = schemas;
+	}
+
+	protected override base(): string {
+		const schemaStrings = this._schemas.map(s => typeof s === 'string' ? s : s.text());
+		return `z.union([${schemaStrings.join(', ')}])`;
 	}
 }
 

@@ -13,7 +13,7 @@ export class StringBuilder extends BaseBuilder<StringBuilder> {
 	_pipe?: { contentSchemaZod: string; errorMessage?: string } = undefined;
 
 	constructor() {
-		super('z.string()');
+		super();
 	}
 
 	/**
@@ -96,10 +96,10 @@ export class StringBuilder extends BaseBuilder<StringBuilder> {
 	}
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the base string schema with type-specific constraints.
 	 */
-	text(): string {
-		let result = this._baseText;
+	protected override base(): string {
+		let result = 'z.string()';
 
 		if (this._format !== undefined) {
 			result = applyFormat(
@@ -143,8 +143,7 @@ export class StringBuilder extends BaseBuilder<StringBuilder> {
 			);
 		}
 
-		this._baseText = result;
-		return super.text();
+		return result;
 	}
 }
 

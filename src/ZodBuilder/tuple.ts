@@ -5,9 +5,16 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Accepts an array of schemas representing tuple items.
  */
 export class TupleBuilder extends BaseBuilder<TupleBuilder> {
+	private readonly _items: (BaseBuilder<any> | string)[];
+
 	constructor(items: (BaseBuilder<any> | string)[]) {
-		const itemStrings = items.map(item => typeof item === 'string' ? item : item.text());
-		super(`z.tuple([${itemStrings.join(',')}])`); // No space after comma to match buildTuple
+		super();
+		this._items = items;
+	}
+
+	protected override base(): string {
+		const itemStrings = this._items.map(item => typeof item === 'string' ? item : item.text());
+		return `z.tuple([${itemStrings.join(',')}])`; // No space after comma to match buildTuple
 	}
 }
 

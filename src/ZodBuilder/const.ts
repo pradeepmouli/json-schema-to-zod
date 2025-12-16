@@ -5,8 +5,15 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent ConstBuilder: wraps a Zod literal schema string and provides chainable methods.
  */
 export class ConstBuilder extends BaseBuilder<ConstBuilder> {
+	private readonly _value: Serializable;
+
 	constructor(value: Serializable) {
-		super(`z.literal(${JSON.stringify(value)})`);
+		super();
+		this._value = value;
+	}
+
+	protected override base(): string {
+		return `z.literal(${JSON.stringify(this._value)})`;
 	}
 }
 
