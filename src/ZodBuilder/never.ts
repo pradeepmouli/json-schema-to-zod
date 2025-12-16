@@ -3,7 +3,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent NeverBuilder: represents z.never() schema.
  */
-export class NeverBuilder extends BaseBuilder<NeverBuilder> {
+export class NeverBuilder extends BaseBuilder {
 	constructor() {
 		super();
 	}

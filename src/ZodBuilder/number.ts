@@ -4,7 +4,7 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent NumberBuilder: wraps a Zod number schema string and provides chainable methods
  * that delegate to the existing apply* functions.
  */
-export class NumberBuilder extends BaseBuilder<NumberBuilder> {
+export class NumberBuilder extends BaseBuilder {
 	_int: boolean | { errorMessage: string } = false;
 	_multipleOf: number | { value: number; errorMessage?: string } | undefined =
 		undefined;

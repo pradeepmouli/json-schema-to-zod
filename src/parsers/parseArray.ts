@@ -13,7 +13,7 @@ export const parseArray = (
 	schema: JsonSchemaObject & { type: 'array' },
 	refs: Refs,
 ) => {
-	let r: BaseBuilder<any>;
+	let r: BaseBuilder;
 
 	// Handle tuple (array of schemas) vs array (single schema)
 	if (Array.isArray(schema.items)) {
@@ -41,7 +41,10 @@ export const parseArray = (
 	} else {
 		const itemSchema = !schema.items
 			? 'z.any()'
-			: parseSchema(schema.items, { ...refs, path: [...refs.path, 'items'] }).text();
+			: parseSchema(schema.items, {
+					...refs,
+					path: [...refs.path, 'items'],
+				}).text();
 
 		const builder = build.array(itemSchema);
 

@@ -3,7 +3,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent AnyBuilder: represents z.any() schema.
  */
-export class AnyBuilder extends BaseBuilder<AnyBuilder> {
+export class AnyBuilder extends BaseBuilder {
 	constructor() {
 		super();
 	}

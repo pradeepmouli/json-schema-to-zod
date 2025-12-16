@@ -9,8 +9,11 @@ export const parseIfThenElse = (
 		else: JsonSchema;
 	},
 	refs: Refs,
-): BaseBuilder<any> => {
-	const $if = parseSchema(schema.if, { ...refs, path: [...refs.path, 'if'] }).text();
+): BaseBuilder => {
+	const $if = parseSchema(schema.if, {
+		...refs,
+		path: [...refs.path, 'if'],
+	}).text();
 	const $then = parseSchema(schema.then, {
 		...refs,
 		path: [...refs.path, 'then'],

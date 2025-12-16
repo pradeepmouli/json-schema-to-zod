@@ -3,7 +3,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent NullBuilder: wraps a Zod null schema string and provides chainable methods.
  */
-export class NullBuilder extends BaseBuilder<NullBuilder> {
+export class NullBuilder extends BaseBuilder {
 	constructor() {
 		super();
 	}

@@ -15,7 +15,7 @@ import { parseAllOf } from './parseAllOf.js';
 export function parseObject(
 	objectSchema: JsonSchemaObject & { type: 'object' },
 	refs: Refs,
-): BaseBuilder<any> {
+): BaseBuilder {
 	let result: string;
 
 	// Step 1: Build base object from properties
@@ -43,7 +43,7 @@ export function parseObject(
 			const optional = !hasDefault && !required;
 
 			if (optional) {
-				propZod = propZod.optional();
+				propZod.optional();
 			}
 
 			// Store builder directly in properties record for type safety and composability

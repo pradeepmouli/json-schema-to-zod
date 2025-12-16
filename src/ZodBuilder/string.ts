@@ -3,7 +3,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent StringBuilder: wraps a Zod string schema string and provides chainable methods.
  */
-export class StringBuilder extends BaseBuilder<StringBuilder> {
+export class StringBuilder extends BaseBuilder {
 	_format?: { format: string; errorMessage?: string } = undefined;
 	_pattern?: { pattern: string; errorMessage?: string } = undefined;
 	_minLength?: { value: number; errorMessage?: string } = undefined;

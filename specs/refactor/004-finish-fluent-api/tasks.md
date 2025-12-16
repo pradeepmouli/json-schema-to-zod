@@ -10,9 +10,9 @@
 
 ## Phase 0: Setup & Baseline Validation (Prerequisite)
 
-- [ ] T001 [P] Verify baseline test suite passes: Run `npm test` and confirm 104 tests passing
-- [ ] T002 Verify TypeScript compilation succeeds: Run `npm run build`
-- [ ] T003 [P] Document baseline generated output: Run test schemas through current parser and save outputs to `specs/refactor/004-finish-fluent-api/baseline-outputs/` directory for later comparison
+- [x] T001 [P] Verify baseline test suite passes: Run `npm test` and confirm 104 tests passing
+- [x] T002 Verify TypeScript compilation succeeds: Run `npm run build`
+- [x] T003 [P] Document baseline generated output: Run test schemas through current parser and save outputs to `specs/refactor/004-finish-fluent-api/baseline-outputs/` directory for later comparison
 - [ ] T004 [P] Confirm git status clean: `git status` shows no uncommitted changes on refactor/004 branch
 
 **Gate**: All 4 tasks must pass before proceeding to Phase 3+4
@@ -23,7 +23,7 @@
 
 **Goal**: Transform parsers to emit builders while top-level functions call `.text()`, ensuring tests pass immediately
 
-**Independent Test Criteria**: 
+**Independent Test Criteria**:
 - Tests pass after each file modification
 - Generated output identical to baseline
 - No TypeScript compilation errors
@@ -31,63 +31,63 @@
 
 ### Phase 3+4.1: Update Types (Foundation)
 
-- [ ] T005 Update `ParserSelector` type in src/Types.ts: Change return type from `string` to `BaseBuilder`
+- [x] T005 Update `ParserSelector` type in src/Types.ts: Change return type from `string` to `BaseBuilder`
 - [ ] T006 Verify Types.ts compiles: Run `npm run build` and check for type errors in parser implementations
 
 **Gate**: src/Types.ts updated, TypeScript compilation succeeds
 
 ### Phase 3+4.2: Update parseSchema Core Logic
 
-- [ ] T007 [P] Modify `addDescribes()` in src/parsers/parseSchema.ts: Replace string concat with `builder.describe(description)` call
-- [ ] T008 [P] Modify `addDefaults()` in src/parsers/parseSchema.ts: Replace string concat with `builder.default(value)` call
-- [ ] T009 [P] Modify `addAnnotations()` in src/parsers/parseSchema.ts: Replace string concat with `builder.readonly()` call
-- [ ] T010 Update parseSchema return type from `string` to `BaseBuilder` in src/parsers/parseSchema.ts
-- [ ] T011 Remove `.text()` calls from parseSchema's selectParser results (return builders, not strings)
-- [ ] T012 [P] Verify parseSchema tests pass: Run `npm test -- parseSchema.test.ts`
+- [x] T007 [P] Modify `addDescribes()` in src/parsers/parseSchema.ts: Replace string concat with `builder.describe(description)` call
+- [x] T008 [P] Modify `addDefaults()` in src/parsers/parseSchema.ts: Replace string concat with `builder.default(value)` call
+- [x] T009 [P] Modify `addAnnotations()` in src/parsers/parseSchema.ts: Replace string concat with `builder.readonly()` call
+- [x] T010 Update parseSchema return type from `string` to `BaseBuilder` in src/parsers/parseSchema.ts
+- [x] T011 Remove `.text()` calls from parseSchema's selectParser results (return builders, not strings)
+- [x] T012 [P] Verify parseSchema tests pass: Run `npm test -- parseSchema.test.ts`
 
 **Gate**: parseSchema tests pass, modifier logic validated
 
 ### Phase 3+4.3: Update Individual Parsers (16 files)
 
 **Parsers returning basic builders (currently call `.text()`, remove those calls)**:
-- [ ] T013 [P] Update src/parsers/parseString.ts: Change `return builder.text();` to `return builder;` (line 45)
-- [ ] T014 [P] Update src/parsers/parseNumber.ts: Change `return builder.text();` to `return builder;` (line 53)
-- [ ] T015 [P] Update src/parsers/parseBoolean.ts: Change final return from `.text()` to return builder directly
-- [ ] T016 [P] Update src/parsers/parseNull.ts: Change final return from `.text()` to return builder directly
-- [ ] T017 [P] Update src/parsers/parseEnum.ts: Change final return from `.text()` to return builder directly
-- [ ] T018 [P] Update src/parsers/parseConst.ts: Change final return from `.text()` to return builder directly
+- [x] T013 [P] Update src/parsers/parseString.ts: Change `return builder.text();` to `return builder;` (line 45)
+- [x] T014 [P] Update src/parsers/parseNumber.ts: Change `return builder.text();` to `return builder;` (line 53)
+- [x] T015 [P] Update src/parsers/parseBoolean.ts: Change final return from `.text()` to return builder directly
+- [x] T016 [P] Update src/parsers/parseNull.ts: Change final return from `.text()` to return builder directly
+- [x] T017 [P] Update src/parsers/parseEnum.ts: Change final return from `.text()` to return builder directly
+- [x] T018 [P] Update src/parsers/parseConst.ts: Change final return from `.text()` to return builder directly
 
 **Parsers with composition (parseObject, parseArray currently use builders; parseAnyOf, parseOneOf use string templates)**:
-- [ ] T019 [P] Update src/parsers/parseObject.ts: Change `build.object(properties).text()` to `build.object(properties)` (line 66); handle JSDoc branch similarly
-- [ ] T020 [P] Update src/parsers/parseArray.ts: Change final return from `builder.text()` to `builder`; itemSchema already comes from parseSchema (returns builder after T010)
-- [ ] T021 **NO CHANGE NEEDED**: parseAnyOf.ts already returns string template (no `.text()` call). Phase 1 will replace template with `new UnionBuilder([...])`
-- [ ] T022 **NO CHANGE NEEDED**: parseOneOf.ts already returns string template (superRefine logic). May remain string-based due to complexity (not a simple builder)
+- [x] T019 [P] Update src/parsers/parseObject.ts: Change `build.object(properties).text()` to `build.object(properties)` (line 66); handle JSDoc branch similarly
+- [x] T020 [P] Update src/parsers/parseArray.ts: Change final return from `builder.text()` to `builder`; itemSchema already comes from parseSchema (returns builder after T010)
+- [x] T021 **NO CHANGE NEEDED**: parseAnyOf.ts already returns string template (no `.text()` call). Phase 1 will replace template with `new UnionBuilder([...])`
+- [x] T022 **NO CHANGE NEEDED**: parseOneOf.ts already returns string template (superRefine logic). May remain string-based due to complexity (not a simple builder)
 
 **Remaining parsers**:
-- [ ] T023 [P] Update src/parsers/parseNot.ts: Return builder instead of string
-- [ ] T024 [P] Update src/parsers/parseNullable.ts: Return builder instead of string
-- [ ] T025 [P] Update src/parsers/parseAllOf.ts: Return intersection string template for now (Phase 1 will create IntersectionBuilder)
-- [ ] T026 [P] Update src/parsers/parseMultipleType.ts: Return builder from recursive parseSchema calls
-- [ ] T027 [P] Update src/parsers/parseIfThenElse.ts: Return builder composition (may need special handling)
-- [ ] T028 [P] Update src/parsers/parseDefault.ts: Return builder instead of string
+- [x] T023 [P] Update src/parsers/parseNot.ts: Return builder instead of string
+- [x] T024 [P] Update src/parsers/parseNullable.ts: Return builder instead of string
+- [x] T025 [P] Update src/parsers/parseAllOf.ts: Return intersection string template for now (Phase 1 will create IntersectionBuilder)
+- [x] T026 [P] Update src/parsers/parseMultipleType.ts: Return builder from recursive parseSchema calls
+- [x] T027 [P] Update src/parsers/parseIfThenElse.ts: Return builder composition (may need special handling)
+- [x] T028 [P] Update src/parsers/parseDefault.ts: Return builder instead of string
 
 **Gate**: All parser tests pass individually: `npm test -- test/parsers/`
 
 ### Phase 3+4.4: Update Top-Level Functions
 
-- [ ] T029 Update src/jsonSchemaToZod.ts main function: Call `.text()` on parseSchema result before returning
-- [ ] T030 Update src/cli.ts: Handle parseSchema returning builder, call `.text()` on result
-- [ ] T031 Update src/JsonSchema/jsonSchemaToZod.ts: Call `.text()` on builder result
-- [ ] T031a [P] **CLI Validation (Constitution Principle III)**: Test CLI with file I/O: `npm run build && npm run cli -- --input test/all.json --output /tmp/refactor-test-output.ts` and verify output matches baseline
-- [ ] T032 [P] Verify integration tests pass: Run `npm test -- jsonSchemaToZod.test.ts`
+- [x] T029 Update src/jsonSchemaToZod.ts main function: Call `.text()` on parseSchema result before returning
+- [x] T030 Update src/cli.ts: Handle parseSchema returning builder, call `.text()` on result
+- [x] T031 Update src/JsonSchema/jsonSchemaToZod.ts: Call `.text()` on builder result
+- [x] T031a [P] **CLI Validation (Constitution Principle III)**: Test CLI with file I/O: `npm run build && npm run cli -- --input test/all.json --output /tmp/refactor-test-output.ts` and verify output matches baseline (use comparable flags like `--module none --noImport` if baseline has no wrapper).
+- [x] T032 [P] Verify integration tests pass: Run `npm test -- jsonSchemaToZod.test.ts`
 
 **Gate**: Full test suite passes: `npm test` shows 104 tests passing
 
 ### Phase 3+4.5: Comprehensive Validation
 
 - [X] T033 Run full test suite: `npm test` - must show 0 failures
-- [ ] T034 Verify TypeScript strict mode: `npm run build` - must succeed with no errors
-- [ ] T035 Verify behavior preservation: Compare generated outputs to baseline using `diff -r specs/refactor/004-finish-fluent-api/baseline-outputs/ <new_output_dir>` (should show zero differences)
+- [x] T034 Verify TypeScript strict mode: `npm run build` - must succeed with no errors
+- [x] T035 Verify behavior preservation: Compare generated outputs to baseline using `diff -r specs/refactor/004-finish-fluent-api/baseline-outputs/ <new_output_dir>` (should show zero differences). Note: diff must be run with comparable CLI options (e.g. `--module none --noImport`) to match baseline output format.
 - [ ] T036 [P] Commit Phase 3+4 changes: `git commit -m "refactor: parsers emit builders, top-level functions call .text()"`
 
 **Gate**: All tests pass, TypeScript strict mode succeeds, behavior preserved
@@ -106,29 +106,29 @@
 
 ### Phase 2.1: Update ObjectBuilder
 
-- [ ] T037 [P] Update src/ZodBuilder/object.ts constructor: Change `Record<string, string>` to `Record<string, BaseBuilder | string>`
-- [ ] T038 Update buildObject helper: Add logic to convert builders to strings: `const val = typeof v === 'string' ? v : v.text()`
-- [ ] T039 [P] Update buildRecord helper: Accept union types and handle conversion
-- [ ] T040 [P] Verify object builder tests pass: `npm test -- test/parsers/parseObject.test.ts`
+- [x] T037 [P] Update src/ZodBuilder/object.ts constructor: Change `Record<string, string>` to `Record<string, BaseBuilder | string>`
+- [x] T038 Update buildObject helper: Add logic to convert builders to strings: `const val = typeof v === 'string' ? v : v.text()`
+- [x] T039 [P] Update buildRecord helper: Accept union types and handle conversion
+- [x] T040 [P] Verify object builder tests pass: `npm test -- test/parsers/parseObject.test.ts`
 
 ### Phase 2.2: Update ArrayBuilder
 
-- [ ] T041 [P] Update src/ZodBuilder/array.ts constructor: Change `string` to `BaseBuilder | string`
-- [ ] T042 Update buildArray helper: Extract string from builder if needed
-- [ ] T043 Update buildTuple helper: Accept `(BaseBuilder | string)[]` and handle conversion
-- [ ] T044 [P] Verify array builder tests pass: `npm test -- test/parsers/parseArray.test.ts`
+- [x] T041 [P] Update src/ZodBuilder/array.ts constructor: Change `string` to `BaseBuilder | string`
+- [x] T042 Update buildArray helper: Extract string from builder if needed
+- [x] T043 Update buildTuple helper: Accept `(BaseBuilder | string)[]` and handle conversion
+- [x] T044 [P] Verify array builder tests pass: `npm test -- test/parsers/parseArray.test.ts`
 
 ### Phase 2.3: Update Other Builders & Modifiers
 
 - [ ] T045 [P] Update src/ZodBuilder/modifiers.ts: Update helper functions to accept union types where needed
-- [ ] T046 [P] Verify all builder tests pass: `npm test -- test/parsers/`
+- [x] T046 [P] Verify all builder tests pass: `npm test -- test/parsers/`
 
 **Gate**: All tests pass, union types correctly handled
 
 ### Phase 2.4: Final Phase 2 Validation
 
-- [ ] T047 Run full test suite: `npm test` - must show 0 failures
-- [ ] T048 [P] Commit Phase 2 changes: `git commit -m "refactor: builders accept BaseBuilder | string union types"`
+- [x] T047 Run full test suite: `npm test` - must show 0 failures
+- [x] T048 [P] Commit Phase 2 changes: `git commit -m "refactor: builders accept BaseBuilder | string union types"`
 
 **Gate**: Tests pass, ready for Phase 1
 
@@ -145,30 +145,30 @@
 
 ### Phase 1.1: Simple Builders (no composition)
 
-- [ ] T049 Create src/ZodBuilder/any.ts: `class AnyBuilder extends BaseBuilder { constructor() { super('z.any()'); } }`
-- [ ] T050 Create src/ZodBuilder/never.ts: `class NeverBuilder extends BaseBuilder { constructor() { super('z.never()'); } }`
-- [ ] T051 Create src/ZodBuilder/unknown.ts: `class UnknownBuilder extends BaseBuilder { constructor() { super('z.unknown()'); } }`
-- [ ] T052 Create src/ZodBuilder/literal.ts: `class LiteralBuilder extends BaseBuilder { constructor(value) { super(...); } }`
+- [x] T049 Create src/ZodBuilder/any.ts: `class AnyBuilder extends BaseBuilder { constructor() { super('z.any()'); } }`
+- [x] T050 Create src/ZodBuilder/never.ts: `class NeverBuilder extends BaseBuilder { constructor() { super('z.never()'); } }`
+- [x] T051 Create src/ZodBuilder/unknown.ts: `class UnknownBuilder extends BaseBuilder { constructor() { super('z.unknown()'); } }`
+- [x] T052 Create src/ZodBuilder/literal.ts: `class LiteralBuilder extends BaseBuilder { constructor(value) { super(...); } }`
 
 **Validation**: Each builder instantiates and `.text()` returns valid Zod code
 
 ### Phase 1.2: Composition Builders (accept builders or strings)
 
-- [ ] T053 [P] Create src/ZodBuilder/union.ts: UnionBuilder accepting `(BaseBuilder | string)[]`
-- [ ] T054 [P] Create src/ZodBuilder/intersection.ts: IntersectionBuilder accepting `(BaseBuilder | string)[]`
-- [ ] T055 Create src/ZodBuilder/discriminatedUnion.ts: DiscriminatedUnionBuilder with discriminator and options
-- [ ] T056 [P] Create src/ZodBuilder/tuple.ts: TupleBuilder accepting `(BaseBuilder | string)[]`
-- [ ] T057 Create src/ZodBuilder/record.ts: RecordBuilder accepting key and value builders/strings
+- [x] T053 [P] Create src/ZodBuilder/union.ts: UnionBuilder accepting `(BaseBuilder | string)[]`
+- [x] T054 [P] Create src/ZodBuilder/intersection.ts: IntersectionBuilder accepting `(BaseBuilder | string)[]`
+- [x] T055 Create src/ZodBuilder/discriminatedUnion.ts: DiscriminatedUnionBuilder with discriminator and options
+- [x] T056 [P] Create src/ZodBuilder/tuple.ts: TupleBuilder accepting `(BaseBuilder | string)[]`
+- [x] T057 Create src/ZodBuilder/record.ts: RecordBuilder accepting key and value builders/strings
 
 **Validation**: Each builder handles both input types correctly
 
 ### Phase 1.3: Export & Integration
 
-- [ ] T058 Update src/ZodBuilder/index.ts: Export all 9 new builders
-- [ ] T059 [P] Verify new builders are importable: Test `import { UnionBuilder, ... } from 'src/ZodBuilder'`
-- [ ] T060 Update src/parsers/parseAnyOf.ts: Return `UnionBuilder` instead of template string
-- [ ] T061 Update src/parsers/parseOneOf.ts: Return `DiscriminatedUnionBuilder` instead of template string (if applicable)
-- [ ] T062 Update src/parsers/parseAllOf.ts: Return `IntersectionBuilder` instead of template string
+- [x] T058 Update src/ZodBuilder/index.ts: Export all 9 new builders
+- [x] T059 [P] Verify new builders are importable: Test `import { UnionBuilder, ... } from 'src/ZodBuilder'`
+- [x] T060 Update src/parsers/parseAnyOf.ts: Return `UnionBuilder` instead of template string
+- [x] T061 Update src/parsers/parseOneOf.ts: Return `DiscriminatedUnionBuilder` instead of template string (if applicable)
+- [x] T062 Update src/parsers/parseAllOf.ts: Return `IntersectionBuilder` instead of template string
 
 ### Phase 1.4: Final Phase 1 Validation
 
@@ -240,7 +240,7 @@ class ObjectBuilder extends BaseBuilder {
     super('');
     this._properties = properties;
   }
-  
+
   text(): string {
     const props = Object.entries(this._properties)
       .map(([key, val]) => {
