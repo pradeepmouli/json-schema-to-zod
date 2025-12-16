@@ -11,8 +11,13 @@ import {
 /**
  * BaseBuilder: Abstract base class for all Zod schema builders.
  * Provides shared modifier methods that apply to all schema types.
+ * 
+ * Template Method Pattern:
+ * - base(): Computes the type-specific schema string (must be overridden)
+ * - modify(): Applies shared modifiers to the base schema
+ * - text(): Orchestrates base() and modify() to produce final output
  */
-export class BaseBuilder<T extends BaseBuilder<T>> {
+export abstract class BaseBuilder<T extends BaseBuilder<T>> {
 	_optional: boolean = false;
 	_nullable: boolean = false;
 	_readonly: boolean = false;
@@ -21,12 +26,6 @@ export class BaseBuilder<T extends BaseBuilder<T>> {
 	_describeText?: string = undefined;
 	_brandText?: string = undefined;
 	_fallbackText?: any = undefined;
-
-	protected _baseText: string;
-
-	constructor(baseText: string) {
-		this._baseText = baseText;
-	}
 
 	/**
 	 * Apply optional constraint.
@@ -85,34 +84,49 @@ export class BaseBuilder<T extends BaseBuilder<T>> {
 	}
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the type-specific base schema string.
+	 * Subclasses must override this to provide their specific schema generation.
 	 */
-	text(): string {
-		let finalCode = this._baseText;
+	protected abstract base(): string;
+
+	/**
+	 * Apply all shared modifiers to the base schema string.
+	 * This method is called by text() and applies modifiers in a stable order.
+	 */
+	protected modify(baseText: string): string {
+		let result = baseText;
 
 		// Apply modifiers in stable order to match previous string-based output
 		if (this._describeText) {
-			finalCode = applyDescribe(finalCode, this._describeText);
+			result = applyDescribe(result, this._describeText);
 		}
 		if (this._nullable) {
-			finalCode = applyNullable(finalCode);
+			result = applyNullable(result);
 		}
 		if (this._defaultValue !== undefined) {
-			finalCode = applyDefault(finalCode, this._defaultValue);
+			result = applyDefault(result, this._defaultValue);
 		}
 		if (this._brandText) {
-			finalCode = applyBrand(finalCode, this._brandText);
+			result = applyBrand(result, this._brandText);
 		}
 		if (this._readonly) {
-			finalCode = applyReadonly(finalCode);
+			result = applyReadonly(result);
 		}
 		if (this._optional) {
-			finalCode = applyOptional(finalCode);
+			result = applyOptional(result);
 		}
 		if (this._fallbackText !== undefined) {
-			finalCode = applyCatch(finalCode, this._fallbackText);
+			result = applyCatch(result, this._fallbackText);
 		}
 
-		return finalCode;
+		return result;
+	}
+
+	/**
+	 * Unwrap and return the final Zod code string.
+	 * This orchestrates the template method pattern: text() = modify(base())
+	 */
+	text(): string {
+		return this.modify(this.base());
 	}
 }

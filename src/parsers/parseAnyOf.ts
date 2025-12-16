@@ -1,5 +1,5 @@
 import { JsonSchemaObject, JsonSchema, Refs } from '../Types.js';
-import { BaseBuilder } from '../ZodBuilder/index.js';
+import { BaseBuilder, UnionBuilder, AnyBuilder } from '../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
 export const parseAnyOf = (
@@ -12,10 +12,10 @@ export const parseAnyOf = (
 					...refs,
 					path: [...refs.path, 'anyOf', 0],
 				})
-			: new BaseBuilder(`z.union([${schema.anyOf
-					.map((schema, i) =>
-						parseSchema(schema, { ...refs, path: [...refs.path, 'anyOf', i] }).text(),
-					)
-					.join(', ')}])`)
-		: new BaseBuilder('z.any()');
+			: new UnionBuilder(
+					schema.anyOf.map((schema, i) =>
+						parseSchema(schema, { ...refs, path: [...refs.path, 'anyOf', i] }),
+					),
+				)
+		: new AnyBuilder();
 };

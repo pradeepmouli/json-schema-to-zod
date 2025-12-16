@@ -5,7 +5,11 @@ import { BaseBuilder } from './BaseBuilder.js';
  */
 export class NullBuilder extends BaseBuilder<NullBuilder> {
 	constructor() {
-		super('z.null()');
+		super();
+	}
+
+	protected override base(): string {
+		return 'z.null()';
 	}
 }
 

@@ -1,5 +1,5 @@
 import { JsonSchemaObject, JsonSchema, Refs } from '../Types.js';
-import { BaseBuilder } from '../ZodBuilder/index.js';
+import { BaseBuilder, AnyBuilder, GenericBuilder } from '../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
 export const parseOneOf = (
@@ -12,7 +12,7 @@ export const parseOneOf = (
 					...refs,
 					path: [...refs.path, 'oneOf', 0],
 				})
-			: new BaseBuilder(`z.any().superRefine((x, ctx) => {
+			: new GenericBuilder(`z.any().superRefine((x, ctx) => {
     const schemas = [${schema.oneOf
 			.map((schema, i) =>
 				parseSchema(schema, {
@@ -38,5 +38,5 @@ export const parseOneOf = (
       });
     }
   })`)
-		: new BaseBuilder('z.any()');
+		: new AnyBuilder();
 };

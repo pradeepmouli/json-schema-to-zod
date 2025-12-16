@@ -21,7 +21,7 @@ import {
 	JsonSchema,
 	Serializable,
 } from '../Types.js';
-import { BaseBuilder } from '../ZodBuilder/index.js';
+import { BaseBuilder, AnyBuilder, NeverBuilder, GenericBuilder } from '../ZodBuilder/index.js';
 
 export const parseSchema = (
 	schema: JsonSchema,
@@ -29,13 +29,13 @@ export const parseSchema = (
 	blockMeta?: boolean,
 ): BaseBuilder<any> => {
 	if (typeof schema !== 'object')
-		return schema ? new BaseBuilder('z.any()') : new BaseBuilder('z.never()');
+		return schema ? new AnyBuilder() : new NeverBuilder();
 
 	if (refs.parserOverride) {
 		const custom = refs.parserOverride(schema, refs);
 
 		if (typeof custom === 'string') {
-			return new BaseBuilder(custom);
+			return new GenericBuilder(custom);
 		}
 
 		if (custom) {
@@ -51,7 +51,7 @@ export const parseSchema = (
 		}
 
 		if (refs.depth === undefined || seen.n >= refs.depth) {
-			return new BaseBuilder('z.any()');
+			return new AnyBuilder();
 		}
 
 		seen.n += 1;

@@ -4,11 +4,13 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
 export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
+	private readonly _itemSchemaZod: BaseBuilder<any> | string;
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchemaZod: string) {
-		super(`z.array(${itemSchemaZod})`);
+	constructor(itemSchemaZod: BaseBuilder<any> | string) {
+		super();
+		this._itemSchemaZod = itemSchemaZod;
 	}
 
 	/**
@@ -32,10 +34,13 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 	}
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the base array schema with type-specific constraints.
 	 */
-	text(): string {
-		let result = this._baseText;
+	protected override base(): string {
+		const itemStr = typeof this._itemSchemaZod === 'string' 
+			? this._itemSchemaZod 
+			: this._itemSchemaZod.text();
+		let result = `z.array(${itemStr})`;
 
 		if (this._minItems !== undefined) {
 			result = applyMinItems(
@@ -52,23 +57,28 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 			);
 		}
 
-		this._baseText = result;
-		return super.text();
+		return result;
 	}
 }
 
 /**
  * Build a Zod array schema string from an item schema.
+ * Item schema can be either a BaseBuilder instance or a Zod schema string.
  */
-export function buildArray(itemSchemaZod: string): string {
-	return `z.array(${itemSchemaZod})`;
+export function buildArray(itemSchemaZod: BaseBuilder<any> | string): string {
+	const itemStr = typeof itemSchemaZod === 'string' ? itemSchemaZod : itemSchemaZod.text();
+	return `z.array(${itemStr})`;
 }
 
 /**
  * Build a Zod tuple schema string from item schemas.
+ * Item schemas can be either BaseBuilder instances or Zod schema strings.
  */
-export function buildTuple(itemSchemasZod: string[]): string {
-	return `z.tuple([${itemSchemasZod.join(',')}])`; // No space after comma
+export function buildTuple(itemSchemasZod: (BaseBuilder<any> | string)[]): string {
+	const itemStrs = itemSchemasZod.map(item => 
+		typeof item === 'string' ? item : item.text()
+	);
+	return `z.tuple([${itemStrs.join(',')}])`; // No space after comma
 }
 
 /**

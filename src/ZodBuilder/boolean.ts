@@ -5,7 +5,11 @@ import { BaseBuilder } from './BaseBuilder.js';
  */
 export class BooleanBuilder extends BaseBuilder<BooleanBuilder> {
 	constructor() {
-		super('z.boolean()');
+		super();
+	}
+
+	protected override base(): string {
+		return 'z.boolean()';
 	}
 }
 
