@@ -85,7 +85,7 @@
 
 ### Phase 3+4.5: Comprehensive Validation
 
-- [ ] T033 Run full test suite: `npm test` - must show 0 failures
+- [X] T033 Run full test suite: `npm test` - must show 0 failures
 - [ ] T034 Verify TypeScript strict mode: `npm run build` - must succeed with no errors
 - [ ] T035 Verify behavior preservation: Compare generated outputs to baseline using `diff -r specs/refactor/004-finish-fluent-api/baseline-outputs/ <new_output_dir>` (should show zero differences)
 - [ ] T036 [P] Commit Phase 3+4 changes: `git commit -m "refactor: parsers emit builders, top-level functions call .text()"`

@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 
 describe("parseSchema", () => {
   it("should be usable without providing refs", () => {
-    expect(parseSchema({ type: "string" })).toBe("z.string()");
+    expect(parseSchema({ type: "string" }).text()).toBe("z.string()");
   });
 
   it("should return a seen and processed ref", () => {
@@ -21,7 +21,7 @@ describe("parseSchema", () => {
   });
 
   it("should be possible to describe a readonly schema", () => {
-    expect(parseSchema({ type: "string", readOnly: true })).toBe("z.string().readonly()");
+    expect(parseSchema({ type: "string", readOnly: true }).text()).toBe("z.string().readonly()");
   });
 
   it("should handle nullable", () => {
@@ -32,18 +32,18 @@ describe("parseSchema", () => {
           nullable: true,
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.string().nullable()");
   });
 
   it("should handle enum", () => {
-    expect(parseSchema({ enum: ["someValue", 57] })).toBe(
+    expect(parseSchema({ enum: ["someValue", 57] }).text()).toBe(
       `z.union([z.literal("someValue"), z.literal(57)])`,
     );
   });
 
   it("should handle multiple type", () => {
-    expect(parseSchema({ type: ["string", "number"] })).toBe(`z.union([z.string(), z.number()])`);
+    expect(parseSchema({ type: ["string", "number"] }).text()).toBe(`z.union([z.string(), z.number()])`);
   });
 
   it("should handle if-then-else type", () => {
@@ -52,7 +52,7 @@ describe("parseSchema", () => {
         if: { type: "string" },
         then: { type: "number" },
         else: { type: "boolean" },
-      }),
+      }).text(),
     ).toBe(`z.union([z.number(), z.boolean()]).superRefine((value,ctx) => {
   const result = z.string().safeParse(value).success
     ? z.number().safeParse(value)
@@ -72,7 +72,7 @@ describe("parseSchema", () => {
           },
           { type: "number" },
         ],
-      }),
+      }).text(),
     ).toBe("z.union([z.string(), z.number()])");
   });
 
@@ -85,7 +85,7 @@ describe("parseSchema", () => {
           },
           { type: "number" },
         ],
-      }),
+      }).text(),
     ).toBe(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
     const errors = schemas.reduce<z.ZodError[]>(

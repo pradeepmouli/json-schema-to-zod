@@ -54,13 +54,13 @@ Transform the hybrid string/builder system into a pure builder-based architectur
 4. Add missing builder types for complete Zod schema coverage
 
 **Files Affected**:
-- **Modified**: 
+- **Modified**:
   - All parser files in src/parsers/ (parseSchema.ts, parseObject.ts, parseArray.ts, parseString.ts, parseNumber.ts, parseBoolean.ts, parseNull.ts, parseConst.ts, parseEnum.ts, parseAnyOf.ts, parseOneOf.ts, parseAllOf.ts, parseNot.ts, parseNullable.ts, parseMultipleType.ts, parseIfThenElse.ts, parseDefault.ts)
   - All builder files in src/ZodBuilder/ (BaseBuilder.ts, array.ts, object.ts, string.ts, number.ts, boolean.ts, null.ts, const.ts, enum.ts, modifiers.ts)
   - Types.ts (update ParserSelector and related types)
   - jsonSchemaToZod.ts (update to call .text() on builder)
-  
-- **Created**: 
+
+- **Created**:
   - src/ZodBuilder/union.ts - UnionBuilder for z.union()
   - src/ZodBuilder/intersection.ts - IntersectionBuilder for z.intersection()
   - src/ZodBuilder/discriminatedUnion.ts - DiscriminatedUnionBuilder for z.discriminatedUnion()
@@ -182,7 +182,7 @@ UnionBuilder.constructor(BaseBuilder[]) → builds lazily
 5. **Reversibility**: Changes can be reverted via git if issues arise
 
 **Mitigation Strategies**:
-1. **Incremental Implementation**: 
+1. **Incremental Implementation**:
    - Phase 1: Add missing builder types
    - Phase 2: Update builders to accept builders (not strings)
    - Phase 3: Update parsers to return builders
@@ -279,7 +279,7 @@ The original 4-phase sequence has been **reordered to ensure continuous test pas
 
 ### Success Validation Between Phases
 
-**After Phase 3+4**: 
+**After Phase 3+4**:
 - ✅ All tests pass
 - ✅ Generated strings identical to baseline
 - ✅ Parsers return BaseBuilder
@@ -347,8 +347,8 @@ class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
   constructor(itemSchema: BuilderInput) {
     // Handle both builders and strings during transition
-    const baseText = typeof itemSchema === 'string' 
-      ? itemSchema 
+    const baseText = typeof itemSchema === 'string'
+      ? itemSchema
       : itemSchema.text();
     super(`z.array(${baseText})`);
   }

@@ -14,7 +14,7 @@ describe("parseOneOf", () => {
           ],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
     const errors = schemas.reduce<z.ZodError[]>(
@@ -37,12 +37,13 @@ describe("parseOneOf", () => {
   });
 
   it("should extract a single schema", () => {
-    expect(parseOneOf({ oneOf: [{ type: "string" }] }, { path: [], seen: new Map() })).toBe(
-      "z.string()",
+    expect(
+      parseOneOf({ oneOf: [{ type: "string" }] }, { path: [], seen: new Map() }).text(),
+    ).toBe("z.string()",
     );
   });
 
   it("should return z.any() if array is empty", () => {
-    expect(parseOneOf({ oneOf: [] }, { path: [], seen: new Map() })).toBe("z.any()");
+    expect(parseOneOf({ oneOf: [] }, { path: [], seen: new Map() }).text()).toBe("z.any()");
   });
 });

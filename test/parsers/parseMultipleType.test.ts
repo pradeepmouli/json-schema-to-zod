@@ -12,8 +12,8 @@ describe("parseMultipleType", () => {
         },
       },
     };
-    expect(parseSchema(schema, { path: [], seen: new Map() })).toBe(
-      `z.object({ "prop": z.union([z.string(), z.null()]).default(null) })`,
-    );
+    expect(
+      parseSchema(schema, { path: [], seen: new Map() }).text(),
+    ).toBe(`z.object({ "prop": z.union([z.string(), z.null()]).default(null) })`);
   });
 });

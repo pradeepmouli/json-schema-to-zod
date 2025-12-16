@@ -12,7 +12,7 @@ describe("parseString", () => {
       type: "string",
       format: "date-time",
       errorMessage: { format: "hello" },
-    });
+    }).text();
 
     expect(code).toBe('z.string().datetime({ offset: true, message: "hello" })');
 
@@ -24,7 +24,7 @@ describe("parseString", () => {
       parseString({
         type: "string",
         format: "email",
-      }),
+      }).text(),
     ).toBe("z.string().email()");
   });
 
@@ -33,13 +33,13 @@ describe("parseString", () => {
       parseString({
         type: "string",
         format: "ip",
-      }),
+      }).text(),
     ).toBe("z.string().ip()");
     expect(
       parseString({
         type: "string",
         format: "ipv6",
-      }),
+      }).text(),
     ).toBe(`z.string().ip({ version: "v6" })`);
   });
 
@@ -48,7 +48,7 @@ describe("parseString", () => {
       parseString({
         type: "string",
         format: "uri",
-      }),
+      }).text(),
     ).toBe(`z.string().url()`);
   });
 
@@ -57,7 +57,7 @@ describe("parseString", () => {
       parseString({
         type: "string",
         format: "uuid",
-      }),
+      }).text(),
     ).toBe(`z.string().uuid()`);
   });
 
@@ -66,7 +66,7 @@ describe("parseString", () => {
       parseString({
         type: "string",
         format: "time",
-      }),
+      }).text(),
     ).toBe(`z.string().time()`);
   });
 
@@ -75,7 +75,7 @@ describe("parseString", () => {
       parseString({
         type: "string",
         format: "date",
-      }),
+      }).text(),
     ).toBe(`z.string().date()`);
   });
 
@@ -84,7 +84,7 @@ describe("parseString", () => {
       parseString({
         type: "string",
         format: "duration",
-      }),
+      }).text(),
     ).toBe(`z.string().duration()`);
   });
 
@@ -93,7 +93,7 @@ describe("parseString", () => {
       parseString({
         type: "string",
         contentEncoding: "base64",
-      }),
+      }).text(),
     ).toBe("z.string().base64()");
     expect(
       parseString({
@@ -102,13 +102,13 @@ describe("parseString", () => {
         errorMessage: {
           contentEncoding: "x",
         },
-      }),
+      }).text(),
     ).toBe('z.string().base64("x")');
     expect(
       parseString({
         type: "string",
         format: "binary",
-      }),
+      }).text(),
     ).toBe("z.string().base64()");
     expect(
       parseString({
@@ -117,7 +117,7 @@ describe("parseString", () => {
         errorMessage: {
           format: "x",
         },
-      }),
+      }).text(),
     ).toBe('z.string().base64("x")');
   });
 
@@ -138,7 +138,7 @@ describe("parseString", () => {
           },
           required: ["name", "age"],
         },
-      }),
+      }).text(),
     ).toBe(
       'z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}).pipe(z.object({ "name": z.string(), "age": z.number().int() }))',
     );
@@ -162,7 +162,7 @@ describe("parseString", () => {
           contentMediaType: "x",
           contentSchema: "y",
         },
-      }),
+      }).text(),
     ).toBe(
       'z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}, "x").pipe(z.object({ "name": z.string(), "age": z.number().int() }), "y")',
     );
@@ -182,7 +182,7 @@ describe("parseString", () => {
           minLength: "deez",
           maxLength: "nuts",
         },
-      }),
+      }).text(),
     ).toBe(
       'z.string().ip({ version: "v4", message: "ayy" }).regex(new RegExp("x"), "lmao").min(1, "deez").max(2, "nuts")',
     );

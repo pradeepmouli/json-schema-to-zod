@@ -9,7 +9,7 @@ describe("parseAllOf", () => {
           allOf: [],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.never()");
   });
 
@@ -20,7 +20,7 @@ describe("parseAllOf", () => {
           allOf: [{ type: "string" }, true],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.intersection(z.string(), z.any())");
   });
 
@@ -31,7 +31,7 @@ describe("parseAllOf", () => {
           allOf: [{ type: "string" }, false],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(
       `z.intersection(z.string(), z.any().refine((value) => !z.any().safeParse(value).success, "Invalid input: Should NOT be valid against schema"))`,
     );

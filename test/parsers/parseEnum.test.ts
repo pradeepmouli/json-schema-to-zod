@@ -6,7 +6,7 @@ describe("parseEnum", () => {
     expect(
       parseEnum({
         enum: [],
-      }),
+      }).text(),
     ).toBe("z.never()");
   });
 
@@ -14,7 +14,7 @@ describe("parseEnum", () => {
     expect(
       parseEnum({
         enum: ["someValue"],
-      }),
+      }).text(),
     ).toBe(`z.literal("someValue")`);
   });
 
@@ -22,7 +22,7 @@ describe("parseEnum", () => {
     expect(
       parseEnum({
         enum: ["someValue", "anotherValue"],
-      }),
+      }).text(),
     ).toBe(`z.enum(["someValue","anotherValue"])`);
   });
 
@@ -30,7 +30,7 @@ describe("parseEnum", () => {
     expect(
       parseEnum({
         enum: ["someValue", 57],
-      }),
+      }).text(),
     ).toBe(`z.union([z.literal("someValue"), z.literal(57)])`);
   });
 });

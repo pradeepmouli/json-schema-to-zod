@@ -11,7 +11,7 @@ describe("parseNullable", () => {
           default: null,
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.string().nullable().default(null)");
   });
 });

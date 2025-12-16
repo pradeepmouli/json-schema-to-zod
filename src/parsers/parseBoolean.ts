@@ -4,5 +4,5 @@ import { build } from '../ZodBuilder/index.js';
 export const parseBoolean = (
 	_schema: JsonSchemaObject & { type: 'boolean' },
 ) => {
-	return build.boolean().text();
+	return build.boolean();
 };

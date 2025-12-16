@@ -17,7 +17,7 @@ describe("parseArray", () => {
           ],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.tuple([z.string(),z.number()])");
   });
 
@@ -31,7 +31,7 @@ describe("parseArray", () => {
           },
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.array(z.string())");
   });
 
@@ -46,7 +46,7 @@ describe("parseArray", () => {
           },
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.array(z.string()).max(2)");
   });
 });

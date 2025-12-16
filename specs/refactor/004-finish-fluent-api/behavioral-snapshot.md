@@ -11,7 +11,7 @@
 **Actual Output** (after): [Must match exactly]
 
 ### Behavior 2: Nested Object Schema
-**Input**: 
+**Input**:
 ```json
 {
   "type": "object",
@@ -39,7 +39,7 @@
 **Actual Output** (after): [Must match exactly]
 
 ### Behavior 5: Object with Modifiers
-**Input**: 
+**Input**:
 ```json
 {
   "type": "object",
@@ -59,7 +59,7 @@
 **Actual Output** (after): [Must match exactly]
 
 ### Behavior 7: Optional Field in Object
-**Input**: 
+**Input**:
 ```json
 {
   "type": "object",

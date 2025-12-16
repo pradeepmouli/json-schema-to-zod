@@ -4,6 +4,7 @@ import {
 	buildRecord,
 	ObjectBuilder,
 	applyOptional,
+	BaseBuilder,
 } from '../ZodBuilder/index.js';
 import { addJsdocs } from '../utils/jsdocs.js';
 import { parseAnyOf } from './parseAnyOf.js';
@@ -14,7 +15,7 @@ import { parseAllOf } from './parseAllOf.js';
 export function parseObject(
 	objectSchema: JsonSchemaObject & { type: 'object' },
 	refs: Refs,
-): string {
+): BaseBuilder<any> {
 	let result: string;
 
 	// Step 1: Build base object from properties
@@ -42,14 +43,14 @@ export function parseObject(
 			const optional = !hasDefault && !required;
 
 			if (optional) {
-				propZod = applyOptional(propZod);
+				propZod = propZod.optional();
 			}
 
-			// Store in properties object for builder
-			properties[key] = propZod;
+			// Store in properties object for builder (convert to string for now)
+			properties[key] = propZod.text();
 
 			// Build the property string for JSDoc: "key": zodSchema
-			let propStr = `${JSON.stringify(key)}: ${propZod}`;
+			let propStr = `${JSON.stringify(key)}: ${propZod.text()}`;
 
 			// Add JSDoc if enabled (prepends to the property string)
 			if (refs.withJsdocs && typeof propSchema === 'object') {
@@ -76,7 +77,7 @@ export function parseObject(
 			? parseSchema(objectSchema.additionalProperties, {
 					...refs,
 					path: [...refs.path, 'additionalProperties'],
-				})
+				}).text()
 			: undefined;
 
 	// Step 3: Handle patternProperties
@@ -88,7 +89,7 @@ export function parseObject(
 					parseSchema(propSchema, {
 						...refs,
 						path: [...refs.path, 'patternProperties', pattern],
-					}),
+					}).text(),
 				],
 			),
 		);
@@ -203,7 +204,7 @@ export function parseObject(
 				) as any,
 			},
 			refs,
-		);
+		).text();
 		builder.and(anyOfZod);
 	}
 
@@ -220,7 +221,7 @@ export function parseObject(
 				) as any,
 			},
 			refs,
-		);
+		).text();
 		builder.and(oneOfZod);
 	}
 
@@ -237,9 +238,9 @@ export function parseObject(
 				) as any,
 			},
 			refs,
-		);
+		).text();
 		builder.and(allOfZod);
 	}
 
-	return builder.text();
+	return builder;
 }

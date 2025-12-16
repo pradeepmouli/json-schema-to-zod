@@ -1,7 +1,13 @@
 import { readdirSync, statSync } from "fs";
 import { Project, SourceFile } from "ts-morph";
 
-const ignore = ["src/index.ts", "src/cli.ts", "src/utils/cliTools.ts"];
+const ignore = [
+  "src/index.ts",
+  "src/cli.ts",
+  "src/utils/cliTools.ts",
+  "src/JsonSchema/index.ts",
+  "src/JsonSchema/jsonSchemaToZod.ts",
+];
 
 function checkSrcDir(path: string): string[] {
   const exports: string[] = [];

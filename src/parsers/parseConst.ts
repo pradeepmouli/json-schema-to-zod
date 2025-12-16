@@ -4,5 +4,5 @@ import { build } from '../ZodBuilder/index.js';
 export const parseConst = (
 	schema: JsonSchemaObject & { const: Serializable },
 ) => {
-	return build.literal(schema.const).text();
+	return build.literal(schema.const);
 };

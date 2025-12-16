@@ -4,6 +4,7 @@ import {
 	buildTuple,
 	applyMinItems,
 	applyMaxItems,
+	BaseBuilder,
 } from '../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
@@ -11,26 +12,35 @@ export const parseArray = (
 	schema: JsonSchemaObject & { type: 'array' },
 	refs: Refs,
 ) => {
-	let r: string;
+	let r: BaseBuilder<any>;
 
 	// Handle tuple (array of schemas) vs array (single schema)
 	if (Array.isArray(schema.items)) {
 		const itemSchemas = schema.items.map((v, i) =>
-			parseSchema(v, { ...refs, path: [...refs.path, 'items', i] }),
+			parseSchema(v, { ...refs, path: [...refs.path, 'items', i] }).text(),
 		);
-		r = buildTuple(itemSchemas);
+		let tupleSchema = buildTuple(itemSchemas);
 
 		// For tuples, apply modifiers directly (no ArrayBuilder yet)
 		if (schema.minItems !== undefined) {
-			r = applyMinItems(r, schema.minItems, schema.errorMessage?.minItems);
+			tupleSchema = applyMinItems(
+				tupleSchema,
+				schema.minItems,
+				schema.errorMessage?.minItems,
+			);
 		}
 		if (schema.maxItems !== undefined) {
-			r = applyMaxItems(r, schema.maxItems, schema.errorMessage?.maxItems);
+			tupleSchema = applyMaxItems(
+				tupleSchema,
+				schema.maxItems,
+				schema.errorMessage?.maxItems,
+			);
 		}
+		r = new BaseBuilder(tupleSchema);
 	} else {
 		const itemSchema = !schema.items
 			? 'z.any()'
-			: parseSchema(schema.items, { ...refs, path: [...refs.path, 'items'] });
+			: parseSchema(schema.items, { ...refs, path: [...refs.path, 'items'] }).text();
 
 		const builder = build.array(itemSchema);
 
@@ -44,7 +54,7 @@ export const parseArray = (
 			builder.max(schema.maxItems, schema.errorMessage?.maxItems);
 		}
 
-		r = builder.text();
+		r = builder;
 	}
 
 	return r;

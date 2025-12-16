@@ -12,13 +12,15 @@ export const jsonSchemaToZod = (
 		);
 	}
 
-	let result = parseSchema(schema, {
+	const builder = parseSchema(schema, {
 		module,
 		name,
 		path: [],
 		seen: new Map(),
 		...rest,
 	});
+
+	let result = builder.text();
 
 	const jsdocs =
 		rest.withJsdocs && typeof schema !== 'boolean' && schema.description

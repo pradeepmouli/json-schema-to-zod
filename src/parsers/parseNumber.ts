@@ -48,5 +48,5 @@ export const parseNumber = (
 		);
 	}
 
-	return builder.text();
+	return builder;
 };

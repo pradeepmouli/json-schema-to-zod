@@ -1,23 +1,24 @@
 import { JsonSchemaObject, JsonSchema, Refs } from '../Types.js';
+import { BaseBuilder } from '../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
 export const parseOneOf = (
 	schema: JsonSchemaObject & { oneOf: JsonSchema[] },
 	refs: Refs,
-) => {
+): BaseBuilder<any> => {
 	return schema.oneOf.length
 		? schema.oneOf.length === 1
 			? parseSchema(schema.oneOf[0], {
 					...refs,
 					path: [...refs.path, 'oneOf', 0],
 				})
-			: `z.any().superRefine((x, ctx) => {
+			: new BaseBuilder(`z.any().superRefine((x, ctx) => {
     const schemas = [${schema.oneOf
 			.map((schema, i) =>
 				parseSchema(schema, {
 					...refs,
 					path: [...refs.path, 'oneOf', i],
-				}),
+				}).text(),
 			)
 			.join(', ')}];
     const errors = schemas.reduce<z.ZodError[]>(
@@ -36,6 +37,6 @@ export const parseOneOf = (
         message: "Invalid input: Should pass single schema",
       });
     }
-  })`
-		: 'z.any()';
+  })`)
+		: new BaseBuilder('z.any()');
 };

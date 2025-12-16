@@ -14,24 +14,24 @@ Complete the fluent builder API by transforming the hybrid string/builder system
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x with strict mode  
-**Primary Dependencies**: Zod (peer), Commander (CLI), no new dependencies added  
-**Testing**: Vitest 4.0+ (migrated from tsx test runner)  
-**Target Platform**: Node.js 18+, dual ESM/CJS exports  
-**Project Type**: Dual-module library (ESM + CJS) with CLI  
-**Performance Goals**: No regression in build/test times, bundle size <5% increase acceptable for type safety  
-**Constraints**: All existing tests must pass without modification, generated output must be byte-identical to baseline  
+**Language/Version**: TypeScript 5.x with strict mode
+**Primary Dependencies**: Zod (peer), Commander (CLI), no new dependencies added
+**Testing**: Vitest 4.0+ (migrated from tsx test runner)
+**Target Platform**: Node.js 18+, dual ESM/CJS exports
+**Project Type**: Dual-module library (ESM + CJS) with CLI
+**Performance Goals**: No regression in build/test times, bundle size <5% increase acceptable for type safety
+**Constraints**: All existing tests must pass without modification, generated output must be byte-identical to baseline
 **Scale/Scope**: 27 files affected (16 parsers + 11 builders), 9 new builders to create, ~100 tests to validate
 
 ## Constitution Check
 
-✅ **Parser Architecture**: Parsers remain discrete modules (returns BaseBuilder instead of string)  
-✅ **Dual-Module Export**: No changes to build system (builders work with both ESM/CJS)  
-✅ **CLI-First Contract**: CLI behavior unchanged (top-level .text() call handles conversion)  
-✅ **Test-First Development**: All tests pass without modification during refactoring  
-✅ **Type Safety & Zod Correctness**: **ENHANCED** - This refactoring strengthens Principle V by enabling compile-time type validation of builder compositions. TypeScript can now validate that builders compose correctly (e.g., ObjectBuilder accepts Record<string, BaseBuilder>) whereas string concatenation had no type safety.  
-✅ **Technology Stack**: TypeScript strict mode, vitest, no new dependencies  
-✅ **Code Organization**: Builders stay in `src/ZodBuilder/`, parsers in `src/parsers/`  
+✅ **Parser Architecture**: Parsers remain discrete modules (returns BaseBuilder instead of string)
+✅ **Dual-Module Export**: No changes to build system (builders work with both ESM/CJS)
+✅ **CLI-First Contract**: CLI behavior unchanged (top-level .text() call handles conversion)
+✅ **Test-First Development**: All tests pass without modification during refactoring
+✅ **Type Safety & Zod Correctness**: **ENHANCED** - This refactoring strengthens Principle V by enabling compile-time type validation of builder compositions. TypeScript can now validate that builders compose correctly (e.g., ObjectBuilder accepts Record<string, BaseBuilder>) whereas string concatenation had no type safety.
+✅ **Technology Stack**: TypeScript strict mode, vitest, no new dependencies
+✅ **Code Organization**: Builders stay in `src/ZodBuilder/`, parsers in `src/parsers/`
 
 **Gate Status**: ✅ PASS - No constitutional violations. Refactoring strengthens type safety (Principle V enhancement) and code organization.
 
@@ -141,14 +141,14 @@ This table defines which parsers will use which builder types after all phases c
 **Changes**:
 1. **src/Types.ts**:
    - Update `ParserSelector` type: `(schema: JsonSchema, refs: Refs) => BaseBuilder` (was `=> string`)
-   
+
 2. **src/parsers/parseSchema.ts** (Main refactoring):
    - Change return type: `BaseBuilder` (was `string`)
    - Update `addDescribes()`: call `builder.describe(description)` instead of concatenating string
    - Update `addDefaults()`: call `builder.default(value)` instead of concatenating string
    - Update `addAnnotations()`: call `builder.readonly()` instead of concatenating string
    - Return builder from parseSchema (no `.text()` call)
-   
+
 3. **src/parsers/*.ts** (All 15 parser files):
    - Each parser changed to return builder instead of string
    - Examples:
@@ -156,13 +156,13 @@ This table defines which parsers will use which builder types after all phases c
      - `parseObject.ts`: return `build.object(properties).text()` → return `build.object(properties)`
      - `parseArray.ts`: return builder (not string)
      - `parseAnyOf.ts`: return `UnionBuilder` instead of template string
-   
+
 4. **src/jsonSchemaToZod.ts**:
    - Wrap result with `.text()`: `const result = parseSchema(...); return result.text();`
-   
+
 5. **src/cli.ts**:
    - Handle builder return from parseSchema with `.text()` call
-   
+
 6. **src/JsonSchema/jsonSchemaToZod.ts**:
    - Add `.text()` call on builder result
 
@@ -176,11 +176,11 @@ This table defines which parsers will use which builder types after all phases c
 1. **src/ZodBuilder/object.ts**:
    - Constructor: `properties: Record<string, BaseBuilder | string>`
    - buildObject helper: handle both types `typeof val === 'string' ? val : val.text()`
-   
+
 2. **src/ZodBuilder/array.ts**:
    - Constructor: `itemSchema: BaseBuilder | string`
    - Internal logic: `const baseText = typeof itemSchema === 'string' ? itemSchema : itemSchema.text()`
-   
+
 3. **src/ZodBuilder/union.ts** (if created in Phase 1):
    - Constructor: `schemas: (BaseBuilder | string)[]`
    - buildUnion: map over schemas and extract strings

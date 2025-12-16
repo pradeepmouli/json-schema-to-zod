@@ -11,7 +11,7 @@ describe("parseNot", () => {
           },
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(
       'z.any().refine((value) => !z.string().safeParse(value).success, "Invalid input: Should NOT be valid against schema")',
     );

@@ -11,7 +11,7 @@ describe("parseObject", () => {
           type: "object",
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(`z.record(z.string(), z.any())`);
   });
 
@@ -23,7 +23,7 @@ describe("parseObject", () => {
           properties: {},
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(`z.object({})`);
   });
 
@@ -43,7 +43,7 @@ describe("parseObject", () => {
           },
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(
       'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
     );
@@ -63,7 +63,7 @@ describe("parseObject", () => {
           additionalProperties: false,
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe('z.object({ "myString": z.string() }).strict()');
   });
 
@@ -81,7 +81,7 @@ describe("parseObject", () => {
           additionalProperties: true,
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe('z.object({ "myString": z.string() }).catchall(z.any())');
   });
 
@@ -99,7 +99,7 @@ describe("parseObject", () => {
           additionalProperties: { type: "number" },
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe('z.object({ "myString": z.string() }).catchall(z.number())');
   });
 
@@ -111,7 +111,7 @@ describe("parseObject", () => {
           additionalProperties: false,
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.record(z.string(), z.never())");
   });
 
@@ -123,7 +123,7 @@ describe("parseObject", () => {
           additionalProperties: true,
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.record(z.string(), z.any())");
   });
 
@@ -136,7 +136,7 @@ describe("parseObject", () => {
         },
 
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.record(z.string(), z.number())");
   });
 
@@ -153,7 +153,7 @@ describe("parseObject", () => {
           },
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(`z.object({ "s": z.string().default("") })`);
   });
 
@@ -188,7 +188,7 @@ describe("parseObject", () => {
           ],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(
       'z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.object({ "c": z.string() })]))',
     );
@@ -216,7 +216,7 @@ describe("parseObject", () => {
           ],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(`z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.any()]))`);
 
     assert(
@@ -348,7 +348,7 @@ describe("parseObject", () => {
           ],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(
       'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',
     );
@@ -376,14 +376,24 @@ describe("parseObject", () => {
           ],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe(
       `z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.any()))`,
     );
   });
 
-  const run = (output: string, data: unknown) =>
-    eval(`const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(data)})`);
+  const run = (
+    output: string | { text: () => string },
+    data: unknown,
+  ) => {
+    const schemaText = typeof output === "string" ? output : output.text();
+
+    return eval(
+      `const {z} = require("zod"); ${schemaText}.safeParse(${JSON.stringify(
+        data,
+      )})`,
+    );
+  };
 
   it("Functional tests - run", () => {
     expect(run("z.string()", "hello")).toEqual({
@@ -410,7 +420,7 @@ describe("parseObject", () => {
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
 
     expect(run(result, { a: "hello" })).toEqual({
       success: true,
@@ -465,7 +475,7 @@ describe("parseObject", () => {
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
 
     const testResult = run(result, { b: "hello", x: "true" });
     expect(testResult.success).toBe(false);
@@ -528,7 +538,7 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
   });
 
   it("Functional tests - properties, additionalProperties and patternProperties", () => {
@@ -599,7 +609,7 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
   });
 
   it("Functional tests - additionalProperties", () => {
@@ -612,7 +622,7 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
   });
 
   it("Functional tests - additionalProperties and patternProperties", () => {
@@ -674,7 +684,7 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
 
     const testResult = run(result, { x: true, ".": [], ",": [] });
     expect(testResult.success).toBe(false);
@@ -727,7 +737,7 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
   });
 
   it("Functional tests - patternProperties", () => {
@@ -799,7 +809,7 @@ ctx.addIssue({
       },
     ]);
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
   });
 
   it("Functional tests - patternProperties and properties", () => {
@@ -853,6 +863,6 @@ ctx.addIssue({
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+    expect(result.text()).toBe(expected);
   });
 });

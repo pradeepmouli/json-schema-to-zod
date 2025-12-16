@@ -14,17 +14,18 @@ describe("parseAnyOf", () => {
           ],
         },
         { path: [], seen: new Map() },
-      ),
+      ).text(),
     ).toBe("z.union([z.string(), z.number()])");
   });
 
   it("should extract a single schema", () => {
-    expect(parseAnyOf({ anyOf: [{ type: "string" }] }, { path: [], seen: new Map() })).toBe(
-      "z.string()",
+    expect(
+      parseAnyOf({ anyOf: [{ type: "string" }] }, { path: [], seen: new Map() }).text(),
+    ).toBe("z.string()",
     );
   });
 
   it("should return z.any() if array is empty", () => {
-    expect(parseAnyOf({ anyOf: [] }, { path: [], seen: new Map() })).toBe("z.any()");
+    expect(parseAnyOf({ anyOf: [] }, { path: [], seen: new Map() }).text()).toBe("z.any()");
   });
 });

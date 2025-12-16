@@ -21,18 +21,24 @@ import {
 	JsonSchema,
 	Serializable,
 } from '../Types.js';
+import { BaseBuilder } from '../ZodBuilder/index.js';
 
 export const parseSchema = (
 	schema: JsonSchema,
 	refs: Refs = { seen: new Map(), path: [] },
 	blockMeta?: boolean,
-): string => {
-	if (typeof schema !== 'object') return schema ? 'z.any()' : 'z.never()';
+): BaseBuilder<any> => {
+	if (typeof schema !== 'object')
+		return schema ? new BaseBuilder('z.any()') : new BaseBuilder('z.never()');
 
 	if (refs.parserOverride) {
 		const custom = refs.parserOverride(schema, refs);
 
 		if (typeof custom === 'string') {
+			return new BaseBuilder(custom);
+		}
+
+		if (custom) {
 			return custom;
 		}
 	}
@@ -45,7 +51,7 @@ export const parseSchema = (
 		}
 
 		if (refs.depth === undefined || seen.n >= refs.depth) {
-			return 'z.any()';
+			return new BaseBuilder('z.any()');
 		}
 
 		seen.n += 1;
@@ -72,28 +78,37 @@ export const parseSchema = (
 	return parsed;
 };
 
-const addDescribes = (schema: JsonSchemaObject, parsed: string): string => {
+const addDescribes = (
+	schema: JsonSchemaObject,
+	builder: BaseBuilder<any>,
+): BaseBuilder<any> => {
 	if (schema.description) {
-		parsed += `.describe(${JSON.stringify(schema.description)})`;
+		return builder.describe(schema.description);
 	}
 
-	return parsed;
+	return builder;
 };
 
-const addDefaults = (schema: JsonSchemaObject, parsed: string): string => {
+const addDefaults = (
+	schema: JsonSchemaObject,
+	builder: BaseBuilder<any>,
+): BaseBuilder<any> => {
 	if (schema.default !== undefined) {
-		parsed += `.default(${JSON.stringify(schema.default)})`;
+		return builder.default(schema.default);
 	}
 
-	return parsed;
+	return builder;
 };
 
-const addAnnotations = (schema: JsonSchemaObject, parsed: string): string => {
+const addAnnotations = (
+	schema: JsonSchemaObject,
+	builder: BaseBuilder<any>,
+): BaseBuilder<any> => {
 	if (schema.readOnly) {
-		parsed += '.readonly()';
+		return builder.readonly();
 	}
 
-	return parsed;
+	return builder;
 };
 
 const selectParser: ParserSelector = (schema, refs) => {

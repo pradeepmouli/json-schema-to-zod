@@ -60,11 +60,11 @@ export type JsonSchemaObject = {
 export type ParserSelector = (
 	schema: JsonSchemaObject,
 	refs: Refs,
-) => string;
+) => import('./ZodBuilder/index.js').BaseBuilder<any>;
 export type ParserOverride = (
 	schema: JsonSchemaObject,
 	refs: Refs,
-) => string | void;
+) => import('./ZodBuilder/index.js').BaseBuilder<any> | string | void;
 
 export type Options = {
 	name?: string;
@@ -80,5 +80,8 @@ export type Options = {
 
 export type Refs = Options & {
 	path: (string | number)[];
-	seen: Map<object | boolean, { n: number; r: string | undefined }>;
+	seen: Map<
+		object | boolean,
+		{ n: number; r: import('./ZodBuilder/index.js').BaseBuilder<any> | undefined }
+	>;
 };

@@ -37,9 +37,12 @@ export const parseString = (schema: JsonSchemaObject & { type: 'string' }) => {
 		// Apply contentSchema pipe if present
 		if (schema.contentSchema && typeof schema.contentSchema === 'object') {
 			const contentSchemaZod = parseSchema(schema.contentSchema);
-			builder.pipe(contentSchemaZod, schema.errorMessage?.contentSchema);
+			builder.pipe(
+				contentSchemaZod.text(),
+				schema.errorMessage?.contentSchema,
+			);
 		}
 	}
 
-	return builder.text();
+	return builder;
 };
