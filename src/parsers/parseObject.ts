@@ -43,7 +43,7 @@ export function parseObject(
 			const optional = !hasDefault && !required;
 
 			if (optional) {
-				propZod = propZod.optional();
+				propZod.optional();
 			}
 
 			// Store in properties object for builder (convert to string)
