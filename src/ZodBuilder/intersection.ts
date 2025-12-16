@@ -4,11 +4,11 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent IntersectionBuilder: represents z.intersection() schema.
  * Accepts two schemas and creates an intersection type.
  */
-export class IntersectionBuilder extends BaseBuilder<IntersectionBuilder> {
-	private readonly _left: BaseBuilder<any> | string;
-	private readonly _right: BaseBuilder<any> | string;
+export class IntersectionBuilder extends BaseBuilder {
+	private readonly _left: BaseBuilder | string;
+	private readonly _right: BaseBuilder | string;
 
-	constructor(left: BaseBuilder<any> | string, right: BaseBuilder<any> | string) {
+	constructor(left: BaseBuilder | string, right: BaseBuilder | string) {
 		super();
 		this._left = left;
 		this._right = right;
@@ -25,8 +25,8 @@ export class IntersectionBuilder extends BaseBuilder<IntersectionBuilder> {
  * Build a Zod intersection schema string.
  */
 export function buildIntersection(
-	left: BaseBuilder<any> | string,
-	right: BaseBuilder<any> | string
+	left: BaseBuilder | string,
+	right: BaseBuilder | string
 ): string {
 	const leftStr = typeof left === 'string' ? left : left.text();
 	const rightStr = typeof right === 'string' ? right : right.text();

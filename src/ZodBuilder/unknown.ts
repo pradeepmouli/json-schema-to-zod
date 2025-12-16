@@ -3,7 +3,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent UnknownBuilder: represents z.unknown() schema.
  */
-export class UnknownBuilder extends BaseBuilder<UnknownBuilder> {
+export class UnknownBuilder extends BaseBuilder {
 	constructor() {
 		super();
 	}

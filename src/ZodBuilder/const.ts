@@ -4,7 +4,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent ConstBuilder: wraps a Zod literal schema string and provides chainable methods.
  */
-export class ConstBuilder extends BaseBuilder<ConstBuilder> {
+export class ConstBuilder extends BaseBuilder {
 	private readonly _value: Serializable;
 
 	constructor(value: Serializable) {

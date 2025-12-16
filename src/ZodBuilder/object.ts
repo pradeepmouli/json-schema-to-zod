@@ -3,8 +3,8 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent ObjectBuilder: wraps a Zod object schema string and provides chainable methods.
  */
-export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
-	readonly _properties: Record<string, BaseBuilder<any> | string>;
+export class ObjectBuilder extends BaseBuilder {
+	readonly _properties: Record<string, BaseBuilder | string>;
 	private _precomputedSchema?: string; // Store pre-built schema string from fromCode()
 	private _strict: boolean = false;
 	private _loose: boolean = false;
@@ -12,7 +12,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	private _superRefineFn?: string;
 	private _andSchema?: string;
 
-	constructor(properties: Record<string, BaseBuilder<any> | string> = {}) {
+	constructor(properties: Record<string, BaseBuilder | string> = {}) {
 		super();
 		this._properties = properties;
 	}
@@ -99,7 +99,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
  * Build a Zod object schema string from property definitions.
  * Properties can be either BaseBuilder instances or Zod schema strings.
  */
-export function buildObject(properties: Record<string, BaseBuilder<any> | string>): string {
+export function buildObject(properties: Record<string, BaseBuilder | string>): string {
 	if (Object.keys(properties).length === 0) {
 		return 'z.object({})';
 	}
@@ -119,8 +119,8 @@ export function buildObject(properties: Record<string, BaseBuilder<any> | string
  * Key and value schemas can be either BaseBuilder instances or Zod schema strings.
  */
 export function buildRecord(
-	keySchemaZod: BaseBuilder<any> | string,
-	valueSchemaZod: BaseBuilder<any> | string,
+	keySchemaZod: BaseBuilder | string,
+	valueSchemaZod: BaseBuilder | string,
 ): string {
 	const keyStr = typeof keySchemaZod === 'string' ? keySchemaZod : keySchemaZod.text();
 	const valueStr = typeof valueSchemaZod === 'string' ? valueSchemaZod : valueSchemaZod.text();

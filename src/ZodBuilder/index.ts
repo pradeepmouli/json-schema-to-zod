@@ -93,8 +93,8 @@ export const build = {
 	string: () => new StringBuilder(),
 	boolean: () => new BooleanBuilder(),
 	null: () => new NullBuilder(),
-	array: (itemSchemaZod: import('./BaseBuilder.js').BaseBuilder<any> | string) => new ArrayBuilder(itemSchemaZod),
-	object: (properties: Record<string, import('./BaseBuilder.js').BaseBuilder<any> | string> = {}) =>
+	array: (itemSchemaZod: import('./BaseBuilder.js').BaseBuilder | string) => new ArrayBuilder(itemSchemaZod),
+	object: (properties: Record<string, import('./BaseBuilder.js').BaseBuilder | string> = {}) =>
 		new ObjectBuilder(properties),
 	enum: (values: import('../Types.js').Serializable[]) =>
 		new EnumBuilder(values),
@@ -105,10 +105,10 @@ export const build = {
 	never: () => new NeverBuilder(),
 	unknown: () => new UnknownBuilder(),
 	literalValue: (value: import('../Types.js').Serializable) => new LiteralBuilder(value),
-	union: (schemas: (import('./BaseBuilder.js').BaseBuilder<any> | string)[]) => new UnionBuilder(schemas),
-	intersection: (left: import('./BaseBuilder.js').BaseBuilder<any> | string, right: import('./BaseBuilder.js').BaseBuilder<any> | string) => 
+	union: (schemas: (import('./BaseBuilder.js').BaseBuilder | string)[]) => new UnionBuilder(schemas),
+	intersection: (left: import('./BaseBuilder.js').BaseBuilder | string, right: import('./BaseBuilder.js').BaseBuilder | string) => 
 		new IntersectionBuilder(left, right),
-	tuple: (items: (import('./BaseBuilder.js').BaseBuilder<any> | string)[]) => new TupleBuilder(items),
-	record: (keySchema: import('./BaseBuilder.js').BaseBuilder<any> | string, valueSchema: import('./BaseBuilder.js').BaseBuilder<any> | string) => 
+	tuple: (items: (import('./BaseBuilder.js').BaseBuilder | string)[]) => new TupleBuilder(items),
+	record: (keySchema: import('./BaseBuilder.js').BaseBuilder | string, valueSchema: import('./BaseBuilder.js').BaseBuilder | string) => 
 		new RecordBuilder(keySchema, valueSchema),
 };

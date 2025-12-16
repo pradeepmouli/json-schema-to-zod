@@ -4,7 +4,7 @@ import { Serializable } from '../Types.js';
 /**
  * Fluent LiteralBuilder: represents z.literal() schema.
  */
-export class LiteralBuilder extends BaseBuilder<LiteralBuilder> {
+export class LiteralBuilder extends BaseBuilder {
 	private readonly _value: Serializable;
 
 	constructor(value: Serializable) {
