@@ -68,6 +68,43 @@ export class ObjectBuilder extends BaseBuilder {
 		return this;
 	}
 
+	private _extendSchema?: string;
+	private _mergeSchema?: string;
+	private _pickKeys?: string[];
+	private _omitKeys?: string[];
+
+	/**
+	 * Extend the object schema with additional properties.
+	 */
+	extend(extendSchemaZod: string): this {
+		this._extendSchema = extendSchemaZod;
+		return this;
+	}
+
+	/**
+	 * Merge with another object schema.
+	 */
+	merge(mergeSchemaZod: string): this {
+		this._mergeSchema = mergeSchemaZod;
+		return this;
+	}
+
+	/**
+	 * Pick specific keys from the object schema.
+	 */
+	pick(keys: string[]): this {
+		this._pickKeys = keys;
+		return this;
+	}
+
+	/**
+	 * Omit specific keys from the object schema.
+	 */
+	omit(keys: string[]): this {
+		this._omitKeys = keys;
+		return this;
+	}
+
 	/**
 	 * Compute the base object schema.
 	 */
@@ -94,6 +131,18 @@ export class ObjectBuilder extends BaseBuilder {
 		}
 		if (this._andSchema) {
 			result = applyAnd(result, this._andSchema);
+		}
+		if (this._extendSchema) {
+			result = applyExtend(result, this._extendSchema);
+		}
+		if (this._mergeSchema) {
+			result = applyMerge(result, this._mergeSchema);
+		}
+		if (this._pickKeys) {
+			result = applyPick(result, this._pickKeys);
+		}
+		if (this._omitKeys) {
+			result = applyOmit(result, this._omitKeys);
 		}
 
 		return super.modify(result);
@@ -162,4 +211,34 @@ export function applySuperRefine(zodStr: string, refineFn: string): string {
  */
 export function applyAnd(zodStr: string, otherSchemaZod: string): string {
 	return `${zodStr}.and(${otherSchemaZod})`;
+}
+
+/**
+ * Apply extend to add properties to an object schema.
+ */
+export function applyExtend(zodStr: string, extendSchemaZod: string): string {
+	return `${zodStr}.extend(${extendSchemaZod})`;
+}
+
+/**
+ * Apply merge to merge with another object schema.
+ */
+export function applyMerge(zodStr: string, mergeSchemaZod: string): string {
+	return `${zodStr}.merge(${mergeSchemaZod})`;
+}
+
+/**
+ * Apply pick to select specific keys from object schema.
+ */
+export function applyPick(zodStr: string, keys: string[]): string {
+	const keysObj = `{ ${keys.map((k) => `${JSON.stringify(k)}: true`).join(', ')} }`;
+	return `${zodStr}.pick(${keysObj})`;
+}
+
+/**
+ * Apply omit to exclude specific keys from object schema.
+ */
+export function applyOmit(zodStr: string, keys: string[]): string {
+	const keysObj = `{ ${keys.map((k) => `${JSON.stringify(k)}: true`).join(', ')} }`;
+	return `${zodStr}.omit(${keysObj})`;
 }

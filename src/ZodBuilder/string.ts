@@ -72,6 +72,198 @@ export class StringBuilder extends BaseBuilder {
 	}
 
 	/**
+	 * Apply url format.
+	 */
+	url(errorMessage?: string): this {
+		this._format = { format: 'url', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply http/https URL format.
+	 */
+	httpUrl(errorMessage?: string): this {
+		this._format = { format: 'httpUrl', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply hostname format.
+	 */
+	hostname(errorMessage?: string): this {
+		this._format = { format: 'hostname', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply emoji format (single emoji character).
+	 */
+	emoji(errorMessage?: string): this {
+		this._format = { format: 'emoji', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply base64url format.
+	 */
+	base64url(errorMessage?: string): this {
+		this._format = { format: 'base64url', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply hex format.
+	 */
+	hex(errorMessage?: string): this {
+		this._format = { format: 'hex', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply JWT format.
+	 */
+	jwt(errorMessage?: string): this {
+		this._format = { format: 'jwt', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply nanoid format.
+	 */
+	nanoid(errorMessage?: string): this {
+		this._format = { format: 'nanoid', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply cuid format.
+	 */
+	cuid(errorMessage?: string): this {
+		this._format = { format: 'cuid', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply cuid2 format.
+	 */
+	cuid2(errorMessage?: string): this {
+		this._format = { format: 'cuid2', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply ulid format.
+	 */
+	ulid(errorMessage?: string): this {
+		this._format = { format: 'ulid', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply IPv4 format.
+	 */
+	ipv4(errorMessage?: string): this {
+		this._format = { format: 'ipv4', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply IPv6 format.
+	 */
+	ipv6(errorMessage?: string): this {
+		this._format = { format: 'ipv6', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply MAC address format.
+	 */
+	mac(errorMessage?: string): this {
+		this._format = { format: 'mac', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply IPv4 CIDR block format.
+	 */
+	cidrv4(errorMessage?: string): this {
+		this._format = { format: 'cidrv4', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply IPv6 CIDR block format.
+	 */
+	cidrv6(errorMessage?: string): this {
+		this._format = { format: 'cidrv6', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply hash format with algorithm.
+	 */
+	hash(algorithm: 'sha256' | 'sha1' | 'sha384' | 'sha512' | 'md5', errorMessage?: string): this {
+		this._format = { format: `hash:${algorithm}`, errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply ISO date format.
+	 */
+	isoDate(errorMessage?: string): this {
+		this._format = { format: 'iso.date', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply ISO time format.
+	 */
+	isoTime(errorMessage?: string): this {
+		this._format = { format: 'iso.time', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply ISO datetime format.
+	 */
+	isoDatetime(errorMessage?: string): this {
+		this._format = { format: 'iso.datetime', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply ISO duration format.
+	 */
+	isoDuration(errorMessage?: string): this {
+		this._format = { format: 'iso.duration', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply UUIDv4 format.
+	 */
+	uuidv4(errorMessage?: string): this {
+		this._format = { format: 'uuidv4', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply UUIDv6 format.
+	 */
+	uuidv6(errorMessage?: string): this {
+		this._format = { format: 'uuidv6', errorMessage };
+		return this;
+	}
+
+	/**
+	 * Apply UUIDv7 format.
+	 */
+	uuidv7(errorMessage?: string): this {
+		this._format = { format: 'uuidv7', errorMessage };
+		return this;
+	}
+
+	/**
 	 * Apply base64 encoding constraint.
 	 */
 	base64(errorMessage?: string): this {
@@ -177,13 +369,94 @@ export function applyFormat(
 				? `${zodStr}.ip({ version: "v6", message: ${JSON.stringify(errorMessage)} })`
 				: `${zodStr}.ip({ version: "v6" })`;
 		case 'uri':
+		case 'url':
 			return errorMessage
 				? `${zodStr}.url(${JSON.stringify(errorMessage)})`
 				: `${zodStr}.url()`;
+		case 'httpUrl':
+			return errorMessage
+				? `${zodStr}.httpUrl(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.httpUrl()`;
+		case 'hostname':
+			return errorMessage
+				? `${zodStr}.hostname(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.hostname()`;
+		case 'emoji':
+			return errorMessage
+				? `${zodStr}.emoji(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.emoji()`;
 		case 'uuid':
 			return errorMessage
 				? `${zodStr}.uuid(${JSON.stringify(errorMessage)})`
 				: `${zodStr}.uuid()`;
+		case 'uuidv4':
+			return errorMessage
+				? `${zodStr}.uuid({ version: "v4", message: ${JSON.stringify(errorMessage)} })`
+				: `${zodStr}.uuid({ version: "v4" })`;
+		case 'uuidv6':
+			return errorMessage
+				? `${zodStr}.uuid({ version: "v6", message: ${JSON.stringify(errorMessage)} })`
+				: `${zodStr}.uuid({ version: "v6" })`;
+		case 'uuidv7':
+			return errorMessage
+				? `${zodStr}.uuid({ version: "v7", message: ${JSON.stringify(errorMessage)} })`
+				: `${zodStr}.uuid({ version: "v7" })`;
+		case 'base64url':
+			return errorMessage
+				? `${zodStr}.base64url(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.base64url()`;
+		case 'hex':
+			return errorMessage
+				? `${zodStr}.hex(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.hex()`;
+		case 'jwt':
+			return errorMessage
+				? `${zodStr}.jwt(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.jwt()`;
+		case 'nanoid':
+			return errorMessage
+				? `${zodStr}.nanoid(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.nanoid()`;
+		case 'cuid':
+			return errorMessage
+				? `${zodStr}.cuid(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.cuid()`;
+		case 'cuid2':
+			return errorMessage
+				? `${zodStr}.cuid2(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.cuid2()`;
+		case 'ulid':
+			return errorMessage
+				? `${zodStr}.ulid(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.ulid()`;
+		case 'mac':
+			return errorMessage
+				? `${zodStr}.mac(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.mac()`;
+		case 'cidrv4':
+			return errorMessage
+				? `${zodStr}.cidrv4(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.cidrv4()`;
+		case 'cidrv6':
+			return errorMessage
+				? `${zodStr}.cidrv6(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.cidrv6()`;
+		case 'iso.date':
+			return errorMessage
+				? `${zodStr}.iso.date(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.iso.date()`;
+		case 'iso.time':
+			return errorMessage
+				? `${zodStr}.iso.time(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.iso.time()`;
+		case 'iso.datetime':
+			return errorMessage
+				? `${zodStr}.iso.datetime(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.iso.datetime()`;
+		case 'iso.duration':
+			return errorMessage
+				? `${zodStr}.iso.duration(${JSON.stringify(errorMessage)})`
+				: `${zodStr}.iso.duration()`;
 		case 'date-time':
 			return errorMessage
 				? `${zodStr}.datetime({ offset: true, message: ${JSON.stringify(errorMessage)} })`
@@ -205,6 +478,13 @@ export function applyFormat(
 				? `${zodStr}.duration(${JSON.stringify(errorMessage)})`
 				: `${zodStr}.duration()`;
 		default:
+			// Handle hash formats
+			if (format.startsWith('hash:')) {
+				const algorithm = format.substring(5);
+				return errorMessage
+					? `${zodStr}.hash(${JSON.stringify(algorithm)}, ${JSON.stringify(errorMessage)})`
+					: `${zodStr}.hash(${JSON.stringify(algorithm)})`;
+			}
 			return zodStr;
 	}
 }
