@@ -3,7 +3,7 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent StringBuilder: wraps a Zod string schema string and provides chainable methods.
  */
-export class StringBuilder extends BaseBuilder<StringBuilder> {
+export class StringBuilder extends BaseBuilder {
 	_format?: { format: string; errorMessage?: string } = undefined;
 	_pattern?: { pattern: string; errorMessage?: string } = undefined;
 	_minLength?: { value: number; errorMessage?: string } = undefined;
@@ -13,7 +13,7 @@ export class StringBuilder extends BaseBuilder<StringBuilder> {
 	_pipe?: { contentSchemaZod: string; errorMessage?: string } = undefined;
 
 	constructor() {
-		super('z.string()');
+		super();
 	}
 
 	/**
@@ -96,10 +96,14 @@ export class StringBuilder extends BaseBuilder<StringBuilder> {
 	}
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the base string schema.
 	 */
-	text(): string {
-		let result = this._baseText;
+	protected override base(): string {
+		return 'z.string()';
+	}
+
+	protected override modify(baseText: string): string {
+		let result = baseText;
 
 		if (this._format !== undefined) {
 			result = applyFormat(
@@ -143,16 +147,8 @@ export class StringBuilder extends BaseBuilder<StringBuilder> {
 			);
 		}
 
-		this._baseText = result;
-		return super.text();
+		return super.modify(result);
 	}
-}
-
-/**
- * Build a base Zod string schema string.
- */
-export function buildString(): string {
-	return 'z.string()';
 }
 
 /**

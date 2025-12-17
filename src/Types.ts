@@ -57,11 +57,14 @@ export type JsonSchemaObject = {
 	errorMessage?: { [key: string]: string | undefined };
 } & { [key: string]: any };
 
-export type ParserSelector = (schema: JsonSchemaObject, refs: Refs) => string;
+export type ParserSelector = (
+	schema: JsonSchemaObject,
+	refs: Refs,
+) => import('./ZodBuilder/index.js').BaseBuilder;
 export type ParserOverride = (
 	schema: JsonSchemaObject,
 	refs: Refs,
-) => string | void;
+) => import('./ZodBuilder/index.js').BaseBuilder | string | void;
 
 export type Options = {
 	name?: string;
@@ -77,5 +80,8 @@ export type Options = {
 
 export type Refs = Options & {
 	path: (string | number)[];
-	seen: Map<object | boolean, { n: number; r: string | undefined }>;
+	seen: Map<
+		object | boolean,
+		{ n: number; r: import('./ZodBuilder/index.js').BaseBuilder | undefined }
+	>;
 };

@@ -3,12 +3,14 @@ import { BaseBuilder } from './BaseBuilder.js';
 /**
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
-export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
+export class ArrayBuilder extends BaseBuilder {
+	private readonly _itemSchema: BaseBuilder | BaseBuilder[];
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchemaZod: string) {
-		super(`z.array(${itemSchemaZod})`);
+	constructor(itemSchema: BaseBuilder | BaseBuilder[]) {
+		super();
+		this._itemSchema = itemSchema;
 	}
 
 	/**
@@ -32,10 +34,20 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 	}
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the base array schema.
 	 */
-	text(): string {
-		let result = this._baseText;
+	protected override base(): string {
+		if (Array.isArray(this._itemSchema)) {
+			const itemStrs = this._itemSchema.map((item) => item.text());
+			return `z.tuple([${itemStrs.join(',')}])`; // No space after comma
+		}
+
+		const itemStr = this._itemSchema.text();
+		return `z.array(${itemStr})`;
+	}
+
+	protected override modify(baseText: string): string {
+		let result = baseText;
 
 		if (this._minItems !== undefined) {
 			result = applyMinItems(
@@ -52,23 +64,8 @@ export class ArrayBuilder extends BaseBuilder<ArrayBuilder> {
 			);
 		}
 
-		this._baseText = result;
-		return super.text();
+		return super.modify(result);
 	}
-}
-
-/**
- * Build a Zod array schema string from an item schema.
- */
-export function buildArray(itemSchemaZod: string): string {
-	return `z.array(${itemSchemaZod})`;
-}
-
-/**
- * Build a Zod tuple schema string from item schemas.
- */
-export function buildTuple(itemSchemasZod: string[]): string {
-	return `z.tuple([${itemSchemasZod.join(',')}])`; // No space after comma
 }
 
 /**

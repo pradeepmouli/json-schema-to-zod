@@ -67,9 +67,14 @@ async function main() {
 
 	if (args.output) {
 		mkdirSync(dirname(args.output), { recursive: true });
-		writeFileSync(args.output, zodSchema);
+		writeFileSync(
+			args.output,
+			zodSchema.endsWith('\n') ? zodSchema : zodSchema + '\n',
+		);
 	} else {
-		console.log(zodSchema);
+		process.stdout.write(
+			zodSchema.endsWith('\n') ? zodSchema : zodSchema + '\n',
+		);
 	}
 }
 

@@ -1,257 +1,259 @@
-import { JSONSchema7 } from "json-schema";
-import { ZodError } from "zod";
-import { parseObject } from "../../src/parsers/parseObject";
-import { describe, it, expect } from "vitest";
+import { JSONSchema7 } from 'json-schema';
+import { ZodError } from 'zod';
+import { parseObject } from '../../src/parsers/parseObject';
+import { describe, it, expect } from 'vitest';
 
-describe("parseObject", () => {
-  it("should handle with missing properties", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(`z.record(z.string(), z.any())`);
-  });
+describe('parseObject', () => {
+	it('should handle with missing properties', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(`z.record(z.string(), z.any())`);
+	});
 
-  it("should handle with empty properties", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          properties: {},
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(`z.object({})`);
-  });
+	it('should handle with empty properties', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					properties: {},
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(`z.object({})`);
+	});
 
-  it("With properties - should handle optional and required properties", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["myRequiredString"],
-          properties: {
-            myOptionalString: {
-              type: "string",
-            },
-            myRequiredString: {
-              type: "string",
-            },
-          },
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(
-      'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
-    );
-  });
+	it('With properties - should handle optional and required properties', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['myRequiredString'],
+					properties: {
+						myOptionalString: {
+							type: 'string',
+						},
+						myRequiredString: {
+							type: 'string',
+						},
+					},
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(
+			'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
+		);
+	});
 
-  it("With properties - should handle additionalProperties when set to false", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["myString"],
-          properties: {
-            myString: {
-              type: "string",
-            },
-          },
-          additionalProperties: false,
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe('z.object({ "myString": z.string() }).strict()');
-  });
+	it('With properties - should handle additionalProperties when set to false', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['myString'],
+					properties: {
+						myString: {
+							type: 'string',
+						},
+					},
+					additionalProperties: false,
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe('z.object({ "myString": z.string() }).strict()');
+	});
 
-  it("With properties - should handle additionalProperties when set to true", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["myString"],
-          properties: {
-            myString: {
-              type: "string",
-            },
-          },
-          additionalProperties: true,
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe('z.object({ "myString": z.string() }).catchall(z.any())');
-  });
+	it('With properties - should handle additionalProperties when set to true', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['myString'],
+					properties: {
+						myString: {
+							type: 'string',
+						},
+					},
+					additionalProperties: true,
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe('z.object({ "myString": z.string() }).catchall(z.any())');
+	});
 
-  it("With properties - should handle additionalProperties when provided a schema", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["myString"],
-          properties: {
-            myString: {
-              type: "string",
-            },
-          },
-          additionalProperties: { type: "number" },
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe('z.object({ "myString": z.string() }).catchall(z.number())');
-  });
+	it('With properties - should handle additionalProperties when provided a schema', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['myString'],
+					properties: {
+						myString: {
+							type: 'string',
+						},
+					},
+					additionalProperties: { type: 'number' },
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe('z.object({ "myString": z.string() }).catchall(z.number())');
+	});
 
-  it("Without properties - should handle additionalProperties when set to false", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          additionalProperties: false,
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe("z.record(z.string(), z.never())");
-  });
+	it('Without properties - should handle additionalProperties when set to false', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					additionalProperties: false,
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe('z.record(z.string(), z.never())');
+	});
 
-  it("Without properties - should handle additionalProperties when set to true", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          additionalProperties: true,
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe("z.record(z.string(), z.any())");
-  });
+	it('Without properties - should handle additionalProperties when set to true', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					additionalProperties: true,
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe('z.record(z.string(), z.any())');
+	});
 
-  it("Without properties - should handle additionalProperties when provided a schema", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          additionalProperties: { type: "number" },
-        },
+	it('Without properties - should handle additionalProperties when provided a schema', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					additionalProperties: { type: 'number' },
+				},
 
-        { path: [], seen: new Map() },
-      ),
-    ).toBe("z.record(z.string(), z.number())");
-  });
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe('z.record(z.string(), z.number())');
+	});
 
-  it("Without properties - should include falsy defaults", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          properties: {
-            s: {
-              type: "string",
-              default: "",
-            },
-          },
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(`z.object({ "s": z.string().default("") })`);
-  });
+	it('Without properties - should include falsy defaults', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					properties: {
+						s: {
+							type: 'string',
+							default: '',
+						},
+					},
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(`z.object({ "s": z.string().default("") })`);
+	});
 
-  it("eh", () => {
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["a"],
-          properties: {
-            a: {
-              type: "string",
-            },
-          },
-          anyOf: [
-            {
-              required: ["b"],
-              properties: {
-                b: {
-                  type: "string",
-                },
-              },
-            },
-            {
-              required: ["c"],
-              properties: {
-                c: {
-                  type: "string",
-                },
-              },
-            },
-          ],
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(
-      'z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.object({ "c": z.string() })]))',
-    );
+	it('eh', () => {
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['a'],
+					properties: {
+						a: {
+							type: 'string',
+						},
+					},
+					anyOf: [
+						{
+							required: ['b'],
+							properties: {
+								b: {
+									type: 'string',
+								},
+							},
+						},
+						{
+							required: ['c'],
+							properties: {
+								c: {
+									type: 'string',
+								},
+							},
+						},
+					],
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(
+			'z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.object({ "c": z.string() })]))',
+		);
 
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["a"],
-          properties: {
-            a: {
-              type: "string",
-            },
-          },
-          anyOf: [
-            {
-              required: ["b"],
-              properties: {
-                b: {
-                  type: "string",
-                },
-              },
-            },
-            {},
-          ],
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(`z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.any()]))`);
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['a'],
+					properties: {
+						a: {
+							type: 'string',
+						},
+					},
+					anyOf: [
+						{
+							required: ['b'],
+							properties: {
+								b: {
+									type: 'string',
+								},
+							},
+						},
+						{},
+					],
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(
+			`z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.any()]))`,
+		);
 
-    assert(
-      parseObject(
-        {
-          type: "object",
-          required: ["a"],
-          properties: {
-            a: {
-              type: "string",
-            },
-          },
-          oneOf: [
-            {
-              required: ["b"],
-              properties: {
-                b: {
-                  type: "string",
-                },
-              },
-            },
-            {
-              required: ["c"],
-              properties: {
-                c: {
-                  type: "string",
-                },
-              },
-            },
-          ],
-        },
-        { path: [], seen: new Map() },
-      ),
+		assert(
+			parseObject(
+				{
+					type: 'object',
+					required: ['a'],
+					properties: {
+						a: {
+							type: 'string',
+						},
+					},
+					oneOf: [
+						{
+							required: ['b'],
+							properties: {
+								b: {
+									type: 'string',
+								},
+							},
+						},
+						{
+							required: ['c'],
+							properties: {
+								c: {
+									type: 'string',
+								},
+							},
+						},
+					],
+				},
+				{ path: [], seen: new Map() },
+			),
 
-      `z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
+			`z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "b": z.string() }), z.object({ "c": z.string() })];
     const errors = schemas.reduce<z.ZodError[]>(
       (errors, schema) =>
@@ -270,34 +272,34 @@ describe("parseObject", () => {
       });
     }
   }))`,
-    );
+		);
 
-    assert(
-      parseObject(
-        {
-          type: "object",
-          required: ["a"],
-          properties: {
-            a: {
-              type: "string",
-            },
-          },
-          oneOf: [
-            {
-              required: ["b"],
-              properties: {
-                b: {
-                  type: "string",
-                },
-              },
-            },
-            {},
-          ],
-        },
-        { path: [], seen: new Map() },
-      ),
+		assert(
+			parseObject(
+				{
+					type: 'object',
+					required: ['a'],
+					properties: {
+						a: {
+							type: 'string',
+						},
+					},
+					oneOf: [
+						{
+							required: ['b'],
+							properties: {
+								b: {
+									type: 'string',
+								},
+							},
+						},
+						{},
+					],
+				},
+				{ path: [], seen: new Map() },
+			),
 
-      `z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
+			`z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "b": z.string() }), z.any()];
     const errors = schemas.reduce<z.ZodError[]>(
       (errors, schema) =>
@@ -316,199 +318,207 @@ describe("parseObject", () => {
       });
     }
   }))`,
-    );
+		);
 
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["a"],
-          properties: {
-            a: {
-              type: "string",
-            },
-          },
-          allOf: [
-            {
-              required: ["b"],
-              properties: {
-                b: {
-                  type: "string",
-                },
-              },
-            },
-            {
-              required: ["c"],
-              properties: {
-                c: {
-                  type: "string",
-                },
-              },
-            },
-          ],
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(
-      'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',
-    );
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['a'],
+					properties: {
+						a: {
+							type: 'string',
+						},
+					},
+					allOf: [
+						{
+							required: ['b'],
+							properties: {
+								b: {
+									type: 'string',
+								},
+							},
+						},
+						{
+							required: ['c'],
+							properties: {
+								c: {
+									type: 'string',
+								},
+							},
+						},
+					],
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(
+			'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',
+		);
 
-    expect(
-      parseObject(
-        {
-          type: "object",
-          required: ["a"],
-          properties: {
-            a: {
-              type: "string",
-            },
-          },
-          allOf: [
-            {
-              required: ["b"],
-              properties: {
-                b: {
-                  type: "string",
-                },
-              },
-            },
-            {},
-          ],
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(
-      `z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.any()))`,
-    );
-  });
+		expect(
+			parseObject(
+				{
+					type: 'object',
+					required: ['a'],
+					properties: {
+						a: {
+							type: 'string',
+						},
+					},
+					allOf: [
+						{
+							required: ['b'],
+							properties: {
+								b: {
+									type: 'string',
+								},
+							},
+						},
+						{},
+					],
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(
+			`z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.any()))`,
+		);
+	});
 
-  const run = (output: string, data: unknown) =>
-    eval(`const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(data)})`);
+	const run = (output: string | { text: () => string }, data: unknown) => {
+		const schemaText = typeof output === 'string' ? output : output.text();
 
-  it("Functional tests - run", () => {
-    expect(run("z.string()", "hello")).toEqual({
-      success: true,
-      data: "hello",
-    });
-  });
+		return eval(
+			`const {z} = require("zod"); ${schemaText}.safeParse(${JSON.stringify(
+				data,
+			)})`,
+		);
+	};
 
-  it("Functional tests - properties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      required: ["a"],
-      properties: {
-        a: {
-          type: "string",
-        },
-        b: {
-          type: "number",
-        },
-      },
-    };
+	it('Functional tests - run', () => {
+		expect(run('z.string()', 'hello')).toEqual({
+			success: true,
+			data: 'hello',
+		});
+	});
 
-    const expected = 'z.object({ "a": z.string(), "b": z.number().optional() })';
+	it('Functional tests - properties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			required: ['a'],
+			properties: {
+				a: {
+					type: 'string',
+				},
+				b: {
+					type: 'number',
+				},
+			},
+		};
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const expected =
+			'z.object({ "a": z.string(), "b": z.number().optional() })';
 
-    expect(result).toBe(expected);
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(run(result, { a: "hello" })).toEqual({
-      success: true,
-      data: {
-        a: "hello",
-      },
-    });
+		expect(result.text()).toBe(expected);
 
-    expect(run(result, { a: "hello", b: 123 })).toEqual({
-      success: true,
-      data: {
-        a: "hello",
-        b: 123,
-      },
-    });
+		expect(run(result, { a: 'hello' })).toEqual({
+			success: true,
+			data: {
+				a: 'hello',
+			},
+		});
 
-    const testResult = run(result, { b: "hello", x: true });
-    expect(testResult.success).toBe(false);
-    expect(testResult.error.issues).toEqual([
-      {
-        expected: "string",
-        code: "invalid_type",
-        path: ["a"],
-        message: "Invalid input: expected string, received undefined",
-      },
-      {
-        expected: "number",
-        code: "invalid_type",
-        path: ["b"],
-        message: "Invalid input: expected number, received string",
-      },
-    ]);
-  });
+		expect(run(result, { a: 'hello', b: 123 })).toEqual({
+			success: true,
+			data: {
+				a: 'hello',
+				b: 123,
+			},
+		});
 
-  it("Functional tests - properties and additionalProperties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      required: ["a"],
-      properties: {
-        a: {
-          type: "string",
-        },
-        b: {
-          type: "number",
-        },
-      },
-      additionalProperties: { type: "boolean" },
-    };
+		const testResult = run(result, { b: 'hello', x: true });
+		expect(testResult.success).toBe(false);
+		expect(testResult.error.issues).toEqual([
+			{
+				expected: 'string',
+				code: 'invalid_type',
+				path: ['a'],
+				message: 'Invalid input: expected string, received undefined',
+			},
+			{
+				expected: 'number',
+				code: 'invalid_type',
+				path: ['b'],
+				message: 'Invalid input: expected number, received string',
+			},
+		]);
+	});
 
-    const expected =
-      'z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.boolean())';
+	it('Functional tests - properties and additionalProperties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			required: ['a'],
+			properties: {
+				a: {
+					type: 'string',
+				},
+				b: {
+					type: 'number',
+				},
+			},
+			additionalProperties: { type: 'boolean' },
+		};
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const expected =
+			'z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.boolean())';
 
-    expect(result).toBe(expected);
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    const testResult = run(result, { b: "hello", x: "true" });
-    expect(testResult.success).toBe(false);
-    expect(testResult.error.issues).toEqual([
-      {
-        expected: "string",
-        code: "invalid_type",
-        path: ["a"],
-        message: "Invalid input: expected string, received undefined",
-      },
-      {
-        expected: "number",
-        code: "invalid_type",
-        path: ["b"],
-        message: "Invalid input: expected number, received string",
-      },
-      {
-        expected: "boolean",
-        code: "invalid_type",
-        path: ["x"],
-        message: "Invalid input: expected boolean, received string",
-      },
-    ]);
-  });
+		expect(result.text()).toBe(expected);
 
-  it("Functional tests - properties and single-item patternProperties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      required: ["a"],
-      properties: {
-        a: {
-          type: "string",
-        },
-        b: {
-          type: "number",
-        },
-      },
-      patternProperties: {
-        "\\.": { type: "array" },
-      },
-    };
+		const testResult = run(result, { b: 'hello', x: 'true' });
+		expect(testResult.success).toBe(false);
+		expect(testResult.error.issues).toEqual([
+			{
+				expected: 'string',
+				code: 'invalid_type',
+				path: ['a'],
+				message: 'Invalid input: expected string, received undefined',
+			},
+			{
+				expected: 'number',
+				code: 'invalid_type',
+				path: ['b'],
+				message: 'Invalid input: expected number, received string',
+			},
+			{
+				expected: 'boolean',
+				code: 'invalid_type',
+				path: ['x'],
+				message: 'Invalid input: expected boolean, received string',
+			},
+		]);
+	});
 
-    const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.array(z.any())).superRefine((value, ctx) => {
+	it('Functional tests - properties and single-item patternProperties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			required: ['a'],
+			properties: {
+				a: {
+					type: 'string',
+				},
+				b: {
+					type: 'number',
+				},
+			},
+			patternProperties: {
+				'\\.': { type: 'array' },
+			},
+		};
+
+		const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.array(z.any())).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp("\\\\."))) {
 const result = z.array(z.any()).safeParse(value[key])
@@ -526,31 +536,31 @@ ctx.addIssue({
 }
 })`;
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
-  });
+		expect(result.text()).toBe(expected);
+	});
 
-  it("Functional tests - properties, additionalProperties and patternProperties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      required: ["a"],
-      properties: {
-        a: {
-          type: "string",
-        },
-        b: {
-          type: "number",
-        },
-      },
-      additionalProperties: { type: "boolean" },
-      patternProperties: {
-        "\\.": { type: "array" },
-        "\\,": { type: "array", minItems: 1 },
-      },
-    };
+	it('Functional tests - properties, additionalProperties and patternProperties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			required: ['a'],
+			properties: {
+				a: {
+					type: 'string',
+				},
+				b: {
+					type: 'number',
+				},
+			},
+			additionalProperties: { type: 'boolean' },
+			patternProperties: {
+				'\\.': { type: 'array' },
+				'\\,': { type: 'array', minItems: 1 },
+			},
+		};
 
-    const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
+		const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
 let evaluated = ["a", "b"].includes(key)
 if (key.match(new RegExp("\\\\."))) {
@@ -597,35 +607,35 @@ ctx.addIssue({
 }
 })`;
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
-  });
+		expect(result.text()).toBe(expected);
+	});
 
-  it("Functional tests - additionalProperties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      additionalProperties: { type: "boolean" },
-    };
+	it('Functional tests - additionalProperties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			additionalProperties: { type: 'boolean' },
+		};
 
-    const expected = "z.record(z.string(), z.boolean())";
+		const expected = 'z.record(z.string(), z.boolean())';
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
-  });
+		expect(result.text()).toBe(expected);
+	});
 
-  it("Functional tests - additionalProperties and patternProperties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      additionalProperties: { type: "boolean" },
-      patternProperties: {
-        "\\.": { type: "array" },
-        "\\,": { type: "array", minItems: 1 },
-      },
-    };
+	it('Functional tests - additionalProperties and patternProperties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			additionalProperties: { type: 'boolean' },
+			patternProperties: {
+				'\\.': { type: 'array' },
+				'\\,': { type: 'array', minItems: 1 },
+			},
+		};
 
-    const expected = `z.record(z.string(), z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
+		const expected = `z.record(z.string(), z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
 let evaluated = false
 if (key.match(new RegExp(\"\\\\.\"))) {
@@ -672,42 +682,42 @@ ctx.addIssue({
 }
 })`;
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
+		expect(result.text()).toBe(expected);
 
-    const testResult = run(result, { x: true, ".": [], ",": [] });
-    expect(testResult.success).toBe(false);
-    expect(testResult.error.issues).toEqual([
-      {
-        path: [","],
-        code: "custom",
-        message: "Invalid input: Key matching regex /,/ must match schema",
-        params: {
-          issues: [
-            {
-              origin: "array",
-              code: "too_small",
-              minimum: 1,
-              inclusive: true,
-              path: [],
-              message: "Too small: expected array to have >=1 items",
-            },
-          ],
-        },
-      },
-    ]);
-  });
+		const testResult = run(result, { x: true, '.': [], ',': [] });
+		expect(testResult.success).toBe(false);
+		expect(testResult.error.issues).toEqual([
+			{
+				path: [','],
+				code: 'custom',
+				message: 'Invalid input: Key matching regex /,/ must match schema',
+				params: {
+					issues: [
+						{
+							origin: 'array',
+							code: 'too_small',
+							minimum: 1,
+							inclusive: true,
+							path: [],
+							message: 'Too small: expected array to have >=1 items',
+						},
+					],
+				},
+			},
+		]);
+	});
 
-  it("Functional tests - single-item patternProperties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      patternProperties: {
-        "\\.": { type: "array" },
-      },
-    };
+	it('Functional tests - single-item patternProperties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			patternProperties: {
+				'\\.': { type: 'array' },
+			},
+		};
 
-    const expected = `z.record(z.string(), z.array(z.any())).superRefine((value, ctx) => {
+		const expected = `z.record(z.string(), z.array(z.any())).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp("\\\\."))) {
 const result = z.array(z.any()).safeParse(value[key])
@@ -725,21 +735,21 @@ ctx.addIssue({
 }
 })`;
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
-  });
+		expect(result.text()).toBe(expected);
+	});
 
-  it("Functional tests - patternProperties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      patternProperties: {
-        "\\.": { type: "array" },
-        "\\,": { type: "array", minItems: 1 },
-      },
-    };
+	it('Functional tests - patternProperties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			patternProperties: {
+				'\\.': { type: 'array' },
+				'\\,': { type: 'array', minItems: 1 },
+			},
+		};
 
-    const expected = `z.record(z.string(), z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
+		const expected = `z.record(z.string(), z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])
@@ -770,57 +780,57 @@ ctx.addIssue({
 }
 })`;
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(run(result, { ".": [] })).toEqual({
-      success: true,
-      data: { ".": [] },
-    });
+		expect(run(result, { '.': [] })).toEqual({
+			success: true,
+			data: { '.': [] },
+		});
 
-    const testResult = run(result, { ",": [] });
-    expect(testResult.success).toBe(false);
-    expect(testResult.error.issues).toEqual([
-      {
-        path: [","],
-        code: "custom",
-        message: "Invalid input: Key matching regex /,/ must match schema",
-        params: {
-          issues: [
-            {
-              origin: "array",
-              code: "too_small",
-              minimum: 1,
-              inclusive: true,
-              path: [],
-              message: "Too small: expected array to have >=1 items",
-            },
-          ],
-        },
-      },
-    ]);
+		const testResult = run(result, { ',': [] });
+		expect(testResult.success).toBe(false);
+		expect(testResult.error.issues).toEqual([
+			{
+				path: [','],
+				code: 'custom',
+				message: 'Invalid input: Key matching regex /,/ must match schema',
+				params: {
+					issues: [
+						{
+							origin: 'array',
+							code: 'too_small',
+							minimum: 1,
+							inclusive: true,
+							path: [],
+							message: 'Too small: expected array to have >=1 items',
+						},
+					],
+				},
+			},
+		]);
 
-    expect(result).toBe(expected);
-  });
+		expect(result.text()).toBe(expected);
+	});
 
-  it("Functional tests - patternProperties and properties", () => {
-    const schema: JSONSchema7 & { type: "object" } = {
-      type: "object",
-      required: ["a"],
-      properties: {
-        a: {
-          type: "string",
-        },
-        b: {
-          type: "number",
-        },
-      },
-      patternProperties: {
-        "\\.": { type: "array" },
-        "\\,": { type: "array", minItems: 1 },
-      },
-    };
+	it('Functional tests - patternProperties and properties', () => {
+		const schema: JSONSchema7 & { type: 'object' } = {
+			type: 'object',
+			required: ['a'],
+			properties: {
+				a: {
+					type: 'string',
+				},
+				b: {
+					type: 'number',
+				},
+			},
+			patternProperties: {
+				'\\.': { type: 'array' },
+				'\\,': { type: 'array', minItems: 1 },
+			},
+		};
 
-    const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
+		const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])
@@ -851,8 +861,8 @@ ctx.addIssue({
 }
 })`;
 
-    const result = parseObject(schema, { path: [], seen: new Map() });
+		const result = parseObject(schema, { path: [], seen: new Map() });
 
-    expect(result).toBe(expected);
-  });
+		expect(result.text()).toBe(expected);
+	});
 });

@@ -1,5 +1,5 @@
 import { Options, JsonSchema } from '../Types.js';
-import { parseSchema } from '../parsers/parseSchema.js';
+import { parseSchema } from './parsers/parseSchema.js';
 import { expandJsdocs } from '../utils/jsdocs.js';
 
 export const jsonSchemaToZod = (
@@ -12,13 +12,15 @@ export const jsonSchemaToZod = (
 		);
 	}
 
-	let result = parseSchema(schema, {
+	const builder = parseSchema(schema, {
 		module,
 		name,
 		path: [],
 		seen: new Map(),
 		...rest,
 	});
+
+	let result = builder.text();
 
 	const jsdocs =
 		rest.withJsdocs && typeof schema !== 'boolean' && schema.description

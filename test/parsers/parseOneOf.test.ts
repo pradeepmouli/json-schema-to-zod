@@ -1,21 +1,21 @@
-import { describe, it, expect } from "vitest";
-import { parseOneOf } from "../../src/parsers/parseOneOf";
+import { describe, it, expect } from 'vitest';
+import { parseOneOf } from '../../src/parsers/parseOneOf';
 
-describe("parseOneOf", () => {
-  it("should create a union from two or more schemas", () => {
-    expect(
-      parseOneOf(
-        {
-          oneOf: [
-            {
-              type: "string",
-            },
-            { type: "number" },
-          ],
-        },
-        { path: [], seen: new Map() },
-      ),
-    ).toBe(`z.any().superRefine((x, ctx) => {
+describe('parseOneOf', () => {
+	it('should create a union from two or more schemas', () => {
+		expect(
+			parseOneOf(
+				{
+					oneOf: [
+						{
+							type: 'string',
+						},
+						{ type: 'number' },
+					],
+				},
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
     const errors = schemas.reduce<z.ZodError[]>(
       (errors, schema) =>
@@ -34,15 +34,20 @@ describe("parseOneOf", () => {
       });
     }
   })`);
-  });
+	});
 
-  it("should extract a single schema", () => {
-    expect(parseOneOf({ oneOf: [{ type: "string" }] }, { path: [], seen: new Map() })).toBe(
-      "z.string()",
-    );
-  });
+	it('should extract a single schema', () => {
+		expect(
+			parseOneOf(
+				{ oneOf: [{ type: 'string' }] },
+				{ path: [], seen: new Map() },
+			).text(),
+		).toBe('z.string()');
+	});
 
-  it("should return z.any() if array is empty", () => {
-    expect(parseOneOf({ oneOf: [] }, { path: [], seen: new Map() })).toBe("z.any()");
-  });
+	it('should return z.any() if array is empty', () => {
+		expect(
+			parseOneOf({ oneOf: [] }, { path: [], seen: new Map() }).text(),
+		).toBe('z.any()');
+	});
 });

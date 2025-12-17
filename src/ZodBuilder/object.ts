@@ -1,12 +1,20 @@
 import { BaseBuilder } from './BaseBuilder.js';
+import { build } from './index.js';
 
 /**
  * Fluent ObjectBuilder: wraps a Zod object schema string and provides chainable methods.
  */
-export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
-	readonly _properties: Record<string, string>;
-	constructor(properties: Record<string, string> = {}) {
-		super('');
+export class ObjectBuilder extends BaseBuilder {
+	readonly _properties: Record<string, BaseBuilder>;
+	private _precomputedSchema?: string; // Store pre-built schema string from fromCode()
+	private _strict: boolean = false;
+	private _loose: boolean = false;
+	private _catchallSchema?: string;
+	private _superRefineFn?: string;
+	private _andSchema?: string;
+
+	constructor(properties: Record<string, BaseBuilder> = {}) {
+		super();
 		this._properties = properties;
 	}
 
@@ -15,24 +23,16 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	 * Used when applying modifiers to already-built object schemas.
 	 */
 	static fromCode(code: string): ObjectBuilder {
-		const builder = new ObjectBuilder({});
-		builder._baseText = code;
+		const builder = build.object({});
+		builder._precomputedSchema = code;
 		return builder;
-	}
-
-	override text(): string {
-		if (this._baseText) {
-			return super.text();
-		}
-		this._baseText = buildObject(this._properties);
-		return super.text();
 	}
 
 	/**
 	 * Apply strict mode (no additional properties allowed).
 	 */
 	strict(): this {
-		this._baseText = applyStrict(this._baseText);
+		this._strict = true;
 		return this;
 	}
 
@@ -40,7 +40,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	 * Apply catchall schema for additional properties.
 	 */
 	catchall(catchallSchemaZod: string): this {
-		this._baseText = applyCatchall(this._baseText, catchallSchemaZod);
+		this._catchallSchema = catchallSchemaZod;
 		return this;
 	}
 
@@ -48,7 +48,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	 * Apply loose mode (allow additional properties). Uses .loose() for Zod v4.
 	 */
 	loose(): this {
-		this._baseText = applyLoose(this._baseText);
+		this._loose = true;
 		return this;
 	}
 
@@ -56,7 +56,7 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	 * Apply superRefine for pattern properties validation.
 	 */
 	superRefine(refineFn: string): this {
-		this._baseText = applySuperRefine(this._baseText, refineFn);
+		this._superRefineFn = refineFn;
 		return this;
 	}
 
@@ -64,35 +64,57 @@ export class ObjectBuilder extends BaseBuilder<ObjectBuilder> {
 	 * Apply and combinator (merge with another schema).
 	 */
 	and(otherSchemaZod: string): this {
-		this._baseText = applyAnd(this._baseText, otherSchemaZod);
+		this._andSchema = otherSchemaZod;
 		return this;
+	}
+
+	/**
+	 * Compute the base object schema.
+	 */
+	protected override base(): string {
+		return (
+			this._precomputedSchema ?? objectTextFromProperties(this._properties)
+		);
+	}
+
+	protected override modify(baseText: string): string {
+		let result = baseText;
+
+		if (this._strict) {
+			result = applyStrict(result);
+		}
+		if (this._catchallSchema) {
+			result = applyCatchall(result, this._catchallSchema);
+		}
+		if (this._loose) {
+			result = applyLoose(result);
+		}
+		if (this._superRefineFn) {
+			result = applySuperRefine(result, this._superRefineFn);
+		}
+		if (this._andSchema) {
+			result = applyAnd(result, this._andSchema);
+		}
+
+		return super.modify(result);
 	}
 }
 
-/**
- * Build a Zod object schema string from property definitions.
- * Properties should already have Zod schema strings as values.
- */
-export function buildObject(properties: Record<string, string>): string {
+function objectTextFromProperties(
+	properties: Record<string, BaseBuilder>,
+): string {
 	if (Object.keys(properties).length === 0) {
 		return 'z.object({})';
 	}
 
 	const props = Object.entries(properties)
-		.map(([key, zodStr]) => `${JSON.stringify(key)}: ${zodStr}`)
+		.map(([key, val]) => {
+			const zodStr = val.text();
+			return `${JSON.stringify(key)}: ${zodStr}`;
+		})
 		.join(', ');
 
 	return `z.object({ ${props} })`;
-}
-
-/**
- * Build a Zod record schema string.
- */
-export function buildRecord(
-	keySchemaZod: string,
-	valueSchemaZod: string,
-): string {
-	return `z.record(${keySchemaZod}, ${valueSchemaZod})`;
 }
 
 /**

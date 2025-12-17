@@ -4,10 +4,9 @@ import { BaseBuilder } from './BaseBuilder.js';
  * Fluent NumberBuilder: wraps a Zod number schema string and provides chainable methods
  * that delegate to the existing apply* functions.
  */
-export class NumberBuilder extends BaseBuilder<NumberBuilder> {
+export class NumberBuilder extends BaseBuilder {
 	_int: boolean | { errorMessage: string } = false;
-	_multipleOf: number | { value: number; errorMessage?: string } | undefined =
-		undefined;
+	_multipleOf: { value: number; errorMessage?: string } | undefined = undefined;
 
 	_min:
 		| { value: number; exclusive: boolean; errorMessage?: string }
@@ -18,7 +17,7 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
 		| undefined = undefined;
 
 	constructor() {
-		super('z.number()');
+		super();
 	}
 
 	/**
@@ -87,27 +86,30 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
 	 */
 
 	/**
-	 * Unwrap and return the final Zod code string.
+	 * Compute the base number schema.
 	 */
-	text(): string {
-		let result = this._baseText;
+	protected override base(): string {
+		return 'z.number()';
+	}
+
+	protected override modify(baseText: string): string {
+		let result = baseText;
+
 		if (this._int !== false) {
-			if (typeof this._int === 'object') {
-				result = applyInt(result, this._int.errorMessage);
-			} else {
-				result = applyInt(result);
-			}
+			result =
+				typeof this._int === 'object'
+					? applyInt(result, this._int.errorMessage)
+					: applyInt(result);
 		}
+
 		if (this._multipleOf !== undefined) {
-			if (typeof this._multipleOf === 'number') {
-				result = applyMultipleOf(result, this._multipleOf);
-			} else
-				result = applyMultipleOf(
-					result,
-					this._multipleOf.value,
-					this._multipleOf.errorMessage,
-				);
+			result = applyMultipleOf(
+				result,
+				this._multipleOf.value,
+				this._multipleOf.errorMessage,
+			);
 		}
+
 		if (this._min !== undefined) {
 			result = applyMin(
 				result,
@@ -124,16 +126,9 @@ export class NumberBuilder extends BaseBuilder<NumberBuilder> {
 				this._max.errorMessage,
 			);
 		}
-		this._baseText = result;
-		return super.text();
-	}
-}
 
-/**
- * Build a base Zod number schema string.
- */
-export function buildNumber(): string {
-	return 'z.number()';
+		return super.modify(result);
+	}
 }
 
 /**

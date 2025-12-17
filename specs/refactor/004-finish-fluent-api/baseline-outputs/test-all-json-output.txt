@@ -1,0 +1,14 @@
+npm warn Unknown cli config "--reporter". This will stop working in the next major version of npm.
+
+> x-to-zod@0.1.0 test
+> vitest run test/all.json
+
+
+[1m[46m RUN [49m[22m [36mv4.0.15 [39m[90m/Users/pmouli/GitHub.nosync/json-schema-to-zod[39m
+
+[31mNo test files found, exiting with code 1
+[39m
+[2mfilter: [22m[33mtest/all.json[39m
+[2minclude: [22m[33mtest/**/*.test.ts[39m
+[2mexclude:  [22m[33m**/node_modules/**[2m, [22m**/.git/**[39m
+
