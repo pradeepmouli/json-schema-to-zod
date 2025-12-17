@@ -31,6 +31,10 @@ export {
 	applyLoose,
 	applyPassthrough,
 	applyAnd,
+	applyExtend,
+	applyMerge,
+	applyPick,
+	applyOmit,
 } from './object.js';
 
 // New builders (Phase 1)
@@ -43,6 +47,36 @@ export { IntersectionBuilder } from './intersection.js';
 export { DiscriminatedUnionBuilder } from './discriminatedUnion.js';
 export { TupleBuilder } from './tuple.js';
 export { RecordBuilder } from './record.js';
+
+// Additional type builders
+export { VoidBuilder } from './void.js';
+export { UndefinedBuilder } from './undefined.js';
+export {
+	DateBuilder,
+	applyDateMin,
+	applyDateMax,
+} from './date.js';
+export {
+	BigIntBuilder,
+	applyBigIntMin,
+	applyBigIntMax,
+	applyBigIntMultipleOf,
+} from './bigint.js';
+export { SymbolBuilder } from './symbol.js';
+export { NaNBuilder } from './nan.js';
+export {
+	SetBuilder,
+	applySetMin,
+	applySetMax,
+	applySetSize,
+} from './set.js';
+export {
+	MapBuilder,
+	applyMapMin,
+	applyMapMax,
+	applyMapSize,
+} from './map.js';
+export { CustomBuilder } from './custom.js';
 
 // Import builder classes for the factory
 import { NumberBuilder } from './number.js';
@@ -62,6 +96,15 @@ import { IntersectionBuilder } from './intersection.js';
 import { TupleBuilder } from './tuple.js';
 import { RecordBuilder } from './record.js';
 import { GenericBuilder } from './generic.js';
+import { VoidBuilder } from './void.js';
+import { UndefinedBuilder } from './undefined.js';
+import { DateBuilder } from './date.js';
+import { BigIntBuilder } from './bigint.js';
+import { SymbolBuilder } from './symbol.js';
+import { NaNBuilder } from './nan.js';
+import { SetBuilder } from './set.js';
+import { MapBuilder } from './map.js';
+import { CustomBuilder } from './custom.js';
 
 // Generic modifiers
 export {
@@ -74,6 +117,8 @@ export {
 	applyCatch,
 	applyRefine,
 	applySuperRefine,
+	applyMeta,
+	applyTransform,
 } from './modifiers.js';
 
 // Builder factories - Zod-like API
@@ -115,4 +160,19 @@ export const build = {
 		keySchema: import('./BaseBuilder.js').BaseBuilder,
 		valueSchema: import('./BaseBuilder.js').BaseBuilder,
 	) => new RecordBuilder(keySchema, valueSchema),
+	// Additional type builders
+	void: () => new VoidBuilder(),
+	undefined: () => new UndefinedBuilder(),
+	date: () => new DateBuilder(),
+	bigint: () => new BigIntBuilder(),
+	symbol: () => new SymbolBuilder(),
+	nan: () => new NaNBuilder(),
+	set: (itemSchema: import('./BaseBuilder.js').BaseBuilder) =>
+		new SetBuilder(itemSchema),
+	map: (
+		keySchema: import('./BaseBuilder.js').BaseBuilder,
+		valueSchema: import('./BaseBuilder.js').BaseBuilder,
+	) => new MapBuilder(keySchema, valueSchema),
+	custom: (validateFn?: string, params?: any) =>
+		new CustomBuilder(validateFn, params),
 };
