@@ -6,6 +6,7 @@ export { BooleanBuilder } from './boolean.js';
 export { NullBuilder } from './null.js';
 export { ConstBuilder } from './const.js';
 export { EnumBuilder } from './enum.js';
+
 export {
 	NumberBuilder,
 	applyInt,
@@ -76,17 +77,19 @@ export {
 	applySuperRefine,
 } from './modifiers.js';
 
+
 // Builder factories - Zod-like API
 export const build = {
 	number: () => new NumberBuilder(),
 	string: () => new StringBuilder(),
 	boolean: () => new BooleanBuilder(),
 	null: () => new NullBuilder(),
+
 	array: (
-		itemSchemaZod:
+		items:
 			| import('./BaseBuilder.js').BaseBuilder
 			| import('./BaseBuilder.js').BaseBuilder[],
-	) => new ArrayBuilder(itemSchemaZod),
+	) => new ArrayBuilder(items),
 	object: (
 		properties: Record<string, import('./BaseBuilder.js').BaseBuilder> = {},
 	) => new ObjectBuilder(properties),
