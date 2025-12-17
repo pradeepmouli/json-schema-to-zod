@@ -7,7 +7,9 @@ _Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.or
 
 ## Summary
 
-A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code.
+An extensible package + CLI that converts “X” formats into Zod schemas (as JavaScript/TypeScript source code).
+
+Today, the only supported input is **JSON Schema (draft 4+)**. The library is structured so other input formats can be added over time without reworking the Zod output layer.
 
 Before v2 it used [`prettier`](https://www.npmjs.com/package/prettier) for formatting and [`json-refs`](https://www.npmjs.com/package/json-refs) to resolve schemas. To replicate the previous behaviour, please use their respective CLI tools.
 
@@ -19,33 +21,41 @@ Since v2 the CLI supports piped JSON.
 
 This section documents the internal builder architecture for contributors working on the codebase.
 
-#### Builder Pattern
+#### Builder Pattern (factory-first)
 
 The internal `ZodBuilder` system uses a fluent interface pattern matching Zod's API:
 
 ```typescript
 // Factory API (mirrors Zod)
-build.number()     → NumberBuilder
-build.string()     → StringBuilder
-build.array(item)  → ArrayBuilder
-build.object(props) → ObjectBuilder
-build.enum(values) → EnumBuilder
-build.literal(val) → ConstBuilder
-build.boolean()    → BooleanBuilder
-build.null()       → NullBuilder
+build.number();
+build.string();
+build.boolean();
+build.null();
+
+build.array(itemBuilder);           // Array
+build.array([item1, item2]);        // Tuple
+build.object({ a: build.string() });
+build.enum(["A", "B"]);
+build.literal("A");
+
+// Composition
+build.union([a, b]);
+build.intersection(a, b);
+build.tuple([a, b]);
+build.record(key, value);
+
+// Explicit escape hatch for raw zod code
+build.code("z.string().min(1)");
 ```
 
 #### Lazy Evaluation Pattern
 
 All builders follow a consistent lazy evaluation pattern:
 
-1. **Constructor** initializes `_baseText` with base schema (e.g., `"z.number()"`)
-2. **Modifier methods** store constraint metadata in private fields (e.g., `_min`, `_max`, `_format`)
-3. **`.text()` method** generates code by:
-   - Applying type-specific constraints to `_baseText`
-   - Updating `this._baseText` with result
-   - Calling `super.text()` to apply shared modifiers from BaseBuilder
-4. **BaseBuilder.text()** applies shared modifiers (`_optional`, `_nullable`, etc.)
+1. **Constructor** stores schema inputs / constraint state
+2. **`.base()`** returns the unmodified Zod expression (e.g., `"z.number()"`)
+3. **`.modify(base)`** applies builder-specific constraints (min/max/format/etc.)
+4. **BaseBuilder** then applies shared modifiers (optional/nullable/default/describe/brand/readonly/catch/refine/superRefine)
 
 **Example Flow:**
 ```typescript
@@ -66,11 +76,13 @@ Multiple calls to the same modifier intelligently merge:
 - `.max(20).max(15)` → keeps strictest (15)
 - `.multipleOf(3)` → automatically sets `_int = true`
 
-#### BaseBuilder Inheritance
+#### BaseBuilder modifiers
 
-All builders extend `BaseBuilder<T>` which provides 8 shared modifiers:
+All builders extend `BaseBuilder` which provides shared, always-available modifiers:
 - `.optional()`, `.nullable()`, `.default(val)`, `.describe(str)`
-- `.brand(str)`, `.readonly()`, `.catch(val)`, `.text()`
+- `.brand(str)`, `.readonly()`, `.catch(val)`
+- `.refine(fn, message?)`, `.superRefine(fn)`
+- `.text()` (final rendering)
 
 This eliminates 154 lines of duplicated code and ensures consistent behavior across all builder types.
 
@@ -120,7 +132,7 @@ json-refs resolve mySchema.json | x-to-zod | prettier --parser typescript > mySc
 #### Simple example
 
 ```typescript
-import { jsonSchemaToZod } from "x-to-zod";
+import { JsonSchema } from "x-to-zod";
 
 const myObject = {
   type: "object",
@@ -131,18 +143,18 @@ const myObject = {
   },
 };
 
-const module = jsonSchemaToZod(myObject, { module: "esm" });
+const module = JsonSchema.jsonSchemaToZod(myObject, { module: "esm" });
 
 // `type` can be either a string or - outside of the CLI - a boolean. If its `true`, the name of the type will be the name of the schema with a capitalized first letter.
-const moduleWithType = jsonSchemaToZod(myObject, {
+const moduleWithType = JsonSchema.jsonSchemaToZod(myObject, {
   name: "mySchema",
   module: "esm",
   type: true,
 });
 
-const cjs = jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
+const cjs = JsonSchema.jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
 
-const justTheSchema = jsonSchemaToZod(myObject);
+const justTheSchema = JsonSchema.jsonSchemaToZod(myObject);
 ```
 
 ##### `module`
@@ -180,11 +192,11 @@ z.object({ hello: z.string().optional() });
 import { z } from "zod";
 import { resolveRefs } from "json-refs";
 import { format } from "prettier";
-import jsonSchemaToZod from "x-to-zod";
+import { JsonSchema } from "x-to-zod";
 
 async function example(jsonSchema: Record<string, unknown>): Promise<string> {
   const { resolved } = await resolveRefs(jsonSchema);
-  const code = jsonSchemaToZod(resolved);
+  const code = JsonSchema.jsonSchemaToZod(resolved);
   const formatted = await format(code, { parser: "typescript" });
 
   return formatted;
