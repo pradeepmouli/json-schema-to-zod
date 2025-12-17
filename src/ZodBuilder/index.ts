@@ -1,17 +1,13 @@
 // Base builder class
 export { BaseBuilder } from './BaseBuilder.js';
 
-// Utility builders
-export { buildGeneric } from './generic.js';
-
 // Base builders (primitive data → Zod code)
-export { BooleanBuilder, buildBoolean } from './boolean.js';
-export { NullBuilder, buildNull } from './null.js';
-export { ConstBuilder, buildLiteral, buildConst } from './const.js';
-export { EnumBuilder, buildEnum } from './enum.js';
+export { BooleanBuilder } from './boolean.js';
+export { NullBuilder } from './null.js';
+export { ConstBuilder } from './const.js';
+export { EnumBuilder } from './enum.js';
 export {
 	NumberBuilder,
-	buildNumber,
 	applyInt,
 	applyMultipleOf,
 	applyMin as applyNumberMin,
@@ -19,7 +15,6 @@ export {
 } from './number.js';
 export {
 	StringBuilder,
-	buildString,
 	applyFormat,
 	applyPattern,
 	applyMinLength,
@@ -30,15 +25,11 @@ export {
 } from './string.js';
 export {
 	ArrayBuilder,
-	buildArray,
-	buildTuple,
 	applyMinItems,
 	applyMaxItems,
 } from './array.js';
 export {
 	ObjectBuilder,
-	buildObject,
-	buildRecord,
 	applyStrict,
 	applyCatchall,
 	applyLoose,
@@ -47,18 +38,17 @@ export {
 } from './object.js';
 
 // New builders (Phase 1)
-export { AnyBuilder, buildAny } from './any.js';
-export { NeverBuilder, buildNever } from './never.js';
-export { UnknownBuilder, buildUnknown } from './unknown.js';
-export { LiteralBuilder, buildLiteralValue } from './literal.js';
-export { UnionBuilder, buildUnion } from './union.js';
-export { IntersectionBuilder, buildIntersection } from './intersection.js';
+export { AnyBuilder } from './any.js';
+export { NeverBuilder } from './never.js';
+export { UnknownBuilder } from './unknown.js';
+export { LiteralBuilder } from './literal.js';
+export { UnionBuilder } from './union.js';
+export { IntersectionBuilder } from './intersection.js';
 export {
 	DiscriminatedUnionBuilder,
-	buildDiscriminatedUnion,
 } from './discriminatedUnion.js';
-export { TupleBuilder, buildTupleSchema } from './tuple.js';
-export { RecordBuilder, buildRecordSchema } from './record.js';
+export { TupleBuilder } from './tuple.js';
+export { RecordBuilder } from './record.js';
 
 // Import builder classes for the factory
 import { NumberBuilder } from './number.js';

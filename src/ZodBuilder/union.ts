@@ -17,11 +17,3 @@ export class UnionBuilder extends BaseBuilder {
 		return `z.union([${schemaStrings.join(', ')}])`;
 	}
 }
-
-/**
- * Build a Zod union schema string.
- */
-export function buildUnion(schemas: BaseBuilder[]): string {
-	const schemaStrings = schemas.map((s) => s.text());
-	return `z.union([${schemaStrings.join(', ')}])`;
-}

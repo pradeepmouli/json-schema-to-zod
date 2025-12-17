@@ -20,15 +20,3 @@ export class IntersectionBuilder extends BaseBuilder {
 		return `z.intersection(${leftStr}, ${rightStr})`;
 	}
 }
-
-/**
- * Build a Zod intersection schema string.
- */
-export function buildIntersection(
-	left: BaseBuilder,
-	right: BaseBuilder,
-): string {
-	const leftStr = left.text();
-	const rightStr = right.text();
-	return `z.intersection(${leftStr}, ${rightStr})`;
-}
