@@ -20,15 +20,18 @@
     "build:types": "tsc -p tsconfig.types.json",
     "build:cjs": "tsc -p tsconfig.cjs.json && node postcjs.js",
     "build:esm": "tsc -p tsconfig.esm.json && node postesm.js",
-    "build": "npm i && npm run gen && npm test && rimraf ./dist && npm run build:types && npm run build:cjs && npm run build:esm",
-    "dry": "npm run build && npm pub --dry-run",
+    "build": "pnpm run gen && pnpm test && rimraf ./dist && pnpm run build:types && pnpm run build:cjs && pnpm run build:esm",
+    "dry": "pnpm run build && pnpm publish --dry-run",
     "dev": "vitest",
     "gen": "tsx ./createIndex.ts",
     "test": "vitest run",
     "lint": "oxlint src test",
     "lint:fix": "oxlint --fix src test",
     "format": "oxfmt src test",
-    "format:check": "oxfmt --check src test"
+    "format:check": "oxfmt --check src test",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm run build && changeset publish"
   },
   "c8": {
     "exclude": [
@@ -70,6 +73,7 @@
     "url": "https://github.com/StefanTerdell/json-schema-to-zod"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^20.9.0",
     "@vitest/coverage-v8": "^4.0.15",
