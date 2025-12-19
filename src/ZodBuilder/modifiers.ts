@@ -74,3 +74,17 @@ export function applySuperRefine(zodStr: string, refineFn: string): string {
 export function applyCatch(zodStr: string, fallbackValue: any): string {
 	return `${asText(zodStr)}.catch(${JSON.stringify(fallbackValue)})`;
 }
+
+/**
+ * Apply meta modifier to attach metadata to a schema.
+ */
+export function applyMeta(zodStr: string, metadata: any): string {
+	return `${asText(zodStr)}.meta(${JSON.stringify(metadata)})`;
+}
+
+/**
+ * Apply transform modifier.
+ */
+export function applyTransform(zodStr: string, transformFn: string): string {
+	return `${asText(zodStr)}.transform(${transformFn})`;
+}

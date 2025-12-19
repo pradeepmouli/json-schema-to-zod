@@ -8,6 +8,8 @@ import {
 	applyRefine,
 	applyReadonly,
 	applySuperRefine,
+	applyMeta,
+	applyTransform,
 } from './modifiers.js';
 
 /**
@@ -31,6 +33,8 @@ export abstract class BaseBuilder {
 	_refineFn?: string = undefined;
 	_refineMessage?: string = undefined;
 	_superRefineFns: string[] = [];
+	_metaData?: any = undefined;
+	_transformFn?: string = undefined;
 
 	/**
 	 * Apply optional constraint.
@@ -112,6 +116,24 @@ export abstract class BaseBuilder {
 	}
 
 	/**
+	 * Apply meta modifier.
+	 */
+	meta(metadata: any): this {
+		this._metaData = metadata;
+		return this;
+	}
+
+	/**
+	 * Apply transform modifier.
+	 *
+	 * Note: function is provided as raw code string e.g. `(val) => transformedVal`.
+	 */
+	transform(transformFn: string): this {
+		this._transformFn = transformFn;
+		return this;
+	}
+
+	/**
 	 * Compute the type-specific base schema string.
 	 *
 	 * This is the core abstract method in the template method pattern.
@@ -136,6 +158,9 @@ export abstract class BaseBuilder {
 		if (this._describeText) {
 			result = applyDescribe(result, this._describeText);
 		}
+		if (this._metaData !== undefined) {
+			result = applyMeta(result, this._metaData);
+		}
 		if (this._nullable) {
 			result = applyNullable(result);
 		}
@@ -158,6 +183,9 @@ export abstract class BaseBuilder {
 				seen.add(fn);
 				result = applySuperRefine(result, fn);
 			}
+		}
+		if (this._transformFn) {
+			result = applyTransform(result, this._transformFn);
 		}
 		if (this._optional) {
 			result = applyOptional(result);
