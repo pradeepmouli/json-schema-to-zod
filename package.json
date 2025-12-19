@@ -1,6 +1,6 @@
 {
   "name": "x-to-zod",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Converts X into Zod schemas",
   "types": "./dist/types/index.d.ts",
   "bin": "./dist/cjs/cli.js",
