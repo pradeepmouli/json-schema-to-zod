@@ -1,9 +1,11 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent NeverBuilder: represents z.never() schema.
  */
-export class NeverBuilder extends BaseBuilder {
+export class NeverBuilder extends ZodBuilder<'never'> {
+	readonly typeKind = 'never' as const;
+
 	constructor() {
 		super();
 	}

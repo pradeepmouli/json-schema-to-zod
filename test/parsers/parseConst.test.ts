@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseConst } from '../../src/parsers/parseConst';
+import { parseConst } from '../../src/JsonSchema/parsers/parseConst';
 
 describe('parseConst', () => {
 	it('should handle falsy constants', () => {

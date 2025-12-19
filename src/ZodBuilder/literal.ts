@@ -1,10 +1,11 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 import { Serializable } from '../Types.js';
 
 /**
  * Fluent LiteralBuilder: represents z.literal() schema.
  */
-export class LiteralBuilder extends BaseBuilder {
+export class LiteralBuilder extends ZodBuilder<'literal'> {
+	readonly typeKind = 'literal' as const;
 	private readonly _value: Serializable;
 
 	constructor(value: Serializable) {

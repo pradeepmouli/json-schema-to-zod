@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseNumber } from '../../src/parsers/parseNumber';
+import { parseNumber } from '../../src/JsonSchema/parsers/parseNumber';
 
 describe('parseNumber', () => {
 	it('should handle integer', () => {

@@ -1,9 +1,10 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * DateBuilder: represents z.date() with optional constraints
  */
-export class DateBuilder extends BaseBuilder {
+export class DateBuilder extends ZodBuilder<'date'> {
+	readonly typeKind = 'date' as const;
 	_min?: { value: Date; errorMessage?: string } = undefined;
 	_max?: { value: Date; errorMessage?: string } = undefined;
 

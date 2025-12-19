@@ -1,7 +1,7 @@
 import { JSONSchema7 } from 'json-schema';
 import { ZodError } from 'zod';
-import { parseObject } from '../../src/parsers/parseObject';
-import { describe, it, expect } from 'vitest';
+import { parseObject } from '../../src/JsonSchema/parsers/parseObject';
+import { describe, it, expect, assert } from 'vitest';
 
 describe('parseObject', () => {
 	it('should handle with missing properties', () => {

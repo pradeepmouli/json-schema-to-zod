@@ -1,4 +1,4 @@
-import { parseSchema } from '../../src/parsers/parseSchema.js';
+import { parseSchema } from '../../src/JsonSchema/parsers/parseSchema.js';
 import { describe, it, expect } from 'vitest';
 
 describe('parseSchema', () => {

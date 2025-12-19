@@ -1,15 +1,16 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * SetBuilder: represents z.set() with optional constraints
  */
-export class SetBuilder extends BaseBuilder {
-	_itemSchema: BaseBuilder;
+export class SetBuilder extends ZodBuilder<'set'> {
+	readonly typeKind = 'set' as const;
+	_itemSchema: ZodBuilder;
 	_min?: { value: number; errorMessage?: string } = undefined;
 	_max?: { value: number; errorMessage?: string } = undefined;
 	_size?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchema: BaseBuilder) {
+	constructor(itemSchema: ZodBuilder) {
 		super();
 		this._itemSchema = itemSchema;
 	}

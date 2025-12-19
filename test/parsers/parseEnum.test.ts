@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseEnum } from '../../src/parsers/parseEnum';
+import { parseEnum } from '../../src/JsonSchema/parsers/parseEnum';
 
 describe('parseEnum', () => {
 	it('should create never with empty enum', () => {

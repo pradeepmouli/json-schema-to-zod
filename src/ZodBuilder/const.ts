@@ -1,10 +1,11 @@
 import { Serializable } from '../Types.js';
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent ConstBuilder: wraps a Zod literal schema string and provides chainable methods.
  */
-export class ConstBuilder extends BaseBuilder {
+export class ConstBuilder extends ZodBuilder<'literal'> {
+	readonly typeKind = 'literal' as const;
 	private readonly _value: Serializable;
 
 	constructor(value: Serializable) {

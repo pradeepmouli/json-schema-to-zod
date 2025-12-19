@@ -1,11 +1,12 @@
 import { JsonSchemaObject, JsonSchema, Refs } from '../../Types.js';
-import { BaseBuilder, build } from '../../ZodBuilder/index.js';
+import type { ZodBuilder } from '../../ZodBuilder/BaseBuilder.js';
+import { BaseBuilder, build, type AnyBuilder, type UnionBuilder } from '../../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
 export const parseAnyOf = (
 	schema: JsonSchemaObject & { anyOf: JsonSchema[] },
 	refs: Refs,
-): BaseBuilder => {
+): UnionBuilder | ZodBuilder => {
 	return schema.anyOf.length
 		? schema.anyOf.length === 1
 			? parseSchema(schema.anyOf[0], {

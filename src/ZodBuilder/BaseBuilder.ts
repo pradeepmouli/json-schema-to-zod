@@ -1,16 +1,97 @@
-import {
-	applyBrand,
-	applyCatch,
-	applyDefault,
-	applyDescribe,
-	applyNullable,
-	applyOptional,
-	applyRefine,
-	applyReadonly,
-	applySuperRefine,
-	applyMeta,
-	applyTransform,
-} from './modifiers.js';
+/**
+ * Generic modifiers that can be applied to any Zod schema.
+ */
+
+import type { TypeKind, TypeKindOf } from '.';
+
+
+
+function asText(input: string): string {
+	return input;
+}
+
+/**
+ * Apply optional modifier to a schema.
+ */
+export function applyOptional(zodStr: string): string {
+	return `${asText(zodStr)}.optional()`;
+}
+
+/**
+ * Apply nullable modifier to a schema.
+ */
+export function applyNullable(zodStr: string): string {
+	return `${asText(zodStr)}.nullable()`;
+}
+
+/**
+ * Apply default value to a schema.
+ */
+export function applyDefault(zodStr: string, defaultValue: any): string {
+	return `${asText(zodStr)}.default(${JSON.stringify(defaultValue)})`;
+}
+
+/**
+ * Apply describe modifier to a schema.
+ */
+export function applyDescribe(zodStr: string, description: string): string {
+	return `${asText(zodStr)}.describe(${JSON.stringify(description)})`;
+}
+
+/**
+ * Apply brand to a schema.
+ */
+export function applyBrand(zodStr: string, brand: string): string {
+	return `${asText(zodStr)}.brand(${JSON.stringify(brand)})`;
+}
+
+/**
+ * Apply readonly modifier to a schema.
+ */
+export function applyReadonly(zodStr: string): string {
+	return `${asText(zodStr)}.readonly()`;
+}
+
+/**
+ * Apply refine modifier.
+ */
+export function applyRefine(
+	zodStr: string,
+	refineFn: string,
+	message?: string,
+): string {
+	return message
+		? `${asText(zodStr)}.refine(${refineFn}, ${JSON.stringify(message)})`
+		: `${asText(zodStr)}.refine(${refineFn})`;
+}
+
+/**
+ * Apply superRefine modifier.
+ */
+export function applySuperRefine(zodStr: string, refineFn: string): string {
+	return `${asText(zodStr)}.superRefine(${refineFn})`;
+}
+
+/**
+ * Apply catch modifier with fallback value.
+ */
+export function applyCatch(zodStr: string, fallbackValue: any): string {
+	return `${asText(zodStr)}.catch(${JSON.stringify(fallbackValue)})`;
+}
+
+/**
+ * Apply meta modifier to attach metadata to a schema.
+ */
+export function applyMeta(zodStr: string, metadata: Record<string, any>): string {
+	return `${asText(zodStr)}.meta(${JSON.stringify(metadata)})`;
+}
+
+/**
+ * Apply transform modifier.
+ */
+export function applyTransform(zodStr: string, transformFn: string): string {
+	return `${asText(zodStr)}.transform(${transformFn})`;
+}
 
 /**
  * BaseBuilder: Abstract base class for all Zod schema builders.
@@ -21,7 +102,10 @@ import {
  * - modify(): Applies shared modifiers to the base schema
  * - text(): Orchestrates base() and modify() to produce final output
  */
-export abstract class BaseBuilder {
+
+export abstract class ZodBuilder<T extends string = string> {
+
+	abstract readonly typeKind: T;
 	_optional: boolean = false;
 	_nullable: boolean = false;
 	_readonly: boolean = false;
@@ -84,8 +168,6 @@ export abstract class BaseBuilder {
 		return this;
 	}
 
-	meta(record<)
-
 	/**
 	 * Apply catch modifier.
 	 */
@@ -118,7 +200,7 @@ export abstract class BaseBuilder {
 	/**
 	 * Apply meta modifier.
 	 */
-	meta(metadata: any): this {
+	meta(metadata: Record<string, any>): this {
 		this._metaData = metadata;
 		return this;
 	}
@@ -146,6 +228,10 @@ export abstract class BaseBuilder {
 	 * @returns The base Zod schema string without any modifiers applied
 	 */
 	protected abstract base(): string;
+
+	is<T extends keyof TypeKind>(type: T | keyof T): this is TypeKindOf<T> {
+		return this.typeKind === type;
+	}
 
 	/**
 	 * Apply all shared modifiers to the base schema string.
@@ -195,6 +281,7 @@ export abstract class BaseBuilder {
 		}
 
 		return result;
+
 	}
 
 	/**
@@ -203,5 +290,9 @@ export abstract class BaseBuilder {
 	 */
 	text(): string {
 		return this.modify(this.base());
+	}
+
+	toString(): string {
+		return this.text();
 	}
 }

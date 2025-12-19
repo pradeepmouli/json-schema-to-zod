@@ -1,14 +1,15 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent RecordBuilder: represents z.record() schema.
  * Accepts key and value schemas.
  */
-export class RecordBuilder extends BaseBuilder {
-	private readonly _keySchema: BaseBuilder;
-	private readonly _valueSchema: BaseBuilder;
+export class RecordBuilder extends ZodBuilder<'record'> {
+	readonly typeKind = 'record' as const;
+	private readonly _keySchema: ZodBuilder;
+	private readonly _valueSchema: ZodBuilder;
 
-	constructor(keySchema: BaseBuilder, valueSchema: BaseBuilder) {
+	constructor(keySchema: ZodBuilder, valueSchema: ZodBuilder) {
 		super();
 		this._keySchema = keySchema;
 		this._valueSchema = valueSchema;

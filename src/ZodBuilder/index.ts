@@ -1,5 +1,5 @@
 // Base builder class
-export { BaseBuilder } from './BaseBuilder.js';
+export { ZodBuilder as BaseBuilder } from './BaseBuilder.js';
 
 // Base builders (primitive data → Zod code)
 export { BooleanBuilder } from './boolean.js';
@@ -105,6 +105,7 @@ import { NaNBuilder } from './nan.js';
 import { SetBuilder } from './set.js';
 import { MapBuilder } from './map.js';
 import { CustomBuilder } from './custom.js';
+import { DiscriminatedUnionBuilder } from '../index.js';
 
 // Generic modifiers
 export {
@@ -119,7 +120,7 @@ export {
 	applySuperRefine,
 	applyMeta,
 	applyTransform,
-} from './modifiers.js';
+} from './BaseBuilder.js';
 
 // Builder factories - Zod-like API
 export const build = {
@@ -129,11 +130,11 @@ export const build = {
 	null: () => new NullBuilder(),
 	array: (
 		itemSchemaZod:
-			| import('./BaseBuilder.js').BaseBuilder
-			| import('./BaseBuilder.js').BaseBuilder[],
+			| import('./BaseBuilder.js').ZodBuilder
+			| import('./BaseBuilder.js').ZodBuilder[],
 	) => new ArrayBuilder(itemSchemaZod),
 	object: (
-		properties: Record<string, import('./BaseBuilder.js').BaseBuilder> = {},
+		properties: Record<string, import('./BaseBuilder.js').ZodBuilder> = {},
 	) => new ObjectBuilder(properties),
 	enum: (values: import('../Types.js').Serializable[]) =>
 		new EnumBuilder(values),
@@ -148,17 +149,17 @@ export const build = {
 	// Escape hatch for raw Zod code
 	code: (code: string) => new GenericBuilder(code),
 	raw: (code: string) => new GenericBuilder(code),
-	union: (schemas: import('./BaseBuilder.js').BaseBuilder[]) =>
+	union: (schemas: import('./BaseBuilder.js').ZodBuilder[]) =>
 		new UnionBuilder(schemas),
 	intersection: (
-		left: import('./BaseBuilder.js').BaseBuilder,
-		right: import('./BaseBuilder.js').BaseBuilder,
+		left: import('./BaseBuilder.js').ZodBuilder,
+		right: import('./BaseBuilder.js').ZodBuilder,
 	) => new IntersectionBuilder(left, right),
-	tuple: (items: import('./BaseBuilder.js').BaseBuilder[]) =>
+	tuple: (items: import('./BaseBuilder.js').ZodBuilder[]) =>
 		new TupleBuilder(items),
 	record: (
-		keySchema: import('./BaseBuilder.js').BaseBuilder,
-		valueSchema: import('./BaseBuilder.js').BaseBuilder,
+		keySchema: import('./BaseBuilder.js').ZodBuilder,
+		valueSchema: import('./BaseBuilder.js').ZodBuilder,
 	) => new RecordBuilder(keySchema, valueSchema),
 	// Additional type builders
 	void: () => new VoidBuilder(),
@@ -167,12 +168,20 @@ export const build = {
 	bigint: () => new BigIntBuilder(),
 	symbol: () => new SymbolBuilder(),
 	nan: () => new NaNBuilder(),
-	set: (itemSchema: import('./BaseBuilder.js').BaseBuilder) =>
+	set: (itemSchema: import('./BaseBuilder.js').ZodBuilder) =>
 		new SetBuilder(itemSchema),
 	map: (
-		keySchema: import('./BaseBuilder.js').BaseBuilder,
-		valueSchema: import('./BaseBuilder.js').BaseBuilder,
+		keySchema: import('./BaseBuilder.js').ZodBuilder,
+		valueSchema: import('./BaseBuilder.js').ZodBuilder,
 	) => new MapBuilder(keySchema, valueSchema),
 	custom: (validateFn?: string, params?: any) =>
 		new CustomBuilder(validateFn, params),
-};
+	discriminatedUnion: (
+		discriminator: string,
+		options: import('./BaseBuilder.js').ZodBuilder<string>[],
+	) => new DiscriminatedUnionBuilder(discriminator, options as any),
+} as const;
+
+export type TypeKind = {[T in keyof typeof build]: ReturnType<typeof build[T]>};
+
+export type TypeKindOf<T extends keyof TypeKind> = TypeKind[T];

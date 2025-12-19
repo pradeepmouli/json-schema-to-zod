@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseAllOf } from '../../src/parsers/parseAllOf';
+import { parseAllOf } from '../../src/JsonSchema/parsers/parseAllOf';
 
 describe('parseAllOf', () => {
 	it('should create never if empty', () => {

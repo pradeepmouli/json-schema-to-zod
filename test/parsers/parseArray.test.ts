@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseArray } from '../../src/parsers/parseArray';
+import { parseArray } from '../../src/JsonSchema/parsers/parseArray';
 
 describe('parseArray', () => {
 	it('should create tuple with items array', () => {

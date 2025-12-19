@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseOneOf } from '../../src/parsers/parseOneOf';
+import { parseOneOf } from '../../src/JsonSchema/parsers/parseOneOf';
 
 describe('parseOneOf', () => {
 	it('should create a union from two or more schemas', () => {

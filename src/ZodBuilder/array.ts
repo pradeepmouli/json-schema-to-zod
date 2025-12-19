@@ -1,14 +1,15 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
  */
-export class ArrayBuilder extends BaseBuilder {
-	private readonly _itemSchema: BaseBuilder | BaseBuilder[];
+export class ArrayBuilder extends ZodBuilder<'array'> {
+	readonly typeKind = 'array' as const;
+	private readonly _itemSchema: ZodBuilder | ZodBuilder[];
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchema: BaseBuilder | BaseBuilder[]) {
+	constructor(itemSchema: ZodBuilder | ZodBuilder[]) {
 		super();
 		this._itemSchema = itemSchema;
 	}

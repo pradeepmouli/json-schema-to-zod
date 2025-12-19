@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseNot } from '../../src/parsers/parseNot';
+import { parseNot } from '../../src/JsonSchema/parsers/parseNot';
 
 describe('parseNot', () => {
 	it('', () => {

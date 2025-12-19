@@ -1,11 +1,12 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 import { build } from './index.js';
 
 /**
  * Fluent ObjectBuilder: wraps a Zod object schema string and provides chainable methods.
  */
-export class ObjectBuilder extends BaseBuilder {
-	readonly _properties: Record<string, BaseBuilder>;
+export class ObjectBuilder extends ZodBuilder<'object'> {
+	readonly typeKind = 'object' as const;
+	readonly _properties: Record<string, ZodBuilder>;
 	private _precomputedSchema?: string; // Store pre-built schema string from fromCode()
 	private _strict: boolean = false;
 	private _loose: boolean = false;
@@ -17,7 +18,7 @@ export class ObjectBuilder extends BaseBuilder {
 	private _pickKeys?: string[];
 	private _omitKeys?: string[];
 
-	constructor(properties: Record<string, BaseBuilder> = {}) {
+	constructor(properties: Record<string, ZodBuilder> = {}) {
 		super();
 		this._properties = properties;
 	}
@@ -149,7 +150,7 @@ export class ObjectBuilder extends BaseBuilder {
 }
 
 function objectTextFromProperties(
-	properties: Record<string, BaseBuilder>,
+	properties: Record<string, ZodBuilder>,
 ): string {
 	if (Object.keys(properties).length === 0) {
 		return 'z.object({})';

@@ -1,16 +1,17 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * MapBuilder: represents z.map() with optional constraints
  */
-export class MapBuilder extends BaseBuilder {
-	_keySchema: BaseBuilder;
-	_valueSchema: BaseBuilder;
+export class MapBuilder extends ZodBuilder<'map'> {
+	readonly typeKind = 'map' as const;
+	_keySchema: ZodBuilder;
+	_valueSchema: ZodBuilder;
 	_min?: { value: number; errorMessage?: string } = undefined;
 	_max?: { value: number; errorMessage?: string } = undefined;
 	_size?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(keySchema: BaseBuilder, valueSchema: BaseBuilder) {
+	constructor(keySchema: ZodBuilder, valueSchema: ZodBuilder) {
 		super();
 		this._keySchema = keySchema;
 		this._valueSchema = valueSchema;

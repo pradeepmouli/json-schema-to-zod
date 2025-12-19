@@ -1,16 +1,17 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent StringBuilder: wraps a Zod string schema string and provides chainable methods.
  */
-export class StringBuilder extends BaseBuilder {
+export class StringBuilder extends ZodBuilder<'string'> {
+	readonly typeKind = 'string' as const;
 	_format?: { format: string; errorMessage?: string } = undefined;
 	_pattern?: { pattern: string; errorMessage?: string } = undefined;
 	_minLength?: { value: number; errorMessage?: string } = undefined;
 	_maxLength?: { value: number; errorMessage?: string } = undefined;
 	_base64?: { errorMessage?: string } = undefined;
 	_json?: { errorMessage?: string } = undefined;
-	_pipe?: { contentSchemaZod: string; errorMessage?: string } = undefined;
+	_pipe?: { contentSchema: ZodBuilder, errorMessage?: string } = undefined;
 
 	constructor() {
 		super();
@@ -282,8 +283,8 @@ export class StringBuilder extends BaseBuilder {
 	/**
 	 * Apply pipe with parsed content schema.
 	 */
-	pipe(contentSchemaZod: string, errorMessage?: string): this {
-		this._pipe = { contentSchemaZod, errorMessage };
+	pipe(contentSchema: ZodBuilder, errorMessage?: string): this {
+		this._pipe = { contentSchema, errorMessage };
 		return this;
 	}
 
@@ -334,7 +335,7 @@ export class StringBuilder extends BaseBuilder {
 		if (this._pipe !== undefined) {
 			result = applyPipe(
 				result,
-				this._pipe.contentSchemaZod,
+				this._pipe.contentSchema,
 				this._pipe.errorMessage,
 			);
 		}
@@ -557,10 +558,10 @@ export function applyJsonTransform(
  */
 export function applyPipe(
 	zodStr: string,
-	contentSchemaZod: string,
+	contentSchemaZod: ZodBuilder,
 	errorMessage?: string,
 ): string {
 	return errorMessage
-		? `${zodStr}.pipe(${contentSchemaZod}, ${JSON.stringify(errorMessage)})`
-		: `${zodStr}.pipe(${contentSchemaZod})`;
+		? `${zodStr}.pipe(${contentSchemaZod.text()}, ${JSON.stringify(errorMessage)})`
+		: `${zodStr}.pipe(${contentSchemaZod.text()})`;
 }

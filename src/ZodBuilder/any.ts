@@ -1,9 +1,10 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent AnyBuilder: represents z.any() schema.
  */
-export class AnyBuilder extends BaseBuilder {
+export class AnyBuilder extends ZodBuilder<'any'> {
+	readonly typeKind = 'any' as const;
 	constructor() {
 		super();
 	}

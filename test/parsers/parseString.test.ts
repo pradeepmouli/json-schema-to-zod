@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseString } from '../../src/parsers/parseString';
+import { parseString } from '../../src/JsonSchema/parsers/parseString';
 
 describe('parseString', () => {
 	const run = (output: string, data: unknown) =>

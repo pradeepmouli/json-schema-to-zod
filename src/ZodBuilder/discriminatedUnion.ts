@@ -1,14 +1,16 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import type { TypeKind } from '../index.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent DiscriminatedUnionBuilder: represents z.discriminatedUnion() schema.
  * Accepts a discriminator key and an array of object schemas.
  */
-export class DiscriminatedUnionBuilder extends BaseBuilder {
+export class DiscriminatedUnionBuilder extends ZodBuilder<'discriminatedUnion'> {
+	readonly typeKind = 'discriminatedUnion' as const;
 	private readonly _discriminator: string;
-	private readonly _options: BaseBuilder[];
+	private readonly _options: ZodBuilder<keyof TypeKind>[];
 
-	constructor(discriminator: string, options: BaseBuilder[]) {
+	constructor(discriminator: string, options: ZodBuilder<keyof TypeKind>[]) {
 		super();
 		this._discriminator = discriminator;
 		this._options = options;

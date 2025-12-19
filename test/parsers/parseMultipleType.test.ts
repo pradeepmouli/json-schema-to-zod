@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseSchema } from '../../src/parsers/parseSchema';
+import { parseSchema } from '../../src/JsonSchema/parsers/parseSchema';
 
 describe('parseMultipleType', () => {
 	it('should handle object with multitype properties with default', () => {

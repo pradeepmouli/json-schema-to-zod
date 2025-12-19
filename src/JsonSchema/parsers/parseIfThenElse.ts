@@ -13,17 +13,17 @@ export const parseIfThenElse = (
 	const $if = parseSchema(schema.if, {
 		...refs,
 		path: [...refs.path, 'if'],
-	}).text();
+	});
 	const $then = parseSchema(schema.then, {
 		...refs,
 		path: [...refs.path, 'then'],
-	}).text();
+	});
 	const $else = parseSchema(schema.else, {
 		...refs,
 		path: [...refs.path, 'else'],
-	}).text();
+	});
 
-	return build.union([build.code($then), build.code($else)]).superRefine(
+	return build.union([$then, $else]).superRefine(
 		`(value,ctx) => {
   const result = ${$if}.safeParse(value).success
     ? ${$then}.safeParse(value)

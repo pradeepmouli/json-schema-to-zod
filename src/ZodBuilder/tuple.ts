@@ -1,13 +1,14 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent TupleBuilder: represents z.tuple() schema.
  * Accepts an array of schemas representing tuple items.
  */
-export class TupleBuilder extends BaseBuilder {
-	private readonly _items: BaseBuilder[];
+export class TupleBuilder extends ZodBuilder<'tuple'> {
+	readonly typeKind = 'tuple' as const;
+	private readonly _items: ZodBuilder[];
 
-	constructor(items: BaseBuilder[]) {
+	constructor(items: ZodBuilder[]) {
 		super();
 		this._items = items;
 	}

@@ -1,9 +1,11 @@
-import { BaseBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent UnknownBuilder: represents z.unknown() schema.
  */
-export class UnknownBuilder extends BaseBuilder {
+export class UnknownBuilder extends ZodBuilder<'unknown'> {
+	readonly typeKind = 'unknown' as const;
+
 	constructor() {
 		super();
 	}
