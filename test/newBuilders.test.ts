@@ -270,4 +270,120 @@ describe('New Zod Builders', () => {
 			);
 		});
 	});
+
+	describe('Zod v4 Builders', () => {
+		it('promise builder', () => {
+			const schema = build.promise(build.string());
+			expect(schema.text()).toBe('z.promise(z.string())');
+		});
+
+		it('promise builder with complex type', () => {
+			const schema = build.promise(
+				build.object({ name: build.string(), age: build.number() }),
+			);
+			expect(schema.text()).toContain('z.promise(');
+			expect(schema.text()).toContain('z.object({');
+		});
+
+		it('promise builder with modifiers', () => {
+			const schema = build.promise(build.number()).optional();
+			expect(schema.text()).toBe('z.promise(z.number()).optional()');
+		});
+
+		it('lazy builder', () => {
+			const schema = build.lazy('() => z.string()');
+			expect(schema.text()).toBe('z.lazy(() => z.string())');
+		});
+
+		it('lazy builder for recursive schema', () => {
+			const schema = build.lazy('() => nodeSchema');
+			expect(schema.text()).toBe('z.lazy(() => nodeSchema)');
+		});
+
+		it('function builder without args', () => {
+			const schema = build.function();
+			expect(schema.text()).toBe('z.function()');
+		});
+
+		it('function builder with returns only', () => {
+			const schema = build.function().returns(build.string());
+			expect(schema.text()).toBe('z.function().returns(z.string())');
+		});
+
+		it('function builder with args only', () => {
+			const schema = build
+				.function()
+				.args(build.string(), build.number());
+			expect(schema.text()).toBe(
+				'z.function().args(z.string(),z.number())',
+			);
+		});
+
+		it('function builder with args and returns', () => {
+			const schema = build
+				.function()
+				.args(build.string())
+				.returns(build.number());
+			expect(schema.text()).toBe(
+				'z.function().args(z.string()).returns(z.number())',
+			);
+		});
+
+		it('function builder with modifiers', () => {
+			const schema = build
+				.function()
+				.returns(build.boolean())
+				.optional();
+			expect(schema.text()).toBe(
+				'z.function().returns(z.boolean()).optional()',
+			);
+		});
+
+		it('codec builder', () => {
+			const schema = build.codec(build.string(), build.number());
+			expect(schema.text()).toBe('z.codec(z.string(),z.number())');
+		});
+
+		it('codec builder with complex types', () => {
+			const schema = build.codec(
+				build.object({ raw: build.string() }),
+				build.object({ parsed: build.number() }),
+			);
+			expect(schema.text()).toContain('z.codec(');
+			expect(schema.text()).toContain('z.object({');
+		});
+
+		it('preprocess builder', () => {
+			const fnStr = '(val) => val.trim()';
+			const schema = build.preprocess(fnStr, build.string());
+			expect(schema.text()).toBe(
+				`z.preprocess(${fnStr},z.string())`,
+			);
+		});
+
+		it('preprocess builder with complex transformation', () => {
+			const fnStr = '(val) => parseInt(val, 10)';
+			const schema = build.preprocess(
+				fnStr,
+				build.number(),
+			);
+			expect(schema.text()).toBe(
+				`z.preprocess(${fnStr},z.number())`,
+			);
+		});
+
+		it('pipe builder', () => {
+			const schema = build.pipe(build.string(), build.number());
+			expect(schema.text()).toBe('z.string().pipe(z.number())');
+		});
+
+		it('pipe builder with transformations', () => {
+			const schema = build.pipe(
+				build.string().transform('(val) => parseInt(val)'),
+				build.number().min(0),
+			);
+			expect(schema.text()).toContain('.pipe(');
+			expect(schema.text()).toContain('z.number()');
+		});
+	});
 });

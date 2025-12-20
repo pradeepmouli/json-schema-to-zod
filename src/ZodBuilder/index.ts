@@ -78,6 +78,14 @@ export {
 } from './map.js';
 export { CustomBuilder } from './custom.js';
 
+// Zod v4 builders
+export { PromiseBuilder } from './promise.js';
+export { LazyBuilder } from './lazy.js';
+export { FunctionBuilder } from './function.js';
+export { CodecBuilder } from './codec.js';
+export { PreprocessBuilder } from './preprocess.js';
+export { PipeBuilder } from './pipe.js';
+
 // Import builder classes for the factory
 import { NumberBuilder } from './number.js';
 import { StringBuilder } from './string.js';
@@ -105,6 +113,12 @@ import { NaNBuilder } from './nan.js';
 import { SetBuilder } from './set.js';
 import { MapBuilder } from './map.js';
 import { CustomBuilder } from './custom.js';
+import { PromiseBuilder } from './promise.js';
+import { LazyBuilder } from './lazy.js';
+import { FunctionBuilder } from './function.js';
+import { CodecBuilder } from './codec.js';
+import { PreprocessBuilder } from './preprocess.js';
+import { PipeBuilder } from './pipe.js';
 import { DiscriminatedUnionBuilder } from '../index.js';
 
 // Generic modifiers
@@ -180,6 +194,23 @@ export const build = {
 		discriminator: string,
 		options: import('./BaseBuilder.js').ZodBuilder<string>[],
 	) => new DiscriminatedUnionBuilder(discriminator, options as any),
+	// Zod v4 builders
+	promise: (innerSchema: import('./BaseBuilder.js').ZodBuilder) =>
+		new PromiseBuilder(innerSchema),
+	lazy: (getter: string) => new LazyBuilder(getter),
+	function: () => new FunctionBuilder(),
+	codec: (
+		inSchema: import('./BaseBuilder.js').ZodBuilder,
+		outSchema: import('./BaseBuilder.js').ZodBuilder,
+	) => new CodecBuilder(inSchema, outSchema),
+	preprocess: (
+		transformFn: string,
+		schema: import('./BaseBuilder.js').ZodBuilder,
+	) => new PreprocessBuilder(transformFn, schema),
+	pipe: (
+		sourceSchema: import('./BaseBuilder.js').ZodBuilder,
+		targetSchema: import('./BaseBuilder.js').ZodBuilder,
+	) => new PipeBuilder(sourceSchema, targetSchema),
 } as const;
 
 export type TypeKind = {[T in keyof typeof build]: ReturnType<typeof build[T]>};
