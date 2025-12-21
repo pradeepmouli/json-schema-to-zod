@@ -23,8 +23,6 @@ import {
 } from '../../Types.js';
 import { BaseBuilder, build } from '../../ZodBuilder/index.js';
 import { ZodBuilder } from '../../ZodBuilder/BaseBuilder.js';
-import { base64 } from 'zod';
-import type { JSONSchema } from 'zod/v4/core';
 
 export const parseSchema = (
 	schema: JsonSchema,
