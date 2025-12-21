@@ -107,6 +107,15 @@ build.xor([build.string(), build.number()])
 // z.xor([z.string(),z.number()])
 ```
 
+### 12. KeyofBuilder (`z.keyof()`)
+**File**: `src/ZodBuilder/keyof.ts`  
+**Purpose**: Extracts keys from an object schema as an enum  
+**Usage**:
+```typescript
+build.keyof(build.object({ name: build.string(), age: build.number() }))
+// z.keyof(z.object({name:z.string(),age:z.number()}))
+```
+
 ## Architecture
 
 All builders:
@@ -130,14 +139,14 @@ const lazy = build.lazy('() => mySchema');
 ## Test Coverage
 
 All builders have comprehensive test coverage:
-- `test/newBuilders.test.ts`: Builder functionality tests (71 tests)
+- `test/newBuilders.test.ts`: Builder functionality tests (73 tests)
 - `test/zodCoverage.test.ts`: Type coverage verification (3 tests)
 - Basic functionality tests
 - Tests with modifiers (optional, nullable, etc.)
 - Tests with complex nested types
 - Tests with method chaining
 
-**Total tests**: 74 tests (all passing)
+**Total tests**: 76 tests (all passing)
 
 ## Type Coverage
 
@@ -151,7 +160,7 @@ The implementation provides comprehensive coverage of Zod v4 types:
 
 **Unions and intersections**: ✅ All implemented (union, intersection, discriminatedUnion, xor)
 
-**Zod v4 special types**: ✅ All implemented (promise, lazy, function, codec, preprocess, pipe, json, file, templateLiteral)
+**Zod v4 special types**: ✅ All implemented (promise, lazy, function, codec, preprocess, pipe, json, file, templateLiteral, keyof)
 
 **Types not needed as separate builders**:
 - Modifiers (optional, nullable, readonly, etc.) - available as builder methods
@@ -171,7 +180,7 @@ The builders are fully integrated into the existing codebase:
 
 ## Compliance
 
-✅ All tests passing (74/74)  
+✅ All tests passing (76/76)  
 ✅ Linter passing (0 errors, pre-existing warnings only)  
 ✅ Follows existing code patterns and conventions  
 ✅ Complete Zod v4 type coverage with verification test

@@ -49,6 +49,7 @@ describe('Zod v4 Type Coverage', () => {
 		expect(build.nativeEnum).toBeDefined();
 		expect(build.templateLiteral).toBeDefined();
 		expect(build.xor).toBeDefined();
+		expect(build.keyof).toBeDefined();
 
 		// Custom schemas
 		expect(build.custom).toBeDefined();
@@ -67,7 +68,6 @@ describe('Zod v4 Type Coverage', () => {
 			'email, url, uuid, guid, cuid, etc. - string format validators (string methods)',
 			'strictObject, looseObject - object variants (could be added if needed)',
 			'partialRecord, looseRecord - record variants (could be added if needed)',
-			'keyof - extracts object keys (specialized, could be added if needed)',
 		];
 
 		console.log('Zod v4 types not implemented as separate builders:');
@@ -115,6 +115,7 @@ describe('Zod v4 Type Coverage', () => {
 			'json',
 			'file',
 			'templateLiteral',
+			'keyof',
 			'custom',
 		];
 

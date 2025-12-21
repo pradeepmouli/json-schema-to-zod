@@ -425,5 +425,21 @@ describe('New Zod Builders', () => {
 			expect(schema.text()).toContain('z.xor([');
 			expect(schema.text()).toContain('z.object({');
 		});
+
+		it('keyof builder', () => {
+			const schema = build.keyof(
+				build.object({ name: build.string(), age: build.number() }),
+			);
+			expect(schema.text()).toContain('z.keyof(');
+			expect(schema.text()).toContain('z.object({');
+		});
+
+		it('keyof builder with modifiers', () => {
+			const schema = build
+				.keyof(build.object({ id: build.string(), status: build.string() }))
+				.optional();
+			expect(schema.text()).toContain('z.keyof(');
+			expect(schema.text()).toContain('.optional()');
+		});
 	});
 });

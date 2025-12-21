@@ -76,6 +76,7 @@ export { FileBuilder } from './file.js';
 export { NativeEnumBuilder } from './nativeEnum.js';
 export { TemplateLiteralBuilder } from './templateLiteral.js';
 export { XorBuilder } from './xor.js';
+export { KeyofBuilder } from './keyof.js';
 
 // Import builder classes for the factory
 import { NumberBuilder } from './number.js';
@@ -115,6 +116,7 @@ import { FileBuilder } from './file.js';
 import { NativeEnumBuilder } from './nativeEnum.js';
 import { TemplateLiteralBuilder } from './templateLiteral.js';
 import { XorBuilder } from './xor.js';
+import { KeyofBuilder } from './keyof.js';
 import { DiscriminatedUnionBuilder } from '../index.js';
 
 // Generic modifiers
@@ -215,6 +217,8 @@ export const build = {
 	) => new TemplateLiteralBuilder(parts),
 	xor: (schemas: import('./BaseBuilder.js').ZodBuilder[]) =>
 		new XorBuilder(schemas),
+	keyof: (objectSchema: import('./BaseBuilder.js').ZodBuilder) =>
+		new KeyofBuilder(objectSchema),
 } as const;
 
 export type TypeKind = {
