@@ -34,13 +34,11 @@ export const parseString = (schema: JsonSchemaObject & { type: 'string' }) => {
 	if (schema.contentMediaType === 'application/json') {
 		builder.json(schema.errorMessage?.contentMediaType);
 
-
 		// Apply contentSchema pipe if present
 		if (schema.contentSchema && typeof schema.contentSchema === 'object') {
 			const contentSchemaZod = parseSchema(schema.contentSchema);
 			builder.pipe(contentSchemaZod, schema.errorMessage?.contentSchema);
 		}
-
 	}
 
 	return builder;

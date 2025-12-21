@@ -4,8 +4,6 @@
 
 import type { TypeKind, TypeKindOf } from '.';
 
-
-
 function asText(input: string): string {
 	return input;
 }
@@ -82,7 +80,10 @@ export function applyCatch(zodStr: string, fallbackValue: any): string {
 /**
  * Apply meta modifier to attach metadata to a schema.
  */
-export function applyMeta(zodStr: string, metadata: Record<string, any>): string {
+export function applyMeta(
+	zodStr: string,
+	metadata: Record<string, any>,
+): string {
 	return `${asText(zodStr)}.meta(${JSON.stringify(metadata)})`;
 }
 
@@ -104,7 +105,6 @@ export function applyTransform(zodStr: string, transformFn: string): string {
  */
 
 export abstract class ZodBuilder<T extends string = string> {
-
 	abstract readonly typeKind: T;
 	_optional: boolean = false;
 	_nullable: boolean = false;
@@ -281,7 +281,6 @@ export abstract class ZodBuilder<T extends string = string> {
 		}
 
 		return result;
-
 	}
 
 	/**

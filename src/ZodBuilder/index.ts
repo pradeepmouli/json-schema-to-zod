@@ -51,11 +51,7 @@ export { RecordBuilder } from './record.js';
 // Additional type builders
 export { VoidBuilder } from './void.js';
 export { UndefinedBuilder } from './undefined.js';
-export {
-	DateBuilder,
-	applyDateMin,
-	applyDateMax,
-} from './date.js';
+export { DateBuilder, applyDateMin, applyDateMax } from './date.js';
 export {
 	BigIntBuilder,
 	applyBigIntMin,
@@ -64,18 +60,8 @@ export {
 } from './bigint.js';
 export { SymbolBuilder } from './symbol.js';
 export { NaNBuilder } from './nan.js';
-export {
-	SetBuilder,
-	applySetMin,
-	applySetMax,
-	applySetSize,
-} from './set.js';
-export {
-	MapBuilder,
-	applyMapMin,
-	applyMapMax,
-	applyMapSize,
-} from './map.js';
+export { SetBuilder, applySetMin, applySetMax, applySetSize } from './set.js';
+export { MapBuilder, applyMapMin, applyMapMax, applyMapSize } from './map.js';
 export { CustomBuilder } from './custom.js';
 
 // Zod v4 builders
@@ -224,12 +210,15 @@ export const build = {
 	json: () => new JsonBuilder(),
 	file: () => new FileBuilder(),
 	nativeEnum: (enumReference: string) => new NativeEnumBuilder(enumReference),
-	templateLiteral: (parts: (string | import('./BaseBuilder.js').ZodBuilder)[]) =>
-		new TemplateLiteralBuilder(parts),
+	templateLiteral: (
+		parts: (string | import('./BaseBuilder.js').ZodBuilder)[],
+	) => new TemplateLiteralBuilder(parts),
 	xor: (schemas: import('./BaseBuilder.js').ZodBuilder[]) =>
 		new XorBuilder(schemas),
 } as const;
 
-export type TypeKind = {[T in keyof typeof build]: ReturnType<typeof build[T]>};
+export type TypeKind = {
+	[T in keyof typeof build]: ReturnType<(typeof build)[T]>;
+};
 
 export type TypeKindOf<T extends keyof TypeKind> = TypeKind[T];

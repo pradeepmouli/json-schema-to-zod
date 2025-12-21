@@ -1,4 +1,4 @@
-import {  ZodBuilder } from './BaseBuilder.js';
+import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * BigIntBuilder: represents z.bigint() with optional constraints
@@ -17,17 +17,12 @@ export class BigIntBuilder extends ZodBuilder<'bigint'> {
 
 	readonly typeKind = 'bigint' as const;
 	constructor() {
-
 		super();
 	}
 	/**
 	 * Apply minimum constraint (gte by default).
 	 */
-	min(
-		value: bigint,
-		exclusive: boolean = false,
-		errorMessage?: string,
-	): this {
+	min(value: bigint, exclusive: boolean = false, errorMessage?: string): this {
 		this._min = { value, exclusive, errorMessage };
 		return this;
 	}
@@ -35,11 +30,7 @@ export class BigIntBuilder extends ZodBuilder<'bigint'> {
 	/**
 	 * Apply maximum constraint (lte by default).
 	 */
-	max(
-		value: bigint,
-		exclusive: boolean = false,
-		errorMessage?: string,
-	): this {
+	max(value: bigint, exclusive: boolean = false, errorMessage?: string): this {
 		this._max = { value, exclusive, errorMessage };
 		return this;
 	}

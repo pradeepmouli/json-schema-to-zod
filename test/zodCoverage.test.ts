@@ -10,7 +10,7 @@ describe('Zod v4 Type Coverage', () => {
 		expect(build.bigint).toBeDefined();
 		expect(build.date).toBeDefined();
 		expect(build.symbol).toBeDefined();
-		
+
 		// Special values
 		expect(build.undefined).toBeDefined();
 		expect(build.null).toBeDefined();
@@ -19,7 +19,7 @@ describe('Zod v4 Type Coverage', () => {
 		expect(build.unknown).toBeDefined();
 		expect(build.never).toBeDefined();
 		expect(build.nan).toBeDefined();
-		
+
 		// Complex types
 		expect(build.array).toBeDefined();
 		expect(build.object).toBeDefined();
@@ -27,16 +27,16 @@ describe('Zod v4 Type Coverage', () => {
 		expect(build.record).toBeDefined();
 		expect(build.map).toBeDefined();
 		expect(build.set).toBeDefined();
-		
+
 		// Enums and literals
 		expect(build.enum).toBeDefined();
 		expect(build.literal).toBeDefined();
-		
+
 		// Unions and intersections
 		expect(build.union).toBeDefined();
 		expect(build.intersection).toBeDefined();
 		expect(build.discriminatedUnion).toBeDefined();
-		
+
 		// Zod v4 specific types
 		expect(build.promise).toBeDefined();
 		expect(build.lazy).toBeDefined();
@@ -49,11 +49,11 @@ describe('Zod v4 Type Coverage', () => {
 		expect(build.nativeEnum).toBeDefined();
 		expect(build.templateLiteral).toBeDefined();
 		expect(build.xor).toBeDefined();
-		
+
 		// Custom schemas
 		expect(build.custom).toBeDefined();
 	});
-	
+
 	it('documents optional Zod v4 types not implemented as builders', () => {
 		// These are Zod v4 types that are either:
 		// 1. Modifiers (we have as methods): optional, nullable, readonly, etc.
@@ -69,32 +69,60 @@ describe('Zod v4 Type Coverage', () => {
 			'partialRecord, looseRecord - record variants (could be added if needed)',
 			'keyof - extracts object keys (specialized, could be added if needed)',
 		];
-		
+
 		console.log('Zod v4 types not implemented as separate builders:');
-		notNeededAsBuilders.forEach(item => console.log(`  - ${item}`));
-		
+		notNeededAsBuilders.forEach((item) => console.log(`  - ${item}`));
+
 		// This test passes - just documenting design decisions
 		expect(notNeededAsBuilders.length).toBeGreaterThan(0);
 	});
-	
+
 	it('verifies all core type builders exist', () => {
 		// Comprehensive check - if this passes, we have good coverage
 		const coreBuilders = [
-			'string', 'number', 'boolean', 'bigint', 'date', 'symbol',
-			'undefined', 'null', 'void', 'any', 'unknown', 'never', 'nan',
-			'array', 'object', 'tuple', 'record', 'map', 'set',
-			'enum', 'literal', 'nativeEnum',
-			'union', 'intersection', 'discriminatedUnion', 'xor',
-			'promise', 'lazy', 'function',
-			'codec', 'preprocess', 'pipe',
-			'json', 'file',
+			'string',
+			'number',
+			'boolean',
+			'bigint',
+			'date',
+			'symbol',
+			'undefined',
+			'null',
+			'void',
+			'any',
+			'unknown',
+			'never',
+			'nan',
+			'array',
+			'object',
+			'tuple',
+			'record',
+			'map',
+			'set',
+			'enum',
+			'literal',
+			'nativeEnum',
+			'union',
+			'intersection',
+			'discriminatedUnion',
+			'xor',
+			'promise',
+			'lazy',
+			'function',
+			'codec',
+			'preprocess',
+			'pipe',
+			'json',
+			'file',
 			'templateLiteral',
 			'custom',
 		];
-		
-		const missing = coreBuilders.filter(name => !(name in build));
-		
+
+		const missing = coreBuilders.filter((name) => !(name in build));
+
 		expect(missing).toEqual([]);
-		expect(Object.keys(build).length).toBeGreaterThanOrEqual(coreBuilders.length);
+		expect(Object.keys(build).length).toBeGreaterThanOrEqual(
+			coreBuilders.length,
+		);
 	});
 });

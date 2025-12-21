@@ -12,13 +12,10 @@ export const parseNot = (
 		path: [...refs.path, 'not'],
 	}).text();
 
-
 	return build
 		.any()
 		.refine(
 			`(value) => !${notSchema}.safeParse(value).success`,
 			'Invalid input: Should NOT be valid against schema',
 		);
-
-
 };

@@ -1,6 +1,11 @@
 import { JsonSchemaObject, JsonSchema, Refs } from '../../Types.js';
 import type { ZodBuilder } from '../../ZodBuilder/BaseBuilder.js';
-import { BaseBuilder, build, type AnyBuilder, type UnionBuilder } from '../../ZodBuilder/index.js';
+import {
+	BaseBuilder,
+	build,
+	type AnyBuilder,
+	type UnionBuilder,
+} from '../../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
 export const parseAnyOf = (

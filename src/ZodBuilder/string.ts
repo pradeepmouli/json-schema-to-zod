@@ -11,7 +11,7 @@ export class StringBuilder extends ZodBuilder<'string'> {
 	_maxLength?: { value: number; errorMessage?: string } = undefined;
 	_base64?: { errorMessage?: string } = undefined;
 	_json?: { errorMessage?: string } = undefined;
-	_pipe?: { contentSchema: ZodBuilder, errorMessage?: string } = undefined;
+	_pipe?: { contentSchema: ZodBuilder; errorMessage?: string } = undefined;
 
 	constructor() {
 		super();
@@ -203,7 +203,10 @@ export class StringBuilder extends ZodBuilder<'string'> {
 	/**
 	 * Apply hash format with algorithm.
 	 */
-	hash(algorithm: 'sha256' | 'sha1' | 'sha384' | 'sha512' | 'md5', errorMessage?: string): this {
+	hash(
+		algorithm: 'sha256' | 'sha1' | 'sha384' | 'sha512' | 'md5',
+		errorMessage?: string,
+	): this {
 		this._format = { format: `hash:${algorithm}`, errorMessage };
 		return this;
 	}

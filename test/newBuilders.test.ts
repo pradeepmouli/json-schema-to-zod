@@ -191,10 +191,7 @@ describe('New Zod Builders', () => {
 		});
 
 		it('map builder with constraints', () => {
-			const schema = build
-				.map(build.string(), build.number())
-				.min(1)
-				.size(5);
+			const schema = build.map(build.string(), build.number()).min(1).size(5);
 			expect(schema.text()).toContain('z.map(z.string(), z.number())');
 			expect(schema.text()).toContain('.min(1)');
 			expect(schema.text()).toContain('.size(5)');
@@ -204,9 +201,7 @@ describe('New Zod Builders', () => {
 	describe('Modifiers', () => {
 		it('meta modifier', () => {
 			const schema = build.string().meta({ custom: 'metadata' });
-			expect(schema.text()).toBe(
-				'z.string().meta({"custom":"metadata"})',
-			);
+			expect(schema.text()).toBe('z.string().meta({"custom":"metadata"})');
 		});
 
 		it('transform modifier', () => {
@@ -255,16 +250,13 @@ describe('New Zod Builders', () => {
 
 		it('custom builder with validation function', () => {
 			const schema = build.custom('(val) => typeof val === "string"');
-			expect(schema.text()).toBe(
-				'z.custom((val) => typeof val === "string")',
-			);
+			expect(schema.text()).toBe('z.custom((val) => typeof val === "string")');
 		});
 
 		it('custom builder with validation and params', () => {
-			const schema = build.custom(
-				'(val) => val.length > 5',
-				{ message: 'Too short' },
-			);
+			const schema = build.custom('(val) => val.length > 5', {
+				message: 'Too short',
+			});
 			expect(schema.text()).toBe(
 				'z.custom((val) => val.length > 5, {"message":"Too short"})',
 			);
@@ -311,12 +303,8 @@ describe('New Zod Builders', () => {
 		});
 
 		it('function builder with args only', () => {
-			const schema = build
-				.function()
-				.args(build.string(), build.number());
-			expect(schema.text()).toBe(
-				'z.function().args(z.string(),z.number())',
-			);
+			const schema = build.function().args(build.string(), build.number());
+			expect(schema.text()).toBe('z.function().args(z.string(),z.number())');
 		});
 
 		it('function builder with args and returns', () => {
@@ -330,10 +318,7 @@ describe('New Zod Builders', () => {
 		});
 
 		it('function builder with modifiers', () => {
-			const schema = build
-				.function()
-				.returns(build.boolean())
-				.optional();
+			const schema = build.function().returns(build.boolean()).optional();
 			expect(schema.text()).toBe(
 				'z.function().returns(z.boolean()).optional()',
 			);
@@ -356,20 +341,13 @@ describe('New Zod Builders', () => {
 		it('preprocess builder', () => {
 			const fnStr = '(val) => val.trim()';
 			const schema = build.preprocess(fnStr, build.string());
-			expect(schema.text()).toBe(
-				`z.preprocess(${fnStr},z.string())`,
-			);
+			expect(schema.text()).toBe(`z.preprocess(${fnStr},z.string())`);
 		});
 
 		it('preprocess builder with complex transformation', () => {
 			const fnStr = '(val) => parseInt(val, 10)';
-			const schema = build.preprocess(
-				fnStr,
-				build.number(),
-			);
-			expect(schema.text()).toBe(
-				`z.preprocess(${fnStr},z.number())`,
-			);
+			const schema = build.preprocess(fnStr, build.number());
+			expect(schema.text()).toBe(`z.preprocess(${fnStr},z.number())`);
 		});
 
 		it('pipe builder', () => {

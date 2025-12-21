@@ -4,9 +4,8 @@ import { ZodBuilder } from './BaseBuilder.js';
  * CustomBuilder: represents z.custom() for custom validation
  */
 export class CustomBuilder extends ZodBuilder<'custom'> {
-
 	readonly typeKind = 'custom' as const;
-		_validateFn?: string;
+	_validateFn?: string;
 	_params?: any;
 
 	constructor(validateFn?: string, params?: any) {

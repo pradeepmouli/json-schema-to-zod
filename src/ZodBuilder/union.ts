@@ -11,7 +11,6 @@ export class UnionBuilder extends ZodBuilder<'union'> {
 	constructor(schemas: ZodBuilder[]) {
 		super();
 		this._schemas = schemas;
-
 	}
 
 	protected override base(): string {
