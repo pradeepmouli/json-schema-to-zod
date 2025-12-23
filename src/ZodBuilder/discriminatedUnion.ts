@@ -1,4 +1,4 @@
-import type { TypeKind } from '../index.js';
+import type { TypeKind } from './index.js';
 import { ZodBuilder } from './BaseBuilder.js';
 
 /**

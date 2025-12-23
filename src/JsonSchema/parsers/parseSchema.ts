@@ -16,7 +16,7 @@ import { parseOneOf } from './parseOneOf.js';
 import { parseNullable } from './parseNullable.js';
 import {
 	ParserSelector,
-	Refs,
+	Context,
 	JsonSchemaObject,
 	JsonSchema,
 } from '../../Types.js';
@@ -26,11 +26,18 @@ import { its } from '../its.js';
 
 export const parseSchema = (
 	schema: JsonSchema,
-	refs: Refs = { seen: new Map(), path: [] },
+	refs: Context = { seen: new Map(), path: [] },
 	blockMeta?: boolean,
 ): ZodBuilder => {
 	if (typeof schema !== 'object') return schema ? build.any() : build.never();
 
+	if (refs.preprocessors) {
+		for (const preprocessor of refs.preprocessors) {
+			const output = preprocessor(schema as JsonSchemaObject, refs);
+			if(output)
+				schema = output;
+		}
+	}
 	if (refs.parserOverride) {
 		const custom = refs.parserOverride(schema, refs);
 

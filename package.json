@@ -1,7 +1,7 @@
 {
   "name": "x-to-zod",
-  "version": "0.2.2",
-  "description": "Converts X into Zod schemas",
+  "version": "0.3.0",
+  "description": "Enhanced fork of json-schema-to-zod - Converts JSON Schema into Zod schemas with fluent builder pattern",
   "types": "./dist/types/index.d.ts",
   "bin": "./dist/cjs/cli.js",
   "main": "./dist/cjs/index.js",
@@ -14,16 +14,30 @@
     "require": {
       "types": "./dist/types/index.d.ts",
       "default": "./dist/cjs/index.js"
+    },
+    "*": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "builders": {
+      "types": "./dist/types/ZodBuilder/index.d.ts",
+      "import": "./dist/esm/ZodBuilder/index.js",
+      "require": "./dist/cjs/ZodBuilder/index.js"
+    },
+    "parsers/json": {
+      "types": "./dist/types/JsonSchema/index.d.ts",
+      "import": "./dist/esm/JsonSchema/index.js",
+      "require": "./dist/cjs/JsonSchema/index.js"
     }
   },
   "scripts": {
     "build:types": "tsc -p tsconfig.types.json",
     "build:cjs": "tsc -p tsconfig.cjs.json && node postcjs.js",
     "build:esm": "tsc -p tsconfig.esm.json && node postesm.js",
-    "build": "pnpm run gen && pnpm test && rimraf ./dist && pnpm run build:types && pnpm run build:cjs && pnpm run build:esm",
+    "build": "pnpm test && rimraf ./dist && pnpm run build:types && pnpm run build:cjs && pnpm run build:esm",
     "dry": "pnpm run build && pnpm publish --dry-run",
     "dev": "vitest",
-    "gen": "tsx ./createIndex.ts",
     "test": "vitest run",
     "lint": "oxlint src test",
     "lint:fix": "oxlint --fix src test",
@@ -50,8 +64,9 @@
     "converter",
     "cli"
   ],
-  "author": "Stefan Terdell",
+  "author": "Pradeep Mouli (https://github.com/pradeepmouli)",
   "contributors": [
+    "Stefan Terdell (Original Author)",
     "Chen (https://github.com/werifu)",
     "Nuno Carduso (https://github.com/ncardoso-barracuda)",
     "Lars Strojny (https://github.com/lstrojny)",
@@ -70,7 +85,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/StefanTerdell/json-schema-to-zod"
+    "url": "https://github.com/pradeepmouli/json-schema-to-zod"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

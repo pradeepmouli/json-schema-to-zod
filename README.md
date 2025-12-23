@@ -3,91 +3,58 @@
 [![NPM Version](https://img.shields.io/npm/v/x-to-zod.svg)](https://npmjs.org/package/x-to-zod)
 [![NPM Downloads](https://img.shields.io/npm/dw/x-to-zod.svg)](https://npmjs.org/package/x-to-zod)
 
-_Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
+> **Note:** This is an enhanced fork of [json-schema-to-zod](https://github.com/StefanTerdell/json-schema-to-zod) by Stefan Terdell. All credit for the original implementation goes to the original author and contributors.
 
-## Summary
+## Overview
 
 A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code.
 
-Before v2 it used [`prettier`](https://www.npmjs.com/package/prettier) for formatting and [`json-refs`](https://www.npmjs.com/package/json-refs) to resolve schemas. To replicate the previous behaviour, please use their respective CLI tools.
+_Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
 
-Since v2 the CLI supports piped JSON.
+## Enhancements in This Fork
 
-## Developer Notes
+This fork includes several architectural improvements and new features:
 
-### Internal Architecture: Fluent Zod-like Builders
+### 1. **Fluent Builder Pattern Architecture**
+- Complete rewrite of internal code generation using fluent builders
+- Consistent lazy evaluation pattern across all schema types
+- Builder classes mirror Zod's API: `build.number()`, `build.string()`, `build.object()`, etc.
+- Smart constraint merging (e.g., multiple `.min()` calls keep the strictest value)
 
-This section documents the internal builder architecture for contributors working on the codebase.
+### 2. **Consolidated Modifier System**
+- All builders extend `BaseBuilder<T>` with shared modifiers
+- Eliminated 154 lines of duplicated code
+- Consistent behavior for `.optional()`, `.nullable()`, `.default()`, `.describe()`, `.brand()`, `.readonly()`, `.catch()`, and more
 
-#### Builder Pattern
+### 3. **Enhanced Zod v4 Support**
+- Support for new Zod v4 types: `void`, `undefined`, `date`, `bigint`, `symbol`, `nan`
+- String validators: `url`, `httpUrl`, `hostname`, `emoji`, `base64url`, `hex`, `jwt`, `nanoid`, `cuid`, `cuid2`, `ulid`, `ipv4`, `ipv6`, `mac`, `cidrv4`, `cidrv6`, `hash`, `isoDate`, `isoTime`, `isoDatetime`, `isoDuration`, `uuidv4`, `uuidv6`, `uuidv7`
+- Collection types: `set`, `map`
+- Advanced types: `promise`, `lazy`, `function`, `codec`, `preprocess`, `pipe`, `json`, `file`, `nativeEnum`, `templateLiteral`, `xor`, `keyof`
 
-The internal `ZodBuilder` system uses a fluent interface pattern matching Zod's API:
+### 4. **Improved oneOf Handling**
+- Simplified implementation using native `z.xor()` instead of manual superRefine
+- Cleaner generated code for exclusive OR (exactly one schema must match)
 
-```typescript
-// Factory API (mirrors Zod)
-build.number()     → NumberBuilder
-build.string()     → StringBuilder
-build.array(item)  → ArrayBuilder
-build.object(props) → ObjectBuilder
-build.enum(values) → EnumBuilder
-build.literal(val) → ConstBuilder
-build.boolean()    → BooleanBuilder
-build.null()       → NullBuilder
-```
+### 5. **Better Module Resolution**
+- Fixed ESM build configuration for proper TypeScript module resolution
+- Added `moduleResolution: "bundler"` for compatibility with modern bundlers
 
-#### Lazy Evaluation Pattern
+### 6. **Code Quality**
+- Migrated to Vitest for faster test execution
+- Updated linting with oxlint
+- Better test coverage and organization
 
-All builders follow a consistent lazy evaluation pattern:
-
-1. **Constructor** initializes `_baseText` with base schema (e.g., `"z.number()"`)
-2. **Modifier methods** store constraint metadata in private fields (e.g., `_min`, `_max`, `_format`)
-3. **`.text()` method** generates code by:
-   - Applying type-specific constraints to `_baseText`
-   - Updating `this._baseText` with result
-   - Calling `super.text()` to apply shared modifiers from BaseBuilder
-4. **BaseBuilder.text()** applies shared modifiers (`_optional`, `_nullable`, etc.)
-
-**Example Flow:**
-```typescript
-build.number().int().max(10).optional().text()
-
-// Step 1: build.number() creates NumberBuilder with _baseText="z.number()"
-// Step 2: .int() sets _int=true, returns this (no code generation yet)
-// Step 3: .max(10) sets _max={value:10}, returns this
-// Step 4: .optional() sets _optional=true, returns this
-// Step 5: .text() generates: "z.number().int().max(10).optional()"
-```
-
-#### Smart Constraint Merging
-
-Multiple calls to the same modifier intelligently merge:
-
-- `.min(5).min(10)` → keeps strictest (10)
-- `.max(20).max(15)` → keeps strictest (15)
-- `.multipleOf(3)` → automatically sets `_int = true`
-
-#### BaseBuilder Inheritance
-
-All builders extend `BaseBuilder<T>` which provides 8 shared modifiers:
-- `.optional()`, `.nullable()`, `.default(val)`, `.describe(str)`
-- `.brand(str)`, `.readonly()`, `.catch(val)`, `.text()`
-
-This eliminates 154 lines of duplicated code and ensures consistent behavior across all builder types.
-
-## Usage
-
-### Online
-
-[Just paste your JSON schemas here!](https://stefanterdell.github.io/x-to-zod-react/)
-
-### CLI
-
-#### Simplest example
 
 ```console
 npm i -g x-to-zod
 ```
 
+## Usage
+
+### CLI
+
+#### Simplest example
 ```console
 x-to-zod -i mySchema.json -o mySchema.ts
 ```
@@ -96,35 +63,28 @@ x-to-zod -i mySchema.json -o mySchema.ts
 
 ```console
 npm i -g x-to-zod json-refs prettier
-```
 
 ```console
 json-refs resolve mySchema.json | x-to-zod | prettier --parser typescript > mySchema.ts
 ```
-
 #### Options
 
 | Flag           | Shorthand | Function                                                                                       |
 | -------------- | --------- | ---------------------------------------------------------------------------------------------- |
 | `--input`      | `-i`      | JSON or a source file path. Required if no data is piped.                                      |
-| `--output`     | `-o`      | A file path to write to. If not supplied stdout will be used.                                  |
 | `--name`       | `-n`      | The name of the schema in the output                                                           |
 | `--depth`      | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.          |
-| `--module`     | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly.   |
+| `--module`     | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmatically. |
 | `--type`       | `-t`      | Export a named type along with the schema. Requires `name` to be set and `module` to be `esm`. |
-| `--noImport`   | `-ni`     | Removes the `import { z } from 'zod';` or equivalent from the output.                          |
 | `--withJsdocs` | `-wj`     | Generate jsdocs off of the description property.                                               |
 
 ### Programmatic
 
 #### Simple example
-
 ```typescript
 import { jsonSchemaToZod } from "x-to-zod";
-
 const myObject = {
   type: "object",
-  properties: {
     hello: {
       type: "string",
     },
@@ -133,7 +93,8 @@ const myObject = {
 
 const module = jsonSchemaToZod(myObject, { module: "esm" });
 
-// `type` can be either a string or - outside of the CLI - a boolean. If its `true`, the name of the type will be the name of the schema with a capitalized first letter.
+// `type` can be either a string or - outside of the CLI - a boolean. If it's `true`,
+// the name of the type will be the name of the schema with a capitalized first letter.
 const moduleWithType = jsonSchemaToZod(myObject, {
   name: "mySchema",
   module: "esm",
@@ -145,6 +106,79 @@ const cjs = jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
 const justTheSchema = jsonSchemaToZod(myObject);
 ```
 
+## Builder API
+
+The `build.*` factory creates fluent builders that mirror Zod's API. Each builder supports `.text()` to produce code and shares common modifiers like `.optional()`, `.nullable()`, `.default()`, `.describe()`, `.brand()`, `.readonly()`, `.catch()`, `.refine()`, `.superRefine()`, `.meta()`, `.transform()`.
+
+- **Primitives:**
+  - `build.string()` → `StringBuilder`
+  - `build.number()` → `NumberBuilder`
+  - `build.boolean()` → `BooleanBuilder`
+  - `build.bigint()` → `BigintBuilder`
+  - `build.symbol()` → `SymbolBuilder`
+  - `build.nan()` → `NanBuilder`
+  - `build.null()` → `NullBuilder`
+  - `build.undefined()` → `UndefinedBuilder`
+  - `build.void()` → `VoidBuilder`
+
+- **Structured:**
+  - `build.object(props)` → `ObjectBuilder`
+    - Helpers: `.strict()`, `.loose()`, `.catchall(schema)`, `.superRefine(fn)`, `.and(schema)`, `.extend(schema|string)`, `.merge(schema|string)`, `.pick(keys)`, `.omit(keys)`
+  - `build.array(item)` → `ArrayBuilder`
+  - `build.tuple(items)` → `TupleBuilder`
+  - `build.record(key, value)` → `RecordBuilder`
+  - `build.map(key, value)` → `MapBuilder`
+  - `build.set(item)` → `SetBuilder`
+
+- **Enums and Literals:**
+  - `build.enum(values)` → `EnumBuilder`
+  - `build.literal(value)` → `LiteralBuilder`
+  - `build.nativeEnum(enumObj)` → `NativeEnumBuilder`
+
+- **Unions and Intersections:**
+  - `build.union(schemas)` → `UnionBuilder`
+  - `build.intersection(a, b)` → `IntersectionBuilder`
+  - `build.discriminatedUnion(tag, options)` → `DiscriminatedUnionBuilder`
+  - `build.xor(schemas)` → `XorBuilder` (exactly one must match)
+
+- **Functions and Lazy:**
+  - `build.function()` → `FunctionBuilder`
+    - `.args(...schemas)`, `.returns(schema)`
+  - `build.lazy(getter)` → `LazyBuilder`
+
+- **Pipes and Transforms:**
+  - `build.pipe(input)` → `PipeBuilder`
+  - `build.preprocess(fn, schema)` → `PreprocessBuilder`
+  - `build.codec(parseFn, serializeFn)` → `CodecBuilder`
+  - `build.json()` → `JsonBuilder`
+
+- **Strings (validators):**
+  - `build.string().url()`, `.httpUrl()`, `.hostname()`, `.emoji()`, `.base64url()`, `.hex()`, `.jwt()`, `.nanoid()`, `.cuid()`, `.cuid2()`, `.ulid()`, `.ipv4()`, `.ipv6()`, `.mac()`, `.cidrv4()`, `.cidrv6()`, `.hash(algorithm)`, `.isoDate()`, `.isoTime()`, `.isoDatetime()`, `.isoDuration()`, `.uuidv4()`, `.uuidv6()`, `.uuidv7()`
+
+- **Numbers (constraints):**
+  - `build.number().int()`, `.min(n)`, `.max(n)`, `.positive()`, `.negative()`, `.nonnegative()`, `.nonpositive()`, `.multipleOf(n)`
+
+- **Templates and Keys:**
+  - `build.templateLiteral(parts)` → `TemplateLiteralBuilder`
+  - `build.keyof(obj)` → `KeyofBuilder`
+
+### Examples
+
+```ts
+// Object with constraints and shared modifiers
+build
+  .object({ id: build.string().uuidv7(), name: build.string().min(1) })
+  .strict()
+  .default({ id: '...', name: '' })
+  .text();
+
+// XOR union (exactly one must match)
+build.xor([build.string(), build.number()]).text();
+
+// Function schema
+build.function().args(build.string(), build.number()).returns(build.boolean()).text();
+```
+
 ##### `module`
 
 ```typescript
@@ -154,6 +188,8 @@ export default z.object({ hello: z.string().optional() });
 ```
 
 ##### `moduleWithType`
+
+```typescript
 import { z } from "zod";
 
 export const mySchema = z.object({ hello: z.string().optional() });
@@ -191,15 +227,273 @@ async function example(jsonSchema: Record<string, unknown>): Promise<string> {
 }
 ```
 
-#### Overriding a parser
+## Advanced Features
 
-You can pass a function to the `overrideParser` option, which represents a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node just return void.
+### Parser Override
 
-#### Schema factoring
+The `parserOverride` option allows you to customize the code generation for specific schema nodes. This is useful when you need to:
+- Use custom Zod schemas for specific patterns
+- Replace generated code with hand-crafted validators
+- Integrate with custom validation libraries
+
+#### Function Signature
+
+```typescript
+type ParserOverride = (
+  schema: JsonSchemaObject,
+  refs: Context
+) => BaseBuilder | string | void;
+```
+
+**Parameters:**
+- `schema`: The current JSON schema node being processed
+- `refs`: Context object containing:
+  - `path`: Array tracking the current position in the schema (e.g., `['allOf', 0, 'properties', 'name']`)
+  - `seen`: Map for circular reference detection
+  - All other options passed to `jsonSchemaToZod()`
+
+**Return Values:**
+- `string`: Replace the generated code with your custom Zod expression (e.g., `'myCustomSchema'`)
+- `BaseBuilder`: Return a builder instance to customize generation programmatically
+- `void` (or `undefined`): Use the default parser behavior for this node
+
+#### Example: Replace Specific Schema Nodes
+
+```typescript
+import { jsonSchemaToZod } from "x-to-zod";
+
+const schema = {
+  allOf: [
+    { type: 'string' },
+    { type: 'number' },
+    { type: 'boolean', description: 'custom-flag' }
+  ]
+};
+
+const code = jsonSchemaToZod(schema, {
+  parserOverride: (schema, refs) => {
+    // Target the third element in allOf with specific description
+    if (
+      refs.path.length === 2 &&
+      refs.path[0] === 'allOf' &&
+      refs.path[1] === 2 &&
+      schema.type === 'boolean' &&
+      schema.description === 'custom-flag'
+    ) {
+      // Replace with custom validation
+      return 'myCustomBooleanValidator';
+    }
+    // Use default behavior for all other nodes
+  }
+});
+
+// Output: z.intersection(z.string(), z.intersection(z.number(), myCustomBooleanValidator))
+```
+
+#### Example: Use Custom Schemas for Format Strings
+
+```typescript
+import { jsonSchemaToZod } from "x-to-zod";
+
+const schema = {
+  type: 'object',
+  properties: {
+    email: { type: 'string', format: 'email' },
+    customId: { type: 'string', format: 'x-custom-id' }
+  }
+};
+
+const code = jsonSchemaToZod(schema, {
+  parserOverride: (schema, refs) => {
+    // Replace custom format with your own schema
+    if (schema.type === 'string' && schema.format === 'x-custom-id') {
+      return 'customIdSchema.refine((v) => /^ID-\\d{6}$/.test(v))';
+    }
+  }
+});
+```
+
+#### Example: Path-Based Conditional Logic
+
+```typescript
+const code = jsonSchemaToZod(complexSchema, {
+  parserOverride: (schema, refs) => {
+    // Target all schemas under 'definitions'
+    if (refs.path[0] === 'definitions') {
+      const defName = refs.path[1];
+      return `sharedSchemas.${defName}`;
+    }
+
+    // Target deeply nested properties
+    if (refs.path.join('.') === 'properties.user.properties.metadata') {
+      return 'z.record(z.string(), z.unknown())';
+    }
+  }
+});
+```
+
+### Preprocessors
+
+The `preprocessors` option allows you to transform JSON schema nodes **before** parsing begins. This is useful for:
+- Normalizing vendor-specific schema extensions
+- Applying global transformations to schemas
+- Removing or modifying unsupported keywords
+- Injecting default values or constraints
+
+#### Function Signature
+
+```typescript
+type transformer = (
+  schema: JsonSchemaObject,
+  refs: Context
+) => JsonSchemaObject | undefined;
+```
+
+**Parameters:**
+- `schema`: The current JSON schema node
+- `refs`: Context object with path tracking and options
+
+**Return Values:**
+- `JsonSchemaObject`: The transformed schema (replaces the original)
+- `undefined`: Keep the schema unchanged
+
+#### Execution Order
+
+Preprocessors run **before** `parserOverride` and before any default parsing:
+
+1. **Preprocessors** transform the schema
+2. **ParserOverride** can replace code generation
+3. **Default parsers** generate Zod code
+
+#### Example: Normalize Vendor Extensions
+
+```typescript
+import { jsonSchemaToZod } from "x-to-zod";
+
+const schema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+      'x-custom-min': 5,  // Vendor-specific extension
+      'x-custom-max': 100
+    }
+  }
+};
+
+const code = jsonSchemaToZod(schema, {
+  preprocessors: [
+    (schema, refs) => {
+      // Convert custom extensions to standard JSON schema
+      if (schema['x-custom-min'] !== undefined) {
+        return {
+          ...schema,
+          minLength: schema['x-custom-min'],
+          maxLength: schema['x-custom-max']
+        };
+      }
+    }
+  ]
+});
+
+// Output includes: z.string().min(5).max(100)
+```
+
+#### Example: Strip Unsupported Keywords
+
+```typescript
+const code = jsonSchemaToZod(schema, {
+  preprocessors: [
+    (schema, refs) => {
+      const { $comment, examples, ...rest } = schema;
+      // Remove keywords not supported by Zod
+      return rest;
+    }
+  ]
+});
+```
+
+#### Example: Inject Constraints Based on Path
+
+```typescript
+const code = jsonSchemaToZod(schema, {
+  preprocessors: [
+    (schema, refs) => {
+      // Add minimum length to all string properties under 'user'
+      if (
+        refs.path[0] === 'properties' &&
+        refs.path[1] === 'user' &&
+        schema.type === 'string' &&
+        !schema.minLength
+      ) {
+        return {
+          ...schema,
+          minLength: 1  // Ensure non-empty strings
+        };
+      }
+    }
+  ]
+});
+```
+
+#### Example: Multiple Preprocessors
+
+Preprocessors are executed in order, allowing you to chain transformations:
+
+```typescript
+const code = jsonSchemaToZod(schema, {
+  preprocessors: [
+    // First: normalize vendor extensions
+    (schema) => {
+      if (schema['x-nullable']) {
+        return { ...schema, nullable: true };
+      }
+    },
+    // Second: apply default constraints
+    (schema) => {
+      if (schema.type === 'string' && !schema.maxLength) {
+        return { ...schema, maxLength: 1000 };
+      }
+    },
+    // Third: remove internal metadata
+    (schema) => {
+      const { 'x-internal-id': _, ...rest } = schema;
+      return rest;
+    }
+  ]
+});
+```
+
+### Combining ParserOverride and Preprocessors
+
+Use both options together for maximum flexibility:
+
+```typescript
+const code = jsonSchemaToZod(schema, {
+  preprocessors: [
+    // Transform schema structure first
+    (schema) => {
+      if (schema['x-custom-type']) {
+        return { type: schema['x-custom-type'], ...schema };
+      }
+    }
+  ],
+  parserOverride: (schema, refs) => {
+    // Then override code generation for specific cases
+    if (schema.type === 'custom-type') {
+      return 'myCustomTypeValidator';
+    }
+  }
+});
+```
+
+## Important Notes
+
+### Schema Factoring
 
 Factored schemas (like object schemas with "oneOf" etc.) is only partially supported. Here be dragons.
 
-#### Use at Runtime
+### Use at Runtime
 
 The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as [Ajv](https://ajv.js.org/) to validate your runtime values directly against the original JSON Schema.
 
@@ -210,3 +504,27 @@ const zodSchema = eval(jsonSchemaToZod({ type: "string" }, { module: "cjs" }));
 
 zodSchema.safeParse("Please just use Ajv instead");
 ```
+
+## Credits
+
+This is a fork of [json-schema-to-zod](https://github.com/StefanTerdell/json-schema-to-zod) by [Stefan Terdell](https://github.com/StefanTerdell).
+
+Original contributors include:
+- Chen (https://github.com/werifu)
+- Nuno Carduso (https://github.com/ncardoso-barracuda)
+- Lars Strojny (https://github.com/lstrojny)
+- Navtoj Chahal (https://github.com/navtoj)
+- Ben McCann (https://github.com/benmccann)
+- Dmitry Zakharov (https://github.com/DZakh)
+- Michel Turpin (https://github.com/grimly)
+- David Barratt (https://github.com/davidbarratt)
+- pevisscher (https://github.com/pevisscher)
+- Aidin Abedi (https://github.com/aidinabedi)
+- Brett Zamir (https://github.com/brettz9)
+- vForgeOne (https://github.com/vforgeone)
+- Adrian Ordonez (https://github.com/adrianord)
+- Jonas Reucher (https://github.com/Mantls)
+
+## License
+
+ISC

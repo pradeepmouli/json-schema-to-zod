@@ -1,10 +1,10 @@
-import { JsonSchemaObject, Refs } from '../../Types.js';
+import { JsonSchemaObject, Context } from '../../Types.js';
 import { parseSchema } from './parseSchema.js';
 import { build } from '../../ZodBuilder/index.js';
 
 export const parseMultipleType = (
 	schema: JsonSchemaObject & { type: string[] },
-	refs: Refs,
+	refs: Context,
 ) => {
 	return build.union(
 		schema.type.map((type) =>

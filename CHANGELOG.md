@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0
+
+### Minor Changes
+
+- added preprocessor support
+
 ## 0.2.2
 
 ### Patch Changes

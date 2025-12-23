@@ -1,6 +1,6 @@
 import { parseSchema } from './parseSchema.js';
 import { half } from '../../utils/half.js';
-import { JsonSchemaObject, JsonSchema, Refs } from '../../Types.js';
+import { JsonSchemaObject, JsonSchema, Context } from '../../Types.js';
 import { build, type IntersectionBuilder } from '../../ZodBuilder/index.js';
 import type { ZodBuilder } from '../../ZodBuilder/BaseBuilder.js';
 
@@ -27,7 +27,7 @@ const ensureOriginalIndex = (arr: JsonSchema[]) => {
 
 export function parseAllOf(
 	schema: JsonSchemaObject & { allOf: JsonSchema[] },
-	refs: Refs,
+	refs: Context,
 ): ZodBuilder | IntersectionBuilder {
 	if (schema.allOf.length === 0) {
 		return build.never();

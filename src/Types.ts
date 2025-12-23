@@ -1,4 +1,5 @@
 import { Jsonifiable } from 'type-fest';
+import type { transformer } from './JsonSchema/index.js';
 
 export type Serializable = Jsonifiable;
 
@@ -55,11 +56,11 @@ export type JsonSchemaObject = {
 
 export type ParserSelector = (
 	schema: JsonSchemaObject,
-	refs: Refs,
+	refs: Context,
 ) => import('./ZodBuilder/index.js').BaseBuilder;
 export type ParserOverride = (
 	schema: JsonSchemaObject,
-	refs: Refs,
+	refs: Context,
 ) => import('./ZodBuilder/index.js').BaseBuilder | string | void;
 
 export type Options = {
@@ -72,9 +73,12 @@ export type Options = {
 	depth?: number;
 	type?: boolean | string;
 	noImport?: boolean;
+	preferUnions?: boolean;
+	disableRefs?: boolean;
+	preprocessors?: transformer[];
 };
 
-export type Refs = Options & {
+export type Context = Options & {
 	path: (string | number)[];
 	seen: Map<
 		object | boolean,

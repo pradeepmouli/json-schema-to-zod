@@ -1,4 +1,4 @@
-import { JsonSchemaObject, JsonSchema, Refs } from '../../Types.js';
+import { JsonSchemaObject, JsonSchema, Context } from '../../Types.js';
 import { parseSchema } from './parseSchema.js';
 import { BaseBuilder, build } from '../../ZodBuilder/index.js';
 
@@ -8,7 +8,7 @@ export const parseIfThenElse = (
 		then: JsonSchema;
 		else: JsonSchema;
 	},
-	refs: Refs,
+	refs: Context,
 ): BaseBuilder => {
 	const $if = parseSchema(schema.if, {
 		...refs,

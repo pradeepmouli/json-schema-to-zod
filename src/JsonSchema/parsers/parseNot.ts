@@ -1,10 +1,10 @@
-import { JsonSchemaObject, JsonSchema, Refs } from '../../Types.js';
+import { JsonSchemaObject, JsonSchema, Context } from '../../Types.js';
 import { parseSchema } from './parseSchema.js';
 import { build } from '../../ZodBuilder/index.js';
 
 export const parseNot = (
 	schema: JsonSchemaObject & { not: JsonSchema },
-	refs: Refs,
+	refs: Context,
 ) => {
 	const notSchema = parseSchema(schema.not, {
 		...refs,

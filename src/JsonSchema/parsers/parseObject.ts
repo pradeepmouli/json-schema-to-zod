@@ -1,4 +1,4 @@
-import { JsonSchemaObject, Refs } from '../../Types.js';
+import { JsonSchemaObject, Context } from '../../Types.js';
 import { build, ObjectBuilder, BaseBuilder } from '../../ZodBuilder/index.js';
 import { addJsdocs } from '../../utils/jsdocs.js';
 import { parseAnyOf } from './parseAnyOf.js';
@@ -9,7 +9,7 @@ import { parseAllOf } from './parseAllOf.js';
 
 export function parseObject(
 	objectSchema: JsonSchemaObject & { type: 'object' },
-	refs: Refs,
+	refs: Context,
 ): BaseBuilder {
 	let result: string;
 

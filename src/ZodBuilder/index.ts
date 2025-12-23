@@ -117,7 +117,7 @@ import { NativeEnumBuilder } from './nativeEnum.js';
 import { TemplateLiteralBuilder } from './templateLiteral.js';
 import { XorBuilder } from './xor.js';
 import { KeyofBuilder } from './keyof.js';
-import { DiscriminatedUnionBuilder } from '../index.js';
+import { DiscriminatedUnionBuilder } from './discriminatedUnion.js';
 
 // Generic modifiers
 export {

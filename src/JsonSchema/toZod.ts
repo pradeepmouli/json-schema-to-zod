@@ -2,7 +2,7 @@ import { Options, JsonSchema } from '../Types.js';
 import { parseSchema } from './parsers/parseSchema.js';
 import { expandJsdocs } from '../utils/jsdocs.js';
 
-export const jsonSchemaToZod = (
+export const toZod = (
 	schema: JsonSchema,
 	{ module, name, type, noImport, ...rest }: Options = {},
 ): string => {

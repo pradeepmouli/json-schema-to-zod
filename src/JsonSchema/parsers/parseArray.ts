@@ -1,10 +1,10 @@
-import { JsonSchemaObject, Refs } from '../../Types.js';
+import { JsonSchemaObject, Context } from '../../Types.js';
 import { build, BaseBuilder } from '../../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
 export const parseArray = (
 	schema: JsonSchemaObject & { type: 'array' },
-	refs: Refs,
+	refs: Context,
 ) => {
 	let r: BaseBuilder;
 
