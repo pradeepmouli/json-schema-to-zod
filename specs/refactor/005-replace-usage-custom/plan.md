@@ -1,8 +1,8 @@
 # Implementation Plan: Replace Custom JsonSchema Types with json-schema-typed
 
-**Refactor ID**: refactor-005  
-**Status**: Planning  
-**Tech Stack**: TypeScript (strict mode) + vitest + oxlint  
+**Refactor ID**: refactor-005
+**Status**: Planning
+**Tech Stack**: TypeScript (strict mode) + vitest + oxlint
 
 ## Overview
 

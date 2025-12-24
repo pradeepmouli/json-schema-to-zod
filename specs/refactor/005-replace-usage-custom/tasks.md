@@ -1,7 +1,7 @@
 # Tasks: Replace Custom JsonSchema Types with json-schema-typed
 
-**Refactor ID**: refactor-005  
-**Branch**: refactor/005-replace-usage-custom  
+**Refactor ID**: refactor-005
+**Branch**: refactor/005-replace-usage-custom
 **Status**: Ready for Implementation
 
 ---

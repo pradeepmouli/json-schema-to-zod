@@ -69,7 +69,7 @@ The json-schema-typed package provides:
 5. Update documentation to reference json-schema-typed
 
 **Files Affected**:
-- **Modified**: 
+- **Modified**:
   - src/Types.ts (replace type definitions with imports)
   - package.json (add json-schema-typed dependency)
   - CHANGELOG.md (document breaking changes and migration notes)
@@ -149,7 +149,7 @@ export type JsonSchemaObject = JSONSchema.Interface & {
 - **Runtime Performance**: Maintain (types are compile-time only)
 
 ### Success Threshold
-**Minimum acceptable improvement**: 
+**Minimum acceptable improvement**:
 - All tests pass without modification
 - Custom JsonSchema types successfully replaced with json-schema-typed
 - No breaking changes to public API

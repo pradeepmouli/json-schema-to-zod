@@ -16,7 +16,7 @@
 ### Behavior 2: Type Guards
 **Input**: JsonSchemaObject instances
 **Expected Output**: Type guard functions correctly identify schema variants
-**Actual Output** (before): 
+**Actual Output** (before):
 - `its.an.object()` returns true for `{ type: 'object' }`
 - `its.an.array()` returns true for `{ type: 'array' }`
 - `its.a.nullable()` returns true for schemas with `nullable: true`
@@ -101,4 +101,3 @@ const schema: JsonSchemaObject = {
 
 ---
 *Document actual outputs before starting refactoring, then verify they match after*
-
