@@ -200,7 +200,7 @@ const v4OnlyBuilders = {
 	promise: (innerSchema: import('./BaseBuilder.js').ZodBuilder) =>
 		new PromiseBuilder(innerSchema),
 	lazy: (getter: string) => new LazyBuilder(getter),
-	function: (functionSignature: {
+	function: (functionSignature?: {
 		input?: import('./BaseBuilder.js').ZodBuilder[];
 		output?: import('./BaseBuilder.js').ZodBuilder;
 	}) => new FunctionBuilder(functionSignature),
