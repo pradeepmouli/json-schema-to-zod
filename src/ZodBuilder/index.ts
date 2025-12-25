@@ -135,7 +135,7 @@ export {
 } from './BaseBuilder.js';
 
 // Builder factories - Zod-like API
-export const build = {
+const coreBuilders = {
 	number: (options?: import('../Types.js').Options) =>
 		new NumberBuilder(options),
 	string: (options?: import('../Types.js').Options) =>
@@ -222,6 +222,8 @@ export const build = {
 		schemas: import('./BaseBuilder.js').ZodBuilder<string>[],
 		options?: import('../Types.js').Options,
 	) => new DiscriminatedUnionBuilder(discriminator, schemas as any, options),
+} as const;
+const v4OnlyBuilders = {
 	// Zod v4 builders
 	promise: (
 		innerSchema: import('./BaseBuilder.js').ZodBuilder,
@@ -271,8 +273,21 @@ export const build = {
 	) => new KeyofBuilder(objectSchema, options),
 } as const;
 
+// Builder factories - Zod-like API (includes all builders for backward compatibility)
+export const build = {
+	...coreBuilders,
+	...v4OnlyBuilders,
+} as const;
+
 export type TypeKind = {
 	[T in keyof typeof build]: ReturnType<(typeof build)[T]>;
 };
 
 export type TypeKindOf<T extends keyof TypeKind> = TypeKind[T];
+
+// Version-specific builder exports
+export const buildV3 = coreBuilders;
+export const buildV4 = build;
+
+// Type exports for version-specific APIs
+export type { V3BuildAPI, V4BuildAPI } from './versions.js';

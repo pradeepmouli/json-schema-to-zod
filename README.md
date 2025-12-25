@@ -61,6 +61,45 @@ npm i -g x-to-zod
 
 ## Usage
 
+### Version-Specific Imports
+
+This package supports importing version-specific builder APIs. This ensures you only use features compatible with your target Zod version and provides TypeScript type safety.
+
+#### Using Zod v4 (default)
+
+```typescript
+import { build } from 'x-to-zod/v4';
+
+// All v4 features available
+const promiseSchema = build.promise(build.string());
+const lazySchema = build.lazy('() => mySchema');
+const jsonSchema = build.json();
+```
+
+#### Using Zod v3 (backward compatibility)
+
+```typescript
+import { build } from 'x-to-zod/v3';
+
+// Only v3-compatible features available
+const stringSchema = build.string();
+const objectSchema = build.object({ name: build.string() });
+
+// TypeScript error - v4-only features not available:
+// const promiseSchema = build.promise(build.string()); // ❌
+```
+
+**Benefits:**
+- **Type Safety:** TypeScript prevents using v4-only features when importing from `v3`
+- **Explicit Intent:** Makes your Zod version dependency clear in code
+- **Future-Proof:** Easier migration when Zod releases new versions
+
+**Default Import:** The main package export includes all features (v4-compatible):
+```typescript
+import { build } from 'x-to-zod';
+// Same as 'x-to-zod/v4'
+```
+
 ### CLI
 
 #### Simplest example

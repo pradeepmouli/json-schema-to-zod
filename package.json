@@ -7,25 +7,42 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "exports": {
-    "import": {
-      "types": "./dist/types/index.d.ts",
-      "default": "./dist/esm/index.js"
+    ".": {
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     },
-    "require": {
-      "types": "./dist/types/index.d.ts",
-      "default": "./dist/cjs/index.js"
+    "./v3": {
+      "import": {
+        "types": "./dist/types/v3.d.ts",
+        "default": "./dist/esm/v3.js"
+      },
+      "require": {
+        "types": "./dist/types/v3.d.ts",
+        "default": "./dist/cjs/v3.js"
+      }
     },
-    "*": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+    "./v4": {
+      "import": {
+        "types": "./dist/types/v4.d.ts",
+        "default": "./dist/esm/v4.js"
+      },
+      "require": {
+        "types": "./dist/types/v4.d.ts",
+        "default": "./dist/cjs/v4.js"
+      }
     },
-    "builders": {
+    "./builders": {
       "types": "./dist/types/ZodBuilder/index.d.ts",
       "import": "./dist/esm/ZodBuilder/index.js",
       "require": "./dist/cjs/ZodBuilder/index.js"
     },
-    "parsers/json": {
+    "./parsers/json": {
       "types": "./dist/types/JsonSchema/index.d.ts",
       "import": "./dist/esm/JsonSchema/index.js",
       "require": "./dist/cjs/JsonSchema/index.js"
