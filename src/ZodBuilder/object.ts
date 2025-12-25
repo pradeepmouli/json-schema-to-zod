@@ -27,8 +27,8 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
 	 * Create ObjectBuilder from existing Zod object code string.
 	 * Used when applying modifiers to already-built object schemas.
 	 */
-	static fromCode(code: string): ObjectBuilder {
-		const builder = build.object({});
+	static fromCode(code: string, options?: import('../Types.js').Options): ObjectBuilder {
+		const builder = build.object({}, options);
 		builder._precomputedSchema = code;
 		return builder;
 	}
@@ -109,23 +109,43 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
 	 * Compute the base object schema.
 	 */
 	protected override base(): string {
-		return (
-			this._precomputedSchema ?? objectTextFromProperties(this._properties)
-		);
+		if (this._precomputedSchema) {
+			return this._precomputedSchema;
+		}
+		
+		// In v4, use strictObject/looseObject if strict/loose is set AND no precomputed schema
+		// This only applies when building fresh from properties
+		if (this.isV4() && !this._catchallSchema && !this._andSchema && !this._extendSchema && !this._mergeSchema && !this._pickKeys && !this._omitKeys && !this._superRefineFn) {
+			if (this._strict) {
+				return objectTextFromProperties(this._properties, 'strict');
+			}
+			if (this._loose) {
+				return objectTextFromProperties(this._properties, 'loose');
+			}
+		}
+		
+		return objectTextFromProperties(this._properties);
 	}
 
 	protected override modify(baseText: string): string {
 		let result = baseText;
 
-		if (this._strict) {
+		// Apply strict/loose as methods in v3 mode OR when modifying precomputed schema in v4
+		// (precomputed schemas from fromCode can't use strictObject/looseObject at base level)
+		const useMethodForm = !this.isV4() || this._precomputedSchema;
+		
+		if (this._strict && useMethodForm) {
 			result = applyStrict(result);
 		}
+		
 		if (this._catchallSchema) {
 			result = applyCatchall(result, this._catchallSchema);
 		}
-		if (this._loose) {
+		
+		if (this._loose && useMethodForm) {
 			result = applyLoose(result);
 		}
+		
 		if (this._superRefineFn) {
 			result = applySuperRefine(result, this._superRefineFn);
 		}
@@ -141,12 +161,22 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
 			);
 		}
 		if (this._mergeSchema) {
-			result = applyMerge(
-				result,
-				typeof this._mergeSchema === 'string'
-					? this._mergeSchema
-					: this._mergeSchema.text(),
-			);
+			// In v4, merge becomes extend
+			if (this.isV4()) {
+				result = applyExtend(
+					result,
+					typeof this._mergeSchema === 'string'
+						? this._mergeSchema
+						: this._mergeSchema.text(),
+				);
+			} else {
+				result = applyMerge(
+					result,
+					typeof this._mergeSchema === 'string'
+						? this._mergeSchema
+						: this._mergeSchema.text(),
+				);
+			}
 		}
 		if (this._pickKeys) {
 			result = applyPick(result, this._pickKeys);
@@ -161,8 +191,14 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
 
 function objectTextFromProperties(
 	properties: Record<string, ZodBuilder>,
+	mode?: 'strict' | 'loose',
 ): string {
 	if (Object.keys(properties).length === 0) {
+		if (mode === 'strict') {
+			return 'z.strictObject({})';
+		} else if (mode === 'loose') {
+			return 'z.looseObject({})';
+		}
 		return 'z.object({})';
 	}
 
@@ -173,6 +209,11 @@ function objectTextFromProperties(
 		})
 		.join(', ');
 
+	if (mode === 'strict') {
+		return `z.strictObject({ ${props} })`;
+	} else if (mode === 'loose') {
+		return `z.looseObject({ ${props} })`;
+	}
 	return `z.object({ ${props} })`;
 }
 

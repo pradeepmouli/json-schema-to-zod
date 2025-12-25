@@ -128,10 +128,10 @@ export abstract class ZodBuilder<T extends string = string> {
 
 	/**
 	 * Get the target Zod version for code generation.
-	 * @returns 'v3' or 'v4' (default: 'v4')
+	 * @returns 'v3' or 'v4' (default: 'v3' for backward compatibility)
 	 */
 	protected get zodVersion(): import('../Types.js').ZodVersion {
-		return this.options?.zodVersion || 'v4';
+		return this.options?.zodVersion || 'v3';
 	}
 
 	/**
