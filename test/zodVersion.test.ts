@@ -15,11 +15,11 @@ describe('Zod Version Support', () => {
 			expect(v3Result).toBeTruthy();
 		});
 
-		it('should default to v3 for backward compatibility', () => {
+		it('should default to v4', () => {
 			const schema = { type: 'string' as const };
 			const result = jsonSchemaToZod(schema);
 
-			// Default behavior should be same as v3
+			// Default behavior should be same as v4
 			expect(result).toBe('z.string()');
 		});
 	});

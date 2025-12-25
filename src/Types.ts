@@ -36,7 +36,7 @@ export type Options = {
 	preferUnions?: boolean;
 	disableRefs?: boolean;
 	preprocessors?: transformer[];
-	/** Zod version to target for generated code (default: 'v3' for backward compatibility, use 'v4' for new Zod v4 features) */
+	/** Zod version to target for generated code (default: 'v4'; use 'v3' for backward compatibility with Zod v3) */
 	zodVersion?: ZodVersion;
 };
 

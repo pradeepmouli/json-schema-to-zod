@@ -220,11 +220,11 @@ describe('New Zod Builders', () => {
 			expect(schema.text()).toContain('extend({ age: z.number() })');
 		});
 
-		it('merge method', () => {
+		it('merge method (v4 uses extend)', () => {
 			const schema = build
 				.object({ name: build.string() })
 				.merge('otherSchema');
-			expect(schema.text()).toContain('.merge(otherSchema)');
+			expect(schema.text()).toContain('.extend(otherSchema)');
 		});
 
 		it('pick method', () => {
