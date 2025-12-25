@@ -47,6 +47,13 @@ This fork includes several architectural improvements and new features:
 - Updated linting with oxlint
 - Better test coverage and organization
 
+### 7. **Zod v3/v4 Dual-Mode Support**
+- Generate schemas compatible with either Zod v3 or v4 via `zodVersion` option
+- Defaults to `'v3'` for backward compatibility
+- v4 mode generates new syntax: `z.strictObject()`, `z.looseObject()`, `.extend()` instead of `.merge()`
+- Fully backward compatible - existing code continues to work without changes
+
+## Installation
 
 ```console
 npm i -g x-to-zod
@@ -228,6 +235,110 @@ async function example(jsonSchema: Record<string, unknown>): Promise<string> {
   return formatted;
 }
 ```
+
+## Zod Version Support
+
+This library supports generating schemas compatible with both Zod v3 and v4 through the `zodVersion` option.
+
+### Basic Usage
+
+```typescript
+import { jsonSchemaToZod } from "x-to-zod";
+
+// Generate Zod v3 code (default - backward compatible)
+const schemaV3 = jsonSchemaToZod(mySchema);
+// or explicitly
+const schemaV3Explicit = jsonSchemaToZod(mySchema, { zodVersion: 'v3' });
+
+// Generate Zod v4 code (opt-in for new features)
+const schemaV4 = jsonSchemaToZod(mySchema, { zodVersion: 'v4' });
+```
+
+### Key Differences
+
+The `zodVersion` option affects how certain Zod constructs are generated:
+
+#### Object Strict/Loose Modes
+
+**v3 mode (default):**
+```typescript
+// additionalProperties: false
+z.object({ name: z.string() }).strict()
+
+// passthrough behavior
+z.object({ name: z.string() }).passthrough()
+```
+
+**v4 mode:**
+```typescript
+// additionalProperties: false
+z.strictObject({ name: z.string() })
+
+// passthrough behavior
+z.looseObject({ name: z.string() })
+```
+
+#### Object Merge
+
+**v3 mode (default):**
+```typescript
+baseObject.merge(otherObject)
+```
+
+**v4 mode:**
+```typescript
+baseObject.extend(otherObject)
+```
+
+#### Error Messages (Future)
+
+When implemented, error messages will use different parameter names:
+
+**v3 mode:** `{ message: "error text" }`  
+**v4 mode:** `{ error: "error text" }`
+
+### Builder API with Version Support
+
+The builder API also respects the `zodVersion` option:
+
+```typescript
+import { build } from "x-to-zod/builders";
+
+// v4 mode
+build.object({ name: build.string() }, { zodVersion: 'v4' }).strict().text()
+// => 'z.strictObject({ "name": z.string() })'
+
+// v3 mode (default)
+build.object({ name: build.string() }).strict().text()
+// => 'z.object({ "name": z.string() }).strict()'
+```
+
+### Migration Guide
+
+#### When to use v3 mode (default)
+- Existing projects using Zod v3
+- Want to avoid any breaking changes
+- Gradual migration to Zod v4
+
+#### When to use v4 mode
+- New projects starting with Zod v4
+- Ready to adopt v4's improved API
+- Want cleaner generated code
+
+#### Migration Steps
+
+1. **Start with v3 mode** (default) - your existing code continues to work
+2. **Test thoroughly** - ensure all generated schemas work as expected
+3. **Switch to v4 mode** - set `zodVersion: 'v4'` when ready
+4. **Update consuming code** - adjust for any Zod v4 API changes
+5. **Enjoy improved syntax** - benefit from cleaner, more concise schemas
+
+### Compatibility Notes
+
+- **Default is v3** for backward compatibility
+- **Both modes are fully tested** and production-ready
+- **No runtime dependencies** on specific Zod versions - generates code strings only
+- **Mix and match** - you can generate different schemas with different versions as needed
 
 ## Advanced Features
 

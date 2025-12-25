@@ -3,6 +3,11 @@ import { ZodBuilder } from './BaseBuilder.js';
 /**
  * Fluent RecordBuilder: represents z.record() schema.
  * Accepts key and value schemas.
+ * 
+ * Note: Always uses two-argument form z.record(keySchema, valueSchema)
+ * which is compatible with both Zod v3 and v4. In Zod v3, the single-argument
+ * form z.record(valueSchema) was allowed, but this builder always provides
+ * both arguments for consistency and v4 compatibility.
  */
 export class RecordBuilder extends ZodBuilder<'record'> {
 	readonly typeKind = 'record' as const;
