@@ -104,14 +104,14 @@ console.log('V4 Promise:', directExample.v4Promise);
 // The following demonstrates compile-time type safety:
 
 // ✅ This compiles - v4 has promise
-const validV4 = buildV4.promise(buildV4.string());
+buildV4.promise(buildV4.string());
 
 // ❌ This would fail at compile-time - v3 doesn't have promise
 // const invalidV3 = buildV3.promise(buildV3.string());
 
 // ✅ Both have string
-const validV3String = buildV3.string();
-const validV4String = buildV4.string();
+buildV3.string();
+buildV4.string();
 
 export {
 	v4Examples,

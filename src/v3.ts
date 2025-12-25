@@ -3,8 +3,11 @@
  * 
  * Import from 'x-to-zod/v3' to get:
  * - build object with v3-compatible methods only
- * - zodVersion option defaults to 'v3'
  * - TypeScript types enforce v3-only API surface
+ * 
+ * Note: This restricts the API surface but does not automatically set
+ * zodVersion option. When using jsonSchemaToZod or other functions that
+ * accept a zodVersion option, you still need to pass it explicitly.
  * 
  * @example
  * ```typescript

@@ -222,7 +222,7 @@ const coreBuilders = {
 		schemas: import('./BaseBuilder.js').ZodBuilder<string>[],
 		options?: import('../Types.js').Options,
 	) => new DiscriminatedUnionBuilder(discriminator, schemas as any, options)
-}; as const
+} as const;
 const v4OnlyBuilders = {
 	// Zod v4 builders
 	promise: (

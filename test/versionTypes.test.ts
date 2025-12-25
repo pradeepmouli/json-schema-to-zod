@@ -13,10 +13,10 @@ describe('Type-level API restrictions', () => {
 		const { build } = await import('../src/v3.js');
 		
 		// These should work - core builders available in v3
-		const stringSchema = build.string();
-		const numberSchema = build.number();
-		const arraySchema = build.array(build.string());
-		const objectSchema = build.object({ name: build.string() });
+		build.string();
+		build.number();
+		build.array(build.string());
+		build.object({ name: build.string() });
 		
 		// TypeScript would error if we uncomment these (v4-only):
 		// @ts-expect-error - promise is v4-only
@@ -42,17 +42,17 @@ describe('Type-level API restrictions', () => {
 		const { build } = await import('../src/v4.js');
 		
 		// Core builders
-		const stringSchema = build.string();
-		const numberSchema = build.number();
+		build.string();
+		build.number();
 		
 		// V4-only builders - should compile and work
 		const promiseSchema = build.promise(build.string());
 		const lazySchema = build.lazy('() => z.string()');
 		const jsonSchema = build.json();
 		const fileSchema = build.file();
-		const nativeEnumSchema = build.nativeEnum('MyEnum');
-		const templateLiteralSchema = build.templateLiteral(['prefix-', 'suffix']);
-		const xorSchema = build.xor([build.string(), build.number()]);
+		build.nativeEnum('MyEnum');
+		build.templateLiteral(['prefix-', 'suffix']);
+		build.xor([build.string(), build.number()]);
 		build.keyof(build.object({}));
 		
 		// Verify these work correctly
@@ -67,7 +67,7 @@ describe('Type-level API restrictions', () => {
 		
 		// buildV3 should only have core builders
 		const v3String = buildV3.string();
-		const v3Number = buildV3.number();
+		buildV3.number();
 		
 		// TypeScript would error on v4-only methods:
 		// @ts-expect-error - promise not in v3
@@ -76,7 +76,7 @@ describe('Type-level API restrictions', () => {
 		// buildV4 should have everything
 		const v4String = buildV4.string();
 		const v4Promise = buildV4.promise(buildV4.string());
-		const v4Json = buildV4.json();
+		buildV4.json();
 		
 		// Verify runtime behavior
 		expect(v3String.text()).toBe('z.string()');

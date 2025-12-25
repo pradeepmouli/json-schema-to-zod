@@ -55,7 +55,7 @@ export type CoreBuilders = {
 	custom: (validateFn?: string, params?: any) => ZodBuilder;
 	discriminatedUnion: (
 		discriminator: string,
-		options: ZodBuilder[],
+		schemas: ZodBuilder[],
 	) => ZodBuilder;
 };
 
