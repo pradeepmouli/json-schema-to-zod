@@ -1,6 +1,6 @@
 {
   "name": "x-to-zod",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Enhanced fork of json-schema-to-zod - Converts JSON Schema into Zod schemas with fluent builder pattern",
   "types": "./dist/types/index.d.ts",
   "bin": "./dist/cjs/cli.js",

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+### Minor Changes
+
+- migrated to json-schema-typed
+
 ## Unreleased
 
 ### Breaking Changes
@@ -13,15 +19,18 @@
 ### Migration Notes
 
 **JSON Schema Draft-2020-12 Changes:**
+
 - `exclusiveMinimum` / `exclusiveMaximum`: Now standalone numeric values (was: boolean flag with `minimum`/`maximum` in draft-04)
 - `required`: Array-only (no longer accepts boolean)
 - `enum`: Must be non-empty array
 
 **If you're using custom JSON Schema types:**
+
 - Update imports from `json-schema-typed/draft-2020-12` for better TypeScript IntelliSense
 - Old draft-04 style schemas may need updates (see examples above)
 
 **For package consumers:**
+
 - No breaking changes to public API
 - Type aliases ensure full backward compatibility
 - All existing code continues to work
