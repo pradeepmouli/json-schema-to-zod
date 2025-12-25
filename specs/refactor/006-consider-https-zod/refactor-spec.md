@@ -78,7 +78,7 @@ User description: "consider https://zod.dev/v4/changelog and update builders acc
 Update all ZodBuilder classes to support dual-mode generation (v3/v4) via configuration. Implement hybrid builder approach for string formats (internally switch to format-specific builders when format is detected). Keep existing builder methods but change output generation based on zodVersion config. Replace deprecated error handling (message → error in v4), and ensure all generated schemas follow version-specific conventions while preserving validation behavior.
 
 **Files Affected**:
-- **Modified**: 
+- **Modified**:
   - `src/ZodBuilder/string.ts` - Implement hybrid format builder switching
   - `src/ZodBuilder/object.ts` - Version-aware generation for strict/loose/extend
   - `src/ZodBuilder/nativeEnum.ts` - Generate `z.enum()` in v4, `z.nativeEnum()` in v3
@@ -88,7 +88,7 @@ Update all ZodBuilder classes to support dual-mode generation (v3/v4) via config
   - `src/ZodBuilder/BaseBuilder.ts` - Add zodVersion config, update error parameter handling
   - `src/utils/withMessage.ts` - Version-aware error parameter (message vs error)
   - All test files to verify both v3 and v4 compatibility
-- **Created**: 
+- **Created**:
   - Configuration/options type for zodVersion setting
   - Format-specific builder classes (EmailBuilder, UuidBuilder, etc.) for v4 mode
 - **Deleted**: None
@@ -173,7 +173,7 @@ Record with single argument (where possible)
 - **Memory Usage**: Maintain
 
 ### Success Threshold
-**Minimum acceptable improvement**: 
+**Minimum acceptable improvement**:
 1. All builders support both v3 and v4 mode generation via configuration
 2. Default v4 mode generates fully compatible Zod v4 code
 3. V3 compatibility mode maintains current behavior

@@ -1,7 +1,7 @@
 # Tasks: Zod v4 Builder Updates (Dual-Mode Support)
 
-**Refactor ID**: refactor-006  
-**Input**: plan.md, spec.md from `/specs/refactor/006-consider-https-zod/`  
+**Refactor ID**: refactor-006
+**Input**: plan.md, spec.md from `/specs/refactor/006-consider-https-zod/`
 **Organization**: Tasks grouped by implementation phase for incremental refactoring
 
 ## Format: `[ID] [P?] Description`
@@ -288,17 +288,17 @@
 ## Success Criteria
 
 ✅ All 97 tasks completed
-✅ All builders support zodVersion configuration  
-✅ v4 mode generates Zod v4-compatible code (top-level formats, strictObject, unified enum)  
-✅ v3 mode generates Zod v3-compatible code (method chains, nativeEnum)  
-✅ All 183 existing tests pass in both modes  
-✅ New tests added for version-specific behavior  
-✅ Error messages use correct parameter name per version  
-✅ Documentation complete with migration guide  
-✅ No performance regression > 5%  
-✅ TypeScript compilation clean  
-✅ Linter clean  
-✅ Code review approved  
+✅ All builders support zodVersion configuration
+✅ v4 mode generates Zod v4-compatible code (top-level formats, strictObject, unified enum)
+✅ v3 mode generates Zod v3-compatible code (method chains, nativeEnum)
+✅ All 183 existing tests pass in both modes
+✅ New tests added for version-specific behavior
+✅ Error messages use correct parameter name per version
+✅ Documentation complete with migration guide
+✅ No performance regression > 5%
+✅ TypeScript compilation clean
+✅ Linter clean
+✅ Code review approved
 
 ---
 

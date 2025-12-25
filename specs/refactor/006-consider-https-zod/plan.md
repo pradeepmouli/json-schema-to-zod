@@ -58,23 +58,23 @@ import type { Options, ZodVersion } from '../Types.js';
 
 export abstract class ZodBuilder<T = string> {
   protected options?: Options;
-  
+
   constructor(options?: Options) {
     this.options = options;
   }
-  
+
   protected get zodVersion(): ZodVersion {
     return this.options?.zodVersion || 'v4';
   }
-  
+
   protected isV4(): boolean {
     return this.zodVersion === 'v4';
   }
-  
+
   protected isV3(): boolean {
     return this.zodVersion === 'v3';
   }
-  
+
   protected withErrorMessage(message?: string): string {
     if (!message) return '';
     const param = this.isV4() ? 'error' : 'message';
@@ -132,7 +132,7 @@ export function withMessage(
   zodVersion: ZodVersion = 'v4'
 ): string {
   if (!value) return '';
-  
+
   if (zodVersion === 'v4') {
     return `, { error: ${JSON.stringify(value)} }`;
   } else {
@@ -171,7 +171,7 @@ protected withErrorMessage(message?: string): string {
 ## Phase 3: String Format Builders (Hybrid Approach)
 
 ### 3.1 Create Format-Specific Builders
-**New Files**: 
+**New Files**:
 - `src/ZodBuilder/email.ts`
 - `src/ZodBuilder/uuid.ts`
 - `src/ZodBuilder/url.ts`
@@ -184,7 +184,7 @@ protected withErrorMessage(message?: string): string {
 export class EmailBuilder extends ZodBuilder<'email'> {
   readonly typeKind = 'email' as const;
   _errorMessage?: string;
-  
+
   build(): string {
     if (this.isV4()) {
       return `z.email()${this.withErrorMessage(this._errorMessage)}`;
@@ -199,7 +199,7 @@ export class UuidBuilder extends ZodBuilder<'uuid'> {
   readonly typeKind = 'uuid' as const;
   _errorMessage?: string;
   _lenient?: boolean; // for v3 compatibility
-  
+
   build(): string {
     if (this.isV4()) {
       // Use guid() for lenient mode in v4
@@ -233,7 +233,7 @@ export class StringBuilder extends ZodBuilder<'string'> {
   _pattern?: { pattern: string; errorMessage?: string };
   _minLength?: { value: number; errorMessage?: string };
   _maxLength?: { value: number; errorMessage?: string };
-  
+
   /**
    * Set email format - returns EmailBuilder in v4 mode
    */
@@ -249,7 +249,7 @@ export class StringBuilder extends ZodBuilder<'string'> {
       return this;
     }
   }
-  
+
   uuid(errorMessage?: string): UuidBuilder | this {
     if (this.isV4() && !this.hasStringConstraints()) {
       const uuidBuilder = new UuidBuilder(this.options);
@@ -260,19 +260,19 @@ export class StringBuilder extends ZodBuilder<'string'> {
       return this;
     }
   }
-  
+
   private hasStringConstraints(): boolean {
     return !!(this._minLength || this._maxLength || this._pattern);
   }
-  
+
   build(): string {
     let schema = 'z.string()';
-    
+
     // Add format if in v3 mode or has constraints
     if (this._format) {
       schema += `.${this._format.format}()${this.withErrorMessage(this._format.errorMessage)}`;
     }
-    
+
     // Add other string constraints
     if (this._minLength) {
       schema += `.min(${this._minLength.value}${this.withErrorMessage(this._minLength.errorMessage)})`;
@@ -283,7 +283,7 @@ export class StringBuilder extends ZodBuilder<'string'> {
     if (this._pattern) {
       schema += `.regex(/${this._pattern.pattern}/${this.withErrorMessage(this._pattern.errorMessage)})`;
     }
-    
+
     return schema;
   }
 }
@@ -312,27 +312,27 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
   _strict?: boolean;
   _passthrough?: boolean;
   _properties: Record<string, ZodBuilder>;
-  
+
   strict(): this {
     this._strict = true;
     return this;
   }
-  
+
   passthrough(): this {
     this._passthrough = true;
     return this;
   }
-  
+
   merge(other: ObjectBuilder): this {
     // Merge logic
     return this;
   }
-  
+
   build(): string {
     const props = Object.entries(this._properties)
       .map(([key, builder]) => `${key}: ${builder.build()}`)
       .join(', ');
-    
+
     if (this.isV4()) {
       // v4 mode: use top-level functions
       if (this._strict) {
@@ -353,7 +353,7 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
       return schema;
     }
   }
-  
+
   // For merge, generate .extend() in v4, .merge() in v3
   buildMerge(other: ObjectBuilder): string {
     if (this.isV4()) {
@@ -386,12 +386,12 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
 ```typescript
 export class NativeEnumBuilder extends ZodBuilder<'nativeEnum'> {
   _values: any;
-  
+
   constructor(values: any, options?: BuilderOptions) {
     super(options);
     this._values = values;
   }
-  
+
   build(): string {
     if (this.isV4()) {
       return `z.enum(${JSON.stringify(this._values)})`;
@@ -421,14 +421,14 @@ export class NativeEnumBuilder extends ZodBuilder<'nativeEnum'> {
 export class NumberBuilder extends ZodBuilder<'number'> {
   build(): string {
     let schema = 'z.number()';
-    
+
     if (this.isV4()) {
       // v4 rejects infinity by default - no change needed
       // Add validation if needed
     } else {
       // v3 accepts infinity - maintain current behavior
     }
-    
+
     // Add min/max/etc
     return schema;
   }
@@ -451,7 +451,7 @@ export class NumberBuilder extends ZodBuilder<'number'> {
 export class RecordBuilder extends ZodBuilder<'record'> {
   _keySchema?: ZodBuilder;
   _valueSchema: ZodBuilder;
-  
+
   build(): string {
     if (this.isV4()) {
       // v4 requires two arguments
@@ -485,19 +485,19 @@ export class RecordBuilder extends ZodBuilder<'record'> {
 ```typescript
 export class ArrayBuilder extends ZodBuilder<'array'> {
   _minItems?: number;
-  
+
   nonempty(errorMessage?: string): this {
     this._minItems = 1;
     return this;
   }
-  
+
   build(): string {
     let schema = `z.array(${this._elementSchema.build()})`;
-    
+
     if (this._minItems === 1) {
       schema += `.nonempty()${this.withErrorMessage(this._errorMessage)}`;
     }
-    
+
     // Note: Type inference changes in v4 (array vs tuple)
     // but validation behavior is same
     return schema;
@@ -522,7 +522,7 @@ export class ArrayBuilder extends ZodBuilder<'array'> {
 ```typescript
 describe('StringBuilder (v4 mode)', () => {
   const builder = new StringBuilder({ zodVersion: 'v4' });
-  
+
   it('generates top-level email function', () => {
     const result = builder.email().build();
     expect(result).toBe('z.email()');
@@ -531,7 +531,7 @@ describe('StringBuilder (v4 mode)', () => {
 
 describe('StringBuilder (v3 mode)', () => {
   const builder = new StringBuilder({ zodVersion: 'v3' });
-  
+
   it('generates string method chain', () => {
     const result = builder.email().build();
     expect(result).toBe('z.string().email()');
@@ -562,7 +562,7 @@ describe('End-to-end schema generation', () => {
     const result = jsonSchemaToZod(jsonSchema, { zodVersion: 'v4' });
     expect(result).toBe('z.email()');
   });
-  
+
   it('generates v3 schema from JSON Schema', () => {
     const jsonSchema = { type: 'string', format: 'email' };
     const result = jsonSchemaToZod(jsonSchema, { zodVersion: 'v3' });
@@ -641,14 +641,14 @@ Add section on version selection:
 ```typescript
 /**
  * Creates a string builder for generating Zod string schemas.
- * 
+ *
  * @param options - Builder options including zodVersion
  * @returns StringBuilder instance
- * 
+ *
  * @example
  * // v4 mode (default)
  * const schema = string().email(); // generates: z.email()
- * 
+ *
  * @example
  * // v3 mode
  * const schema = string({ zodVersion: 'v3' }).email(); // generates: z.string().email()

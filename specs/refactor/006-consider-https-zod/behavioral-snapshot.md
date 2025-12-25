@@ -101,4 +101,3 @@ npm run lint
 
 ---
 *Behavioral snapshot for refactor-006 - See .specify/extensions/workflows/refactor/*
-
