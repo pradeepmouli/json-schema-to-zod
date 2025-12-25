@@ -61,11 +61,11 @@ export function parseObject(
 		if (refs.withJsdocs) {
 			result = `z.object({ ${propsWithJsdocs.join(', ')} })`;
 		} else {
-			result = build.object(properties).text();
+			result = build.object(properties, refs).text();
 		}
 	} else if (objectSchema.properties) {
 		// Empty properties object
-		result = build.object({}).text();
+		result = build.object({}, refs).text();
 	} else {
 		result = '';
 	} // Step 2: Handle additionalProperties
@@ -181,10 +181,10 @@ export function parseObject(
 		// No properties, no patternProperties
 		if (additionalPropertiesZod) {
 			result = build
-				.record(build.string(), ObjectBuilder.fromCode(additionalPropertiesZod))
+				.record(build.string(refs), ObjectBuilder.fromCode(additionalPropertiesZod), refs)
 				.text();
 		} else {
-			result = build.record(build.string(), build.any()).text();
+			result = build.record(build.string(refs), build.any(refs), refs).text();
 		}
 	}
 

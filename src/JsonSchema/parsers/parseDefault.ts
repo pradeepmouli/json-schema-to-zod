@@ -1,6 +1,6 @@
-import { JsonSchemaObject } from '../../Types.js';
+import { Context, JsonSchemaObject } from '../../Types.js';
 import { build } from '../../ZodBuilder/index.js';
 
-export const parseDefault = (_schema: JsonSchemaObject) => {
-	return build.any();
+export const parseDefault = (_schema: JsonSchemaObject, refs?: Context) => {
+	return build.any(refs);
 };

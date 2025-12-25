@@ -133,25 +133,25 @@ const selectParser: ParserSelector = (schema, refs) => {
 	} else if (its.a.not(schema)) {
 		return parseNot(schema, refs);
 	} else if (its.an.enum(schema)) {
-		return parseEnum(schema); //<-- needs to come before primitives
+		return parseEnum(schema, refs); //<-- needs to come before primitives
 	} else if (its.a.const(schema)) {
-		return parseConst(schema);
+		return parseConst(schema, refs);
 	} else if (its.a.multipleType(schema)) {
 		return parseMultipleType(schema, refs);
 	} else if (its.a.primitive(schema, 'string')) {
-		return parseString(schema);
+		return parseString(schema, refs);
 	} else if (
 		its.a.primitive(schema, 'number') ||
 		its.a.primitive(schema, 'integer')
 	) {
-		return parseNumber(schema);
+		return parseNumber(schema, refs);
 	} else if (its.a.primitive(schema, 'boolean')) {
-		return parseBoolean(schema);
+		return parseBoolean(schema, refs);
 	} else if (its.a.primitive(schema, 'null')) {
-		return parseNull(schema);
+		return parseNull(schema, refs);
 	} else if (its.a.conditional(schema)) {
 		return parseIfThenElse(schema, refs);
 	} else {
-		return parseDefault(schema);
+		return parseDefault(schema, refs);
 	}
 };

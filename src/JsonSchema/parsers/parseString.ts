@@ -1,9 +1,12 @@
-import { JsonSchemaObject } from '../../Types.js';
+import { Context, JsonSchemaObject } from '../../Types.js';
 import { build } from '../../ZodBuilder/index.js';
 import { parseSchema } from './parseSchema.js';
 
-export const parseString = (schema: JsonSchemaObject & { type: 'string' }) => {
-	const builder = build.string();
+export const parseString = (
+	schema: JsonSchemaObject & { type: 'string' },
+	refs?: Context,
+) => {
+	const builder = build.string(refs);
 
 	// Apply format constraint
 	if (schema.format) {
@@ -36,7 +39,7 @@ export const parseString = (schema: JsonSchemaObject & { type: 'string' }) => {
 
 		// Apply contentSchema pipe if present
 		if (schema.contentSchema && typeof schema.contentSchema === 'object') {
-			const contentSchemaZod = parseSchema(schema.contentSchema);
+			const contentSchemaZod = parseSchema(schema.contentSchema, refs);
 			builder.pipe(contentSchemaZod, schema.errorMessage?.contentSchema);
 		}
 	}

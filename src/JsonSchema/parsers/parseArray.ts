@@ -14,7 +14,7 @@ export const parseArray = (
 			parseSchema(v, { ...refs, path: [...refs.path, 'items', i] }),
 		);
 
-		const builder = build.array(itemSchemas);
+		const builder = build.array(itemSchemas, refs);
 
 		if (schema.minItems !== undefined) {
 			builder.min(schema.minItems, schema.errorMessage?.minItems);
@@ -26,13 +26,13 @@ export const parseArray = (
 		r = builder;
 	} else {
 		const itemSchema = !schema.items
-			? build.any()
+			? build.any(refs)
 			: parseSchema(schema.items, {
 					...refs,
 					path: [...refs.path, 'items'],
 				});
 
-		const builder = build.array(itemSchema);
+		const builder = build.array(itemSchema, refs);
 
 		// Apply minItems constraint
 		if (schema.minItems !== undefined) {
