@@ -21,6 +21,8 @@ export type ParserOverride = (
 	refs: Context,
 ) => import('./ZodBuilder/index.js').BaseBuilder | string | void;
 
+export type ZodVersion = 'v3' | 'v4';
+
 export type Options = {
 	name?: string;
 	module?: 'cjs' | 'esm' | 'none';
@@ -34,6 +36,8 @@ export type Options = {
 	preferUnions?: boolean;
 	disableRefs?: boolean;
 	preprocessors?: transformer[];
+	/** Zod version to target for generated code (default: 'v4') */
+	zodVersion?: ZodVersion;
 };
 
 export type Context = Options & {
