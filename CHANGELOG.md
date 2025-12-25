@@ -4,9 +4,7 @@
 
 ### Minor Changes
 
-- migrated to json-schema-typed
-
-## Unreleased
+- Migrated to json-schema-typed library for TypeScript type definitions
 
 ### Breaking Changes
 

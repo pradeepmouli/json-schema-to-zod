@@ -36,7 +36,7 @@ export function parseObject(
 				propSchema.default !== undefined;
 			const required = Array.isArray(objectSchema.required)
 				? objectSchema.required.includes(key)
-				: false; // draft-2020-12: required is always array, not boolean
+				: false; // fallback for non-standard schemas (JSON Schema spec requires 'required' to be an array at object level, not per-property boolean)
 			const optional = !hasDefault && !required;
 
 			if (optional) {
