@@ -9,26 +9,26 @@
 ## Phase 1: Setup & Type Replacement
 
 ### Baseline & Setup
-- [ ] T001 Verify current tests pass: `npm test`
-- [ ] T002 Create git tag: `git tag pre-refactor-005 -m "Baseline before refactor-005"`
-- [ ] T003 [P] Install json-schema-typed: `pnpm add json-schema-typed@^8.0.0`
-- [ ] T004 Verify package.json lists json-schema-typed in dependencies
+- [X] T001 Verify current tests pass: `npm test`
+- [X] T002 Create git tag: `git tag pre-refactor-005 -m "Baseline before refactor-005"`
+- [X] T003 [P] Install json-schema-typed: `pnpm add json-schema-typed@^8.0.0`
+- [X] T004 Verify package.json lists json-schema-typed in dependencies
 
 ### Update Type Definitions in src/Types.ts
-- [ ] T005 Import JSONSchema from json-schema-typed/draft-2020-12 in src/Types.ts
-- [ ] T006 Create JsonSchema type alias: `export type JsonSchema = JSONSchema`
-- [ ] T007 Create JsonSchemaObject with extensions in src/Types.ts:
+- [X] T005 Import JSONSchema from json-schema-typed/draft-2020-12 in src/Types.ts
+- [X] T006 Create JsonSchema type alias: `export type JsonSchema = JSONSchema`
+- [X] T007 Create JsonSchemaObject with extensions in src/Types.ts:
   ```typescript
   export type JsonSchemaObject = JSONSchema.Interface & {
     errorMessage?: { [key: string]: string | undefined };
     nullable?: boolean;
   };
   ```
-- [ ] T008 Remove old custom JsonSchema and JsonSchemaObject type definitions from src/Types.ts
-- [ ] T009 Keep Serializable type unchanged (from type-fest)
-- [ ] T010 Run TypeScript compilation: `npm run build:types`
-- [ ] T011 Fix any TypeScript compilation errors
-- [ ] T012 Run linter: `npm run lint`
+- [X] T008 Remove old custom JsonSchema and JsonSchemaObject type definitions from src/Types.ts
+- [X] T009 Keep Serializable type unchanged (from type-fest)
+- [X] T010 Run TypeScript compilation: `npm run build:types`
+- [X] T011 Fix any TypeScript compilation errors
+- [X] T012 Run linter: `npm run lint`
 
 ---
 
@@ -53,7 +53,7 @@
 - [ ] T026 [P] Update test/parsers/parseObject.test.ts schemas to draft-2020-12 if needed
 - [ ] T027 [P] Update test/parsers/parseArray.test.ts schemas to draft-2020-12 if needed
 - [ ] T028 [P] Update test/parsers/parseString.test.ts schemas to draft-2020-12 if needed
-- [ ] T029 [P] Update test/parsers/parseNumber.test.ts schemas to draft-2020-12 if needed
+- [X] T029 [P] Update test/parsers/parseNumber.test.ts schemas to draft-2020-12 if needed
 - [ ] T030 [P] Update test/parsers/parseEnum.test.ts schemas to draft-2020-12 if needed
 - [ ] T031 [P] Update test/parsers/parseConst.test.ts schemas to draft-2020-12 if needed
 - [ ] T032 [P] Update test/parsers/parseAllOf.test.ts schemas to draft-2020-12 if needed
@@ -65,20 +65,20 @@
 - [ ] T038 [P] Update test/parsers/parseSchema.test.ts schemas to draft-2020-12 if needed
 
 ### Test Execution & Fixing
-- [ ] T039 Run test suite: `npm test`
+- [X] T039 Run test suite: `npm test`
 - [ ] T040 Document any test failures and behavioral differences
-- [ ] T041 Fix test expectations if draft-2020-12 changes behavior
-- [ ] T042 Verify all tests pass: `npm test`
+- [X] T041 Fix test expectations if draft-2020-12 changes behavior
+- [X] T042 Verify all tests pass: `npm test`
 
 ---
 
 ## Phase 3: Validation & Documentation
 
 ### Full Build Validation
-- [ ] T043 Run full build: `npm run build`
-- [ ] T044 Verify all build targets succeed (types, cjs, esm)
-- [ ] T045 Run linter: `npm run lint`
-- [ ] T046 Verify no lint errors
+- [X] T043 Run full build: `npm run build`
+- [X] T044 Verify all build targets succeed (types, cjs, esm)
+- [X] T045 Run linter: `npm run lint`
+- [X] T046 Verify no lint errors
 
 ### Documentation Updates
 - [ ] T047 Update CHANGELOG.md with breaking changes section:
@@ -97,7 +97,7 @@
 - [ ] T050 Review git diff to ensure all changes are intentional
 - [ ] T051 Verify public API backward compatibility (type aliases)
 - [ ] T052 Run full test suite one final time: `npm test`
-- [ ] T053 Create commit with descriptive message
+- [X] T053 Create commit with descriptive message
 - [ ] T054 Update refactor-spec.md status to "Complete"
 
 ---
