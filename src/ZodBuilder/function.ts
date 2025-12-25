@@ -9,8 +9,8 @@ export class FunctionBuilder extends ZodBuilder<'function'> {
 	private _input?: ZodBuilder[] = undefined;
 	private _output?: ZodBuilder = undefined;
 
-	constructor(params: { input?: ZodBuilder[]; output?: ZodBuilder } = {}) {
-		super();
+	constructor(params: { input?: ZodBuilder[]; output?: ZodBuilder } = {}, options?: import('../Types.js').Options) {
+		super(options);
 		this._input = params.input;
 		this._output = params.output;
 	}

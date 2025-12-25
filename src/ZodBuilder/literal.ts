@@ -8,8 +8,8 @@ export class LiteralBuilder extends ZodBuilder<'literal'> {
 	readonly typeKind = 'literal' as const;
 	private readonly _value: Serializable;
 
-	constructor(value: Serializable) {
-		super();
+	constructor(value: Serializable, options?: import('../Types.js').Options) {
+		super(options);
 		this._value = value;
 	}
 

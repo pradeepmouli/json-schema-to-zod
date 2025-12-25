@@ -9,8 +9,8 @@ export class RecordBuilder extends ZodBuilder<'record'> {
 	private readonly _keySchema: ZodBuilder;
 	private readonly _valueSchema: ZodBuilder;
 
-	constructor(keySchema: ZodBuilder, valueSchema: ZodBuilder) {
-		super();
+	constructor(keySchema: ZodBuilder, valueSchema: ZodBuilder, options?: import('../Types.js').Options) {
+		super(options);
 		this._keySchema = keySchema;
 		this._valueSchema = valueSchema;
 	}

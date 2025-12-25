@@ -10,8 +10,8 @@ export class DiscriminatedUnionBuilder extends ZodBuilder<'discriminatedUnion'> 
 	private readonly _discriminator: string;
 	private readonly _options: ZodBuilder<keyof TypeKind>[];
 
-	constructor(discriminator: string, options: ZodBuilder<keyof TypeKind>[]) {
-		super();
+	constructor(discriminator: string, options: ZodBuilder<keyof TypeKind>[], zodOptions?: import('../Types.js').Options) {
+		super(zodOptions);
 		this._discriminator = discriminator;
 		this._options = options;
 	}

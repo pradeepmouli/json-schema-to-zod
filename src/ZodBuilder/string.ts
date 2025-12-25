@@ -13,8 +13,8 @@ export class StringBuilder extends ZodBuilder<'string'> {
 	_json?: { errorMessage?: string } = undefined;
 	_pipe?: { contentSchema: ZodBuilder; errorMessage?: string } = undefined;
 
-	constructor() {
-		super();
+	constructor(options?: import('../Types.js').Options) {
+		super(options);
 	}
 
 	/**

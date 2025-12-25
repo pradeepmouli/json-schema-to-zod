@@ -9,8 +9,8 @@ export class IntersectionBuilder extends ZodBuilder<'intersection'> {
 	private readonly _left: ZodBuilder;
 	private readonly _right: ZodBuilder;
 
-	constructor(left: ZodBuilder, right: ZodBuilder) {
-		super();
+	constructor(left: ZodBuilder, right: ZodBuilder, options?: import('../Types.js').Options) {
+		super(options);
 		this._left = left;
 		this._right = right;
 	}

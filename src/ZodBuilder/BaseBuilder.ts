@@ -120,6 +120,53 @@ export abstract class ZodBuilder<T extends string = string> {
 	_metaData?: any = undefined;
 	_transformFn?: string = undefined;
 
+	protected options?: import('../Types.js').Options;
+
+	constructor(options?: import('../Types.js').Options) {
+		this.options = options;
+	}
+
+	/**
+	 * Get the target Zod version for code generation.
+	 * @returns 'v3' or 'v4' (default: 'v4')
+	 */
+	protected get zodVersion(): import('../Types.js').ZodVersion {
+		return this.options?.zodVersion || 'v4';
+	}
+
+	/**
+	 * Check if targeting Zod v4.
+	 */
+	protected isV4(): boolean {
+		return this.zodVersion === 'v4';
+	}
+
+	/**
+	 * Check if targeting Zod v3.
+	 */
+	protected isV3(): boolean {
+		return this.zodVersion === 'v3';
+	}
+
+	/**
+	 * Generate version-appropriate error message parameter for Zod methods.
+	 * @param message - Error message string
+	 * @returns Parameter string with leading comma (e.g., ', { error: "msg" }') or empty string
+	 * @example
+	 * // v4 mode
+	 * `z.email()${this.withErrorMessage('Invalid email')}`
+	 * // => 'z.email({ error: "Invalid email" })'
+	 *
+	 * // v3 mode
+	 * `z.string().email()${this.withErrorMessage('Invalid email')}`
+	 * // => 'z.string().email({ message: "Invalid email" })'
+	 */
+	protected withErrorMessage(message?: string): string {
+		if (!message) return '';
+		const param = this.isV4() ? 'error' : 'message';
+		return `, { ${param}: ${JSON.stringify(message)} }`;
+	}
+
 	/**
 	 * Apply optional constraint.
 	 */

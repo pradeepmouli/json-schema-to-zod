@@ -8,8 +8,8 @@ export class TupleBuilder extends ZodBuilder<'tuple'> {
 	readonly typeKind = 'tuple' as const;
 	private readonly _items: ZodBuilder[];
 
-	constructor(items: ZodBuilder[]) {
-		super();
+	constructor(items: ZodBuilder[], options?: import('../Types.js').Options) {
+		super(options);
 		this._items = items;
 	}
 

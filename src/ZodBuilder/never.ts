@@ -6,8 +6,8 @@ import { ZodBuilder } from './BaseBuilder.js';
 export class NeverBuilder extends ZodBuilder<'never'> {
 	readonly typeKind = 'never' as const;
 
-	constructor() {
-		super();
+	constructor(options?: import('../Types.js').Options) {
+		super(options);
 	}
 
 	protected override base(): string {

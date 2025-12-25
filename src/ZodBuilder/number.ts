@@ -17,8 +17,8 @@ export class NumberBuilder extends ZodBuilder<'number'> {
 		| { value: number; exclusive: boolean; errorMessage?: string }
 		| undefined = undefined;
 
-	constructor() {
-		super();
+	constructor(options?: import('../Types.js').Options) {
+		super(options);
 	}
 
 	/**

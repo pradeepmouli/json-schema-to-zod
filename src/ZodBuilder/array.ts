@@ -9,8 +9,8 @@ export class ArrayBuilder extends ZodBuilder<'array'> {
 	_minItems?: { value: number; errorMessage?: string } = undefined;
 	_maxItems?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(itemSchema: ZodBuilder | ZodBuilder[]) {
-		super();
+	constructor(itemSchema: ZodBuilder | ZodBuilder[], options?: import('../Types.js').Options) {
+		super(options);
 		this._itemSchema = itemSchema;
 	}
 

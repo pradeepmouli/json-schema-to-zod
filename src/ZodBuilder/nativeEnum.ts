@@ -8,8 +8,8 @@ export class NativeEnumBuilder extends ZodBuilder<'nativeEnum'> {
 	readonly typeKind = 'nativeEnum' as const;
 	private readonly _enumReference: string;
 
-	constructor(enumReference: string) {
-		super();
+	constructor(enumReference: string, options?: import('../Types.js').Options) {
+		super(options);
 		this._enumReference = enumReference;
 	}
 

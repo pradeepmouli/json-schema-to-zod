@@ -11,8 +11,8 @@ export class MapBuilder extends ZodBuilder<'map'> {
 	_max?: { value: number; errorMessage?: string } = undefined;
 	_size?: { value: number; errorMessage?: string } = undefined;
 
-	constructor(keySchema: ZodBuilder, valueSchema: ZodBuilder) {
-		super();
+	constructor(keySchema: ZodBuilder, valueSchema: ZodBuilder, options?: import('../Types.js').Options) {
+		super(options);
 		this._keySchema = keySchema;
 		this._valueSchema = valueSchema;
 	}

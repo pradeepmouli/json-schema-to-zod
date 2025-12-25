@@ -16,8 +16,8 @@ export class BigIntBuilder extends ZodBuilder<'bigint'> {
 		undefined;
 
 	readonly typeKind = 'bigint' as const;
-	constructor() {
-		super();
+	constructor(options?: import('../Types.js').Options) {
+		super(options);
 	}
 	/**
 	 * Apply minimum constraint (gte by default).

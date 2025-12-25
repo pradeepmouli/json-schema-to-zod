@@ -9,8 +9,8 @@ export class CodecBuilder extends ZodBuilder<'codec'> {
 	private readonly _inSchema: ZodBuilder;
 	private readonly _outSchema: ZodBuilder;
 
-	constructor(inSchema: ZodBuilder, outSchema: ZodBuilder) {
-		super();
+	constructor(inSchema: ZodBuilder, outSchema: ZodBuilder, options?: import('../Types.js').Options) {
+		super(options);
 		this._inSchema = inSchema;
 		this._outSchema = outSchema;
 	}

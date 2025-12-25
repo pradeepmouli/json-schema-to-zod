@@ -8,8 +8,8 @@ export class XorBuilder extends ZodBuilder<'xor'> {
 	readonly typeKind = 'xor' as const;
 	private readonly _schemas: ZodBuilder[];
 
-	constructor(schemas: ZodBuilder[]) {
-		super();
+	constructor(schemas: ZodBuilder[], options?: import('../Types.js').Options) {
+		super(options);
 		this._schemas = schemas;
 	}
 

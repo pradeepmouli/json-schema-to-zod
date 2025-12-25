@@ -18,8 +18,8 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
 	private _pickKeys?: string[];
 	private _omitKeys?: string[];
 
-	constructor(properties: Record<string, ZodBuilder> = {}) {
-		super();
+	constructor(properties: Record<string, ZodBuilder> = {}, options?: import('../Types.js').Options) {
+		super(options);
 		this._properties = properties;
 	}
 

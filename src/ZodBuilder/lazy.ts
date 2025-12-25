@@ -8,8 +8,8 @@ export class LazyBuilder extends ZodBuilder<'lazy'> {
 	readonly typeKind = 'lazy' as const;
 	private readonly _getter: string;
 
-	constructor(getter: string) {
-		super();
+	constructor(getter: string, options?: import('../Types.js').Options) {
+		super(options);
 		this._getter = getter;
 	}
 

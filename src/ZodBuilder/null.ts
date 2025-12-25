@@ -6,8 +6,8 @@ import { ZodBuilder } from './BaseBuilder.js';
 export class NullBuilder extends ZodBuilder<'null'> {
 	readonly typeKind = 'null' as const;
 
-	constructor() {
-		super();
+	constructor(options?: import('../Types.js').Options) {
+		super(options);
 	}
 
 	protected override base(): string {
