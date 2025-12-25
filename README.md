@@ -9,6 +9,8 @@
 
 A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code.
 
+**TypeScript Type Definitions:** This package uses [json-schema-typed](https://github.com/ThomasAribart/json-schema-typed) for comprehensive JSON Schema draft-2020-12 type definitions, providing excellent IntelliSense and type safety.
+
 _Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
 
 ## Enhancements in This Fork
@@ -508,6 +510,12 @@ zodSchema.safeParse("Please just use Ajv instead");
 ## Credits
 
 This is a fork of [json-schema-to-zod](https://github.com/StefanTerdell/json-schema-to-zod) by [Stefan Terdell](https://github.com/StefanTerdell).
+
+### Type Definitions
+
+JSON Schema TypeScript type definitions provided by [json-schema-typed](https://github.com/ThomasAribart/json-schema-typed) by Thomas Aribart, supporting JSON Schema draft-2020-12.
+
+### Original Contributors
 
 Original contributors include:
 - Chen (https://github.com/werifu)

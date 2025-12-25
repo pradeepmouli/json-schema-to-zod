@@ -35,38 +35,38 @@
 ## Phase 2: Test Schema Updates
 
 ### Audit Test Schemas
-- [ ] T013 Audit test/parsers/parseObject.test.ts for draft-2020-12 compatibility
-- [ ] T014 Audit test/parsers/parseArray.test.ts for draft-2020-12 compatibility
-- [ ] T015 Audit test/parsers/parseString.test.ts for draft-2020-12 compatibility
-- [ ] T016 Audit test/parsers/parseNumber.test.ts for draft-2020-12 compatibility
-- [ ] T017 Audit test/parsers/parseEnum.test.ts for draft-2020-12 compatibility
-- [ ] T018 Audit test/parsers/parseConst.test.ts for draft-2020-12 compatibility
-- [ ] T019 Audit test/parsers/parseAllOf.test.ts for draft-2020-12 compatibility
-- [ ] T020 Audit test/parsers/parseAnyOf.test.ts for draft-2020-12 compatibility
-- [ ] T021 Audit test/parsers/parseOneOf.test.ts for draft-2020-12 compatibility
-- [ ] T022 Audit test/parsers/parseNot.test.ts for draft-2020-12 compatibility
-- [ ] T023 Audit test/parsers/parseNullable.test.ts for draft-2020-12 compatibility
-- [ ] T024 Audit test/parsers/parseMultipleType.test.ts for draft-2020-12 compatibility
-- [ ] T025 Audit test/parsers/parseSchema.test.ts for draft-2020-12 compatibility
+- [X] T013 Audit test/parsers/parseObject.test.ts for draft-2020-12 compatibility
+- [X] T014 Audit test/parsers/parseArray.test.ts for draft-2020-12 compatibility
+- [X] T015 Audit test/parsers/parseString.test.ts for draft-2020-12 compatibility
+- [X] T016 Audit test/parsers/parseNumber.test.ts for draft-2020-12 compatibility
+- [X] T017 Audit test/parsers/parseEnum.test.ts for draft-2020-12 compatibility
+- [X] T018 Audit test/parsers/parseConst.test.ts for draft-2020-12 compatibility
+- [X] T019 Audit test/parsers/parseAllOf.test.ts for draft-2020-12 compatibility
+- [X] T020 Audit test/parsers/parseAnyOf.test.ts for draft-2020-12 compatibility
+- [X] T021 Audit test/parsers/parseOneOf.test.ts for draft-2020-12 compatibility
+- [X] T022 Audit test/parsers/parseNot.test.ts for draft-2020-12 compatibility
+- [X] T023 Audit test/parsers/parseNullable.test.ts for draft-2020-12 compatibility
+- [X] T024 Audit test/parsers/parseMultipleType.test.ts for draft-2020-12 compatibility
+- [X] T025 Audit test/parsers/parseSchema.test.ts for draft-2020-12 compatibility
 
 ### Update Test Schemas
-- [ ] T026 [P] Update test/parsers/parseObject.test.ts schemas to draft-2020-12 if needed
-- [ ] T027 [P] Update test/parsers/parseArray.test.ts schemas to draft-2020-12 if needed
-- [ ] T028 [P] Update test/parsers/parseString.test.ts schemas to draft-2020-12 if needed
+- [X] T026 [P] Update test/parsers/parseObject.test.ts schemas to draft-2020-12 if needed
+- [X] T027 [P] Update test/parsers/parseArray.test.ts schemas to draft-2020-12 if needed
+- [X] T028 [P] Update test/parsers/parseString.test.ts schemas to draft-2020-12 if needed
 - [X] T029 [P] Update test/parsers/parseNumber.test.ts schemas to draft-2020-12 if needed
-- [ ] T030 [P] Update test/parsers/parseEnum.test.ts schemas to draft-2020-12 if needed
-- [ ] T031 [P] Update test/parsers/parseConst.test.ts schemas to draft-2020-12 if needed
-- [ ] T032 [P] Update test/parsers/parseAllOf.test.ts schemas to draft-2020-12 if needed
-- [ ] T033 [P] Update test/parsers/parseAnyOf.test.ts schemas to draft-2020-12 if needed
-- [ ] T034 [P] Update test/parsers/parseOneOf.test.ts schemas to draft-2020-12 if needed
-- [ ] T035 [P] Update test/parsers/parseNot.test.ts schemas to draft-2020-12 if needed
-- [ ] T036 [P] Update test/parsers/parseNullable.test.ts schemas to draft-2020-12 if needed
-- [ ] T037 [P] Update test/parsers/parseMultipleType.test.ts schemas to draft-2020-12 if needed
-- [ ] T038 [P] Update test/parsers/parseSchema.test.ts schemas to draft-2020-12 if needed
+- [X] T030 [P] Update test/parsers/parseEnum.test.ts schemas to draft-2020-12 if needed
+- [X] T031 [P] Update test/parsers/parseConst.test.ts schemas to draft-2020-12 if needed
+- [X] T032 [P] Update test/parsers/parseAllOf.test.ts schemas to draft-2020-12 if needed
+- [X] T033 [P] Update test/parsers/parseAnyOf.test.ts schemas to draft-2020-12 if needed
+- [X] T034 [P] Update test/parsers/parseOneOf.test.ts schemas to draft-2020-12 if needed
+- [X] T035 [P] Update test/parsers/parseNot.test.ts schemas to draft-2020-12 if needed
+- [X] T036 [P] Update test/parsers/parseNullable.test.ts schemas to draft-2020-12 if needed
+- [X] T037 [P] Update test/parsers/parseMultipleType.test.ts schemas to draft-2020-12 if needed
+- [X] T038 [P] Update test/parsers/parseSchema.test.ts schemas to draft-2020-12 if needed
 
 ### Test Execution & Fixing
 - [X] T039 Run test suite: `npm test`
-- [ ] T040 Document any test failures and behavioral differences
+- [X] T040 Document any test failures and behavioral differences
 - [X] T041 Fix test expectations if draft-2020-12 changes behavior
 - [X] T042 Verify all tests pass: `npm test`
 
@@ -81,24 +81,24 @@
 - [X] T046 Verify no lint errors
 
 ### Documentation Updates
-- [ ] T047 Update CHANGELOG.md with breaking changes section:
+- [X] T047 Update CHANGELOG.md with breaking changes section:
   - Add entry for json-schema-typed adoption
   - Document draft-2020-12 migration
   - Note custom extensions (errorMessage, nullable)
   - List any behavioral differences from draft-07
   - Provide migration guidance for type unions vs nullable
-- [ ] T048 Update README.md with json-schema-typed attribution:
+- [X] T048 Update README.md with json-schema-typed attribution:
   - Add note about using json-schema-typed
   - Document draft-2020-12 compliance
   - Link to json-schema-typed repository
-- [ ] T049 Verify documentation accuracy (links work, examples correct)
+- [X] T049 Verify documentation accuracy (links work, examples correct)
 
 ### Final Checks
-- [ ] T050 Review git diff to ensure all changes are intentional
-- [ ] T051 Verify public API backward compatibility (type aliases)
-- [ ] T052 Run full test suite one final time: `npm test`
+- [X] T050 Review git diff to ensure all changes are intentional
+- [X] T051 Verify public API backward compatibility (type aliases)
+- [X] T052 Run full test suite one final time: `npm test`
 - [X] T053 Create commit with descriptive message
-- [ ] T054 Update refactor-spec.md status to "Complete"
+- [X] T054 Update refactor-spec.md status to "Complete"
 
 ---
 

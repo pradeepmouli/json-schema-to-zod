@@ -1,5 +1,39 @@
 # Changelog
 
+## Unreleased
+
+### Breaking Changes
+
+- **TypeScript type definitions now use json-schema-typed library (draft-2020-12)**
+  - Replaced custom `JsonSchema` type definitions with types from `json-schema-typed@^8.0.2`
+  - Uses JSON Schema draft-2020-12 specification (latest stable)
+  - Type aliases maintain backward compatibility for consumers
+  - Custom extensions preserved: `errorMessage` (OpenAPI Validator), `nullable` (OpenAPI 3.0)
+
+### Migration Notes
+
+**JSON Schema Draft-2020-12 Changes:**
+- `exclusiveMinimum` / `exclusiveMaximum`: Now standalone numeric values (was: boolean flag with `minimum`/`maximum` in draft-04)
+- `required`: Array-only (no longer accepts boolean)
+- `enum`: Must be non-empty array
+
+**If you're using custom JSON Schema types:**
+- Update imports from `json-schema-typed/draft-2020-12` for better TypeScript IntelliSense
+- Old draft-04 style schemas may need updates (see examples above)
+
+**For package consumers:**
+- No breaking changes to public API
+- Type aliases ensure full backward compatibility
+- All existing code continues to work
+
+### Internal Changes
+
+- Updated TypeScript configuration for json-schema-typed compatibility
+  - `tsconfig.types.json`: Added `moduleResolution: "bundler"`
+  - `tsconfig.cjs.json`: Updated to `module: "nodenext"` with `moduleResolution: "nodenext"`
+- Added explicit type annotations throughout parser files for improved type safety
+- Updated type guards to match draft-2020-12 spec (e.g., enum must be array)
+
 ## 0.3.0
 
 ### Minor Changes
