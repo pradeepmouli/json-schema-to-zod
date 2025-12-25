@@ -7,9 +7,9 @@
 
 ## Overview
 
-A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code.
+A runtime package and CLI tool to convert JSON Schema draft-2020-12 objects or files into Zod schemas in the form of JavaScript code.
 
-**TypeScript Type Definitions:** This package uses [json-schema-typed](https://github.com/ThomasAribart/json-schema-typed) for comprehensive JSON Schema draft-2020-12 type definitions, providing excellent IntelliSense and type safety.
+**TypeScript Type Definitions:** This package uses [json-schema-typed](https://github.com/ThomasAribart/json-schema-typed) for comprehensive JSON Schema draft-2020-12 type definitions, providing excellent IntelliSense and type safety. Earlier JSON Schema drafts (such as draft-04/06/07) may work when they use features that are compatible with draft-2020-12, but only draft-2020-12 is explicitly supported.
 
 _Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
 
