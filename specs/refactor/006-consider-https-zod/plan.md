@@ -95,7 +95,7 @@ export abstract class ZodBuilder<T = string> {
 - Default version is 'v4'
 
 ### 1.3 Thread Options Through Parser Integration
-**Files**: 
+**Files**:
 - `src/JsonSchema/toZod.ts` (entry point)
 - `src/JsonSchema/parsers/parseString.ts`
 - `src/JsonSchema/parsers/parseObject.ts`
@@ -148,10 +148,10 @@ export function parseString(schema: JsonSchemaObject, options?: Options): String
  * @returns Parameter string with leading comma (e.g., ', { error: "msg" }') or empty string
  * @example
  * // v4 mode
- * `z.email()${this.withErrorMessage('Invalid email')}` 
+ * `z.email()${this.withErrorMessage('Invalid email')}`
  * // => 'z.email({ error: "Invalid email" })'
- * 
- * // v3 mode  
+ *
+ * // v3 mode
  * `z.string().email()${this.withErrorMessage('Invalid email')}`
  * // => 'z.string().email({ message: "Invalid email" })'
  */
@@ -269,16 +269,16 @@ export class StringBuilder extends ZodBuilder<'string'> {
 
   /**
    * Check if any string-specific constraints are applied.
-   * COMPLETE LIST: minLength, maxLength, length, pattern (regex), 
+   * COMPLETE LIST: minLength, maxLength, length, pattern (regex),
    * includes, startsWith, endsWith.
-   * 
+   *
    * When ANY constraint exists, StringBuilder stays in chain mode even in v4.
    * Only when NO constraints exist can v4 mode switch to format-specific builders.
    */
   private hasStringConstraints(): boolean {
     return !!(
-      this._minLength || 
-      this._maxLength || 
+      this._minLength ||
+      this._maxLength ||
       this._length ||
       this._pattern ||
       this._includes ||
