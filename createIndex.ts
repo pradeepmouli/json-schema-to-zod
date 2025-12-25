@@ -52,7 +52,10 @@ for (const exportPath of exportPaths) {
 // This avoids the circular dependency issue
 sourceFile.addExportDeclaration({
 	moduleSpecifier: './jsonSchemaToZod.js',
-	namedExports: ['jsonSchemaToZod', { name: 'jsonSchemaToZod', alias: 'default' }],
+	namedExports: [
+		'jsonSchemaToZod',
+		{ name: 'jsonSchemaToZod', alias: 'default' },
+	],
 });
 
 // Save the file

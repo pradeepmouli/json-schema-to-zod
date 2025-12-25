@@ -34,8 +34,7 @@ export const parseSchema = (
 	if (refs.preprocessors) {
 		for (const preprocessor of refs.preprocessors) {
 			const output = preprocessor(schema as JsonSchemaObject, refs);
-			if(output)
-				schema = output;
+			if (output) schema = output;
 		}
 	}
 	if (refs.parserOverride) {

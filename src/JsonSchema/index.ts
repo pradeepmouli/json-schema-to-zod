@@ -41,8 +41,10 @@ export const parse = {
 	discriminator: undefined, // to be implemented
 };
 
-export type transformer = (schema: JsonSchemaObject, refs: Context) => JsonSchemaObject | undefined;
-
+export type transformer = (
+	schema: JsonSchemaObject,
+	refs: Context,
+) => JsonSchemaObject | undefined;
 
 export function select(schema: any) {
 	if (its.an.object(schema)) {
