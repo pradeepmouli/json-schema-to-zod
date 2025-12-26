@@ -15,20 +15,20 @@
 
 **Purpose**: Add zodVersion configuration support to enable dual-mode generation
 
-- [ ] T001 Add `ZodVersion` type ('v3' | 'v4') to src/Types.ts
-- [ ] T002 Add `zodVersion?: ZodVersion` property to Options type in src/Types.ts with JSDoc
-- [ ] T003 Update BaseBuilder constructor in src/ZodBuilder/BaseBuilder.ts to accept Options parameter
-- [ ] T004 Add `zodVersion` getter to BaseBuilder in src/ZodBuilder/BaseBuilder.ts (returns options?.zodVersion || 'v4')
-- [ ] T005 [P] Add `isV4()` helper method to BaseBuilder in src/ZodBuilder/BaseBuilder.ts
-- [ ] T006 [P] Add `isV3()` helper method to BaseBuilder in src/ZodBuilder/BaseBuilder.ts
-- [ ] T007 Add `withErrorMessage(message?: string)` method to BaseBuilder in src/ZodBuilder/BaseBuilder.ts that generates `error` param for v4, `message` param for v3
-- [ ] T008 Update StringBuilder constructor in src/ZodBuilder/string.ts to accept and pass Options to parent
-- [ ] T009 [P] Update ObjectBuilder constructor in src/ZodBuilder/object.ts to accept and pass Options to parent
-- [ ] T010 [P] Update NumberBuilder constructor in src/ZodBuilder/number.ts to accept and pass Options to parent
-- [ ] T011 [P] Update ArrayBuilder constructor in src/ZodBuilder/array.ts to accept and pass Options to parent
-- [ ] T012 [P] Update other builder constructors (enum, record, tuple, etc.) in src/ZodBuilder/ to accept and pass Options to parent
-- [ ] T013 Update all parser functions in src/JsonSchema/parsers/ to pass options to builder constructors
-- [ ] T014 Verify options propagate from jsonSchemaToZod entry point through toZod to builders
+- [X] T001 Add `ZodVersion` type ('v3' | 'v4') to src/Types.ts
+- [X] T002 Add `zodVersion?: ZodVersion` property to Options type in src/Types.ts with JSDoc
+- [X] T003 Update BaseBuilder constructor in src/ZodBuilder/BaseBuilder.ts to accept Options parameter
+- [X] T004 Add `zodVersion` getter to BaseBuilder in src/ZodBuilder/BaseBuilder.ts (returns options?.zodVersion || 'v4')
+- [X] T005 [P] Add `isV4()` helper method to BaseBuilder in src/ZodBuilder/BaseBuilder.ts
+- [X] T006 [P] Add `isV3()` helper method to BaseBuilder in src/ZodBuilder/BaseBuilder.ts
+- [X] T007 Add `withErrorMessage(message?: string)` method to BaseBuilder in src/ZodBuilder/BaseBuilder.ts that generates `error` param for v4, `message` param for v3
+- [X] T008 Update StringBuilder constructor in src/ZodBuilder/string.ts to accept and pass Options to parent
+- [X] T009 [P] Update ObjectBuilder constructor in src/ZodBuilder/object.ts to accept and pass Options to parent
+- [X] T010 [P] Update NumberBuilder constructor in src/ZodBuilder/number.ts to accept and pass Options to parent
+- [X] T011 [P] Update ArrayBuilder constructor in src/ZodBuilder/array.ts to accept and pass Options to parent
+- [X] T012 [P] Update other builder constructors (enum, record, tuple, etc.) in src/ZodBuilder/ to accept and pass Options to parent
+- [X] T013 Update all parser functions in src/JsonSchema/parsers/ to pass options to builder constructors
+- [X] T014 Verify options propagate from jsonSchemaToZod entry point through toZod to builders
 
 **Checkpoint**: Configuration infrastructure complete - builders can detect zodVersion
 
@@ -38,9 +38,9 @@
 
 **Purpose**: Update error message generation to use correct parameter name per version
 
-- [ ] T015 Update all builder `.text()` methods in src/ZodBuilder/ to use `withErrorMessage()` instead of direct string concatenation
-- [ ] T016 Test error messages generate `{ error: "..." }` in v4 mode
-- [ ] T017 Test error messages generate `{ message: "..." }` in v3 mode
+- [X] T015 Update all builder `.text()` methods in src/ZodBuilder/ to use `withErrorMessage()` instead of direct string concatenation
+- [X] T016 Test error messages generate `{ error: "..." }` in v4 mode
+- [X] T017 Test error messages generate `{ message: "..." }` in v3 mode
 
 **Checkpoint**: Error handling respects zodVersion across all builders
 
@@ -96,9 +96,9 @@
 
 **Purpose**: Update ObjectBuilder to generate version-appropriate code
 
-- [ ] T044 Update ObjectBuilder `.text()` method in src/ZodBuilder/object.ts to generate `z.strictObject({...})` in v4 when `_strict` is true
-- [ ] T045 Update ObjectBuilder `.text()` method to generate `z.looseObject({...})` in v4 when `_passthrough` is true
-- [ ] T046 Update ObjectBuilder `.text()` method to generate `z.object({...}).strict()` in v3 mode when `_strict` is true
+- [X] T044 Update ObjectBuilder `.text()` method in src/ZodBuilder/object.ts to generate `z.strictObject({...})` in v4 when `_strict` is true
+- [X] T045 Update ObjectBuilder `.text()` method to generate `z.looseObject({...})` in v4 when `_passthrough` is true
+- [X] T046 Update ObjectBuilder `.text()` method to generate `z.object({...}).strict()` in v3 mode when `_strict` is true
 - [ ] T047 Update ObjectBuilder `.text()` method to generate `z.object({...}).passthrough()` in v3 mode when `_passthrough` is true
 - [ ] T048 Update ObjectBuilder merge handling to generate `.extend()` in v4 mode, `.merge()` in v3 mode
 - [ ] T049 Handle optional field defaults correctly for both v3 (not applied) and v4 (applied) - document behavior difference
