@@ -286,13 +286,26 @@ describe('New Zod Builders', () => {
 		});
 
 		it('lazy builder', () => {
-			const schema = build.lazy('() => z.string()');
+			const schema = build.lazy(build.string());
 			expect(schema.text()).toBe('z.lazy(() => z.string())');
 		});
 
 		it('lazy builder for recursive schema', () => {
-			const schema = build.lazy('() => nodeSchema');
+			const schema = build.lazy(build.raw('nodeSchema'));
 			expect(schema.text()).toBe('z.lazy(() => nodeSchema)');
+		});
+
+		it('lazy builder with complex type', () => {
+			const schema = build.lazy(
+				build.object({ name: build.string(), age: build.number() }),
+			);
+			expect(schema.text()).toContain('z.lazy(');
+			expect(schema.text()).toContain('z.object({');
+		});
+
+		it('lazy builder with modifiers', () => {
+			const schema = build.lazy(build.number()).optional();
+			expect(schema.text()).toBe('z.lazy(() => z.number()).optional()');
 		});
 
 		it('function builder without args', () => {
