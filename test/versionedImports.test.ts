@@ -80,7 +80,7 @@ describe('Version-specific imports', () => {
 			const promiseSchema = build.promise(build.string());
 			expect(promiseSchema.text()).toBe('z.promise(z.string())');
 
-			const lazySchema = build.lazy('() => z.string()');
+			const lazySchema = build.lazy(build.string());
 			expect(lazySchema.text()).toBe('z.lazy(() => z.string())');
 
 			const jsonSchema = build.json();

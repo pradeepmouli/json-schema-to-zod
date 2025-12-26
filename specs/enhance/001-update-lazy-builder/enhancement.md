@@ -5,7 +5,7 @@
 **Created**: 2025-12-26
 **Priority**: [x] High | [ ] Medium | [ ] Low
 **Component**: src/ZodBuilder/lazy.ts
-**Status**: [x] Planned | [ ] In Progress | [ ] Complete
+**Status**: [ ] Planned | [ ] In Progress | [x] Complete
 
 ## Input
 User description: "Update lazy builder to take another builder as input (instead of a string) and return `() => ${input.text()}`"
@@ -42,31 +42,31 @@ This is a breaking change as the lazy builder signature changes from accepting a
 **Phase 1: Implementation**
 
 **Tasks**:
-1. [ ] Update `LazyBuilder` class in `src/ZodBuilder/lazy.ts` to accept `ZodBuilder` input and generate `() => ${input.text()}` format
-2. [ ] Update the lazy factory function in `src/ZodBuilder/index.ts` to match the new signature
-3. [ ] Update all test files that use `build.lazy()` to pass builder instances instead of strings
-4. [ ] Run tests to verify all lazy builder tests pass with new API
-5. [ ] Run lint to ensure code style compliance
+1. [x] Update `LazyBuilder` class in `src/ZodBuilder/lazy.ts` to accept `ZodBuilder` input and generate `() => ${input.text()}` format
+2. [x] Update the lazy factory function in `src/ZodBuilder/index.ts` to match the new signature
+3. [x] Update all test files that use `build.lazy()` to pass builder instances instead of strings
+4. [x] Run tests to verify all lazy builder tests pass with new API
+5. [x] Run lint to ensure code style compliance
 
 **Acceptance Criteria**:
-- [ ] LazyBuilder accepts ZodBuilder instance and generates correct output format
-- [ ] Factory function `build.lazy()` has updated type signature
-- [ ] All existing tests updated and passing
-- [ ] Generated code matches format: `z.lazy(() => <inner_schema>)`
-- [ ] No linting errors
+- [x] LazyBuilder accepts ZodBuilder instance and generates correct output format
+- [x] Factory function `build.lazy()` has updated type signature
+- [x] All existing tests updated and passing
+- [x] Generated code matches format: `z.lazy(() => <inner_schema>)`
+- [x] No linting errors
 
 ## Testing
 - [x] Unit tests added/updated
-- [ ] Integration tests pass
-- [ ] Manual testing complete
-- [ ] Edge cases verified
+- [x] Integration tests pass
+- [x] Manual testing complete
+- [x] Edge cases verified
 
 ## Verification Checklist
-- [ ] Changes implemented as described
-- [ ] Tests written and passing
-- [ ] No regressions in existing functionality
+- [x] Changes implemented as described
+- [x] Tests written and passing
+- [x] No regressions in existing functionality
 - [ ] Documentation updated (if needed)
-- [ ] Code reviewed (if appropriate)
+- [x] Code reviewed (if appropriate)
 
 ## Notes
 The enhancement improves type safety and API consistency by treating lazy builders like other wrapper builders (e.g., promise, preprocess) that accept builder inputs. This aligns with the fluent builder pattern used throughout the codebase.

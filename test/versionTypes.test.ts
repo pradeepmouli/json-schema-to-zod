@@ -47,7 +47,7 @@ describe('Type-level API restrictions', () => {
 
 		// V4-only builders - should compile and work
 		const promiseSchema = build.promise(build.string());
-		const lazySchema = build.lazy('() => z.string()');
+		const lazySchema = build.lazy(build.string());
 		const jsonSchema = build.json();
 		const fileSchema = build.file();
 		build.nativeEnum('MyEnum');

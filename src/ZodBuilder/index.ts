@@ -243,8 +243,10 @@ const v4OnlyBuilders = {
 		innerSchema: import('./BaseBuilder.js').ZodBuilder,
 		options?: import('../Types.js').Options,
 	) => new PromiseBuilder(innerSchema, options),
-	lazy: (getter: string, options?: import('../Types.js').Options) =>
-		new LazyBuilder(getter, options),
+	lazy: (
+		input: import('./BaseBuilder.js').ZodBuilder,
+		options?: import('../Types.js').Options,
+	) => new LazyBuilder(input, options),
 	function: (
 		functionSignature: {
 			input?: import('./BaseBuilder.js').ZodBuilder[];

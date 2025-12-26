@@ -6,14 +6,14 @@ import { ZodBuilder } from './BaseBuilder.js';
  */
 export class LazyBuilder extends ZodBuilder<'lazy'> {
 	readonly typeKind = 'lazy' as const;
-	private readonly _getter: string;
+	private readonly _input: ZodBuilder;
 
-	constructor(getter: string, options?: import('../Types.js').Options) {
+	constructor(input: ZodBuilder, options?: import('../Types.js').Options) {
 		super(options);
-		this._getter = getter;
+		this._input = input;
 	}
 
 	protected override base(): string {
-		return `z.lazy(${this._getter})`;
+		return `z.lazy(() => ${this._input.text()})`;
 	}
 }
