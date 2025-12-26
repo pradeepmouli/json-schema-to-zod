@@ -3,6 +3,14 @@ import { ZodBuilder } from './BaseBuilder.js';
 /**
  * Fluent NumberBuilder: wraps a Zod number schema string and provides chainable methods
  * that delegate to the existing apply* functions.
+ * 
+ * INFINITY HANDLING - Version Differences:
+ * - Zod v3: z.number() accepts Infinity and -Infinity by default
+ * - Zod v4: z.number() REJECTS Infinity and -Infinity by default (built-in behavior)
+ *   Use z.number().allowInfinity() to permit infinite values in v4
+ * 
+ * This difference is INHERENT to Zod and not controlled by json-schema-to-zod.
+ * See NUMBER-INFINITY-NOTES.md for migration guidance.
  */
 export class NumberBuilder extends ZodBuilder<'number'> {
 	readonly typeKind = 'number' as const;

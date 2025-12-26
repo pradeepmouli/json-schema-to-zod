@@ -123,10 +123,10 @@
 
 **Purpose**: Handle remaining builder-specific version differences
 
-- [ ] T053 [P] Document in NumberBuilder (src/ZodBuilder/number.ts) that v4 rejects Infinity by default (built-in behavior)
-- [ ] T054 [P] Update RecordBuilder `.text()` method in src/ZodBuilder/record.ts to always provide two arguments in v4 mode
-- [ ] T055 [P] Update RecordBuilder `.text()` method to allow single argument in v3 mode when key schema not provided
-- [ ] T056 [P] Document in ArrayBuilder (src/ZodBuilder/array.ts) that `.nonempty()` type inference differs but validation is identical
+- [X] T053 [P] Document in NumberBuilder (src/ZodBuilder/number.ts) that v4 rejects Infinity by default (built-in behavior)
+- [X] T054 [P] Update RecordBuilder `.text()` method in src/ZodBuilder/record.ts to always provide two arguments in v4 mode
+- [X] T055 [P] Update RecordBuilder `.text()` method to allow single argument in v3 mode when key schema not provided
+- [X] T056 [P] Document in ArrayBuilder (src/ZodBuilder/array.ts) that `.nonempty()` type inference differs but validation is identical
 
 **Checkpoint**: All builders handle version-specific quirks correctly
 
