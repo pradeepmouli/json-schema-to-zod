@@ -1,9 +1,9 @@
 /**
  * Example demonstrating version-specific imports
- * 
+ *
  * This file shows how to use x-to-zod with version-specific imports
  * to ensure compatibility with your target Zod version.
- * 
+ *
  * NOTE: This example shows the import syntax for end users.
  * When installed as a package, imports would be:
  * - import { build } from 'x-to-zod/v4';
@@ -19,10 +19,12 @@ const v4Examples = {
 	// Core types work everywhere
 	stringSchema: buildV4.string().text(),
 	numberSchema: buildV4.number().text(),
-	objectSchema: buildV4.object({
-		name: buildV4.string(),
-		age: buildV4.number(),
-	}).text(),
+	objectSchema: buildV4
+		.object({
+			name: buildV4.string(),
+			age: buildV4.number(),
+		})
+		.text(),
 
 	// V4-only features
 	promiseSchema: buildV4.promise(buildV4.string()).text(),
@@ -52,13 +54,15 @@ import { build as buildV3 } from '../src/v3.js';
 const v3Examples = {
 	stringSchema: buildV3.string().text(),
 	numberSchema: buildV3.number().text(),
-	objectSchema: buildV3.object({
-		name: buildV3.string(),
-		age: buildV3.number(),
-	}).text(),
+	objectSchema: buildV3
+		.object({
+			name: buildV3.string(),
+			age: buildV3.number(),
+		})
+		.text(),
 	unionSchema: buildV3.union([buildV3.string(), buildV3.number()]).text(),
 	arraySchema: buildV3.array(buildV3.string()).text(),
-	
+
 	// These would cause TypeScript errors if uncommented (v4-only):
 	// promiseSchema: buildV3.promise(buildV3.string()).text(), // ❌ Error!
 	// lazySchema: buildV3.lazy('() => Schema').text(), // ❌ Error!
@@ -89,7 +93,10 @@ console.log(zodSchema);
 
 // Example 4: Using buildV3 and buildV4 directly
 // In your app: import { buildV3, buildV4 } from 'x-to-zod/builders';
-import { buildV3 as coreBuilders, buildV4 as fullBuilders } from '../src/ZodBuilder/index.js';
+import {
+	buildV3 as coreBuilders,
+	buildV4 as fullBuilders,
+} from '../src/ZodBuilder/index.js';
 
 const directExample = {
 	v3String: coreBuilders.string().text(),
@@ -113,9 +120,4 @@ buildV4.promise(buildV4.string());
 buildV3.string();
 buildV4.string();
 
-export {
-	v4Examples,
-	v3Examples,
-	zodSchema,
-	directExample,
-};
+export { v4Examples, v3Examples, zodSchema, directExample };
