@@ -2,18 +2,18 @@ import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Fluent ArrayBuilder: wraps a Zod array schema string and provides chainable methods.
- * 
+ *
  * NONEMPTY() TYPE INFERENCE - Version Notes:
  * Both Zod v3 and v4 support .nonempty() with identical validation behavior.
  * However, type inference differs:
  * - .nonempty() infers [T, ...T[]] (tuple-like with at least one element)
  * - .min(1) infers T[] (regular array)
- * 
+ *
  * Implementation: ArrayBuilder uses .min(1) instead of .nonempty() for:
  * 1. Consistency across versions
  * 2. Clarity in error messages
  * 3. Alignment with JSON Schema constraints (which don't express tuple constraints)
- * 
+ *
  * The validation is functionally identical in both v3 and v4.
  * See ARRAY-NONEMPTY-NOTES.md for details.
  */

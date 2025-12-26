@@ -138,13 +138,13 @@
 
 ### 7a: String Format Tests
 
-- [ ] T057 [P] Add v4 mode tests for email format in test/parsers/parseString.test.ts verifying `z.email()` generation
-- [ ] T058 [P] Add v4 mode tests for uuid format verifying `z.uuid()` or `z.guid()` generation
-- [ ] T059 [P] Add v4 mode tests for url format verifying `z.url()` generation
-- [ ] T060 [P] Add v4 mode tests for datetime, date, time, duration formats
-- [ ] T061 [P] Add v4 mode tests for ip, emoji, base64, cuid, ulid, nanoid formats
-- [ ] T062 [P] Add v3 mode tests for all string formats verifying `z.string().format()` generation
-- [ ] T063 Test constraints-first behavior: string with minLength + email stays in StringBuilder in v4
+- [X] T057 [P] Add v4 mode tests for email format in test/parsers/parseString.test.ts verifying `z.email()` generation
+- [X] T058 [P] Add v4 mode tests for uuid format verifying `z.uuid()` or `z.guid()` generation
+- [X] T059 [P] Add v4 mode tests for url format verifying `z.url()` generation
+- [X] T060 [P] Add v4 mode tests for datetime, date, time, duration formats
+- [X] T061 [P] Add v4 mode tests for ip, emoji, base64, cuid, ulid, nanoid formats
+- [X] T062 [P] Add v3 mode tests for all string formats verifying `z.string().format()` generation
+- [X] T063 Test constraints-first behavior: string with minLength + email stays in StringBuilder in v4
 
 ### 7b: Object Tests
 

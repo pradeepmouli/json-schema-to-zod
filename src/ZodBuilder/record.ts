@@ -3,14 +3,14 @@ import { ZodBuilder } from './BaseBuilder.js';
 /**
  * Fluent RecordBuilder: represents z.record() schema.
  * Accepts key and value schemas.
- * 
+ *
  * KEY SCHEMA REQUIREMENT - Version Differences:
  * - Zod v3: z.record(valueSchema) with implicit string keys, or z.record(keySchema, valueSchema)
  * - Zod v4: z.record(keySchema, valueSchema) REQUIRED - single argument form not allowed
- * 
+ *
  * Implementation: RecordBuilder ALWAYS uses the two-argument form z.record(keySchema, valueSchema)
  * for v3/v4 compatibility. This is the safest and most explicit approach.
- * 
+ *
  * Typically keySchema is z.string() since JSON object keys are strings.
  * See RECORD-KEY-SCHEMA-NOTES.md for detailed discussion.
  */
