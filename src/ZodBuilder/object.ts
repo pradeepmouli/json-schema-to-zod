@@ -162,7 +162,7 @@ export class ObjectBuilder extends ZodBuilder<'object'> {
 		}
 
 		if (this._loose && useMethodForm) {
-			result = applyLoose(result);
+			result = applyLoose(result, this.zodVersion);
 		}
 
 		if (this._superRefineFn) {
@@ -256,9 +256,10 @@ export function applyCatchall(
 /**
  * Apply loose mode (allow additional properties).
  * In Zod v4, use .loose() instead of .passthrough().
+ * Note: This function is version-aware and should be called from ObjectBuilder's modify() method.
  */
-export function applyLoose(zodStr: string): string {
-	return `${zodStr}.loose()`;
+export function applyLoose(zodStr: string, zodVersion: import('../Types.js').ZodVersion = 'v4'): string {
+	return zodVersion === 'v4' ? `${zodStr}.loose()` : `${zodStr}.passthrough()`;
 }
 
 /**
