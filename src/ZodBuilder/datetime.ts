@@ -2,16 +2,16 @@ import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * DatetimeBuilder: represents z.datetime() in Zod v4.
- * 
+ *
  * In v4, datetime validation is a top-level function that provides better type inference
  * and tree-shaking compared to v3's z.string().datetime() method chain.
- * 
+ *
  * @example
  * ```typescript
  * // v4 mode
  * const dt = new DatetimeBuilder({ zodVersion: 'v4' });
  * dt.text(); // => 'z.datetime()'
- * 
+ *
  * // With precision
  * dt.withPrecision(3).text(); // => 'z.datetime({ precision: 3 })'
  * ```

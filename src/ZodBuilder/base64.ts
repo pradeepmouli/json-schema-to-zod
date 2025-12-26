@@ -2,10 +2,10 @@ import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * Base64Builder: represents z.base64() in Zod v4.
- * 
+ *
  * In v4, base64 validation is a top-level function that provides better type inference
  * and tree-shaking compared to v3's z.string().base64() method chain.
- * 
+ *
  * @example
  * ```typescript
  * // v4 mode
@@ -35,7 +35,9 @@ export class Base64Builder extends ZodBuilder<'base64'> {
 			return `z.base64(${this._errorMessage ? this.withErrorMessage(this._errorMessage).slice(2) : ''})`;
 		}
 		// In v3, fall back to string().base64()
-		const errorParam = this._errorMessage ? this.withErrorMessage(this._errorMessage) : '';
+		const errorParam = this._errorMessage
+			? this.withErrorMessage(this._errorMessage)
+			: '';
 		return `z.string().base64(${errorParam ? errorParam.slice(2) : ''})`;
 	}
 }

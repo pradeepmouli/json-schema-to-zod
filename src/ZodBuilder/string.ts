@@ -393,8 +393,15 @@ export class StringBuilder extends ZodBuilder<'string'> {
 	 */
 	base64(errorMessage?: string): this | import('./base64.js').Base64Builder {
 		// Check if we have OTHER constraints (not including base64 itself)
-		const hasOtherConstraints = !!(this._minLength || this._maxLength || this._pattern || this._json || this._pipe || this._format);
-		
+		const hasOtherConstraints = !!(
+			this._minLength ||
+			this._maxLength ||
+			this._pattern ||
+			this._json ||
+			this._pipe ||
+			this._format
+		);
+
 		// In v4 mode without other constraints, switch to Base64Builder
 		if (this.isV4() && !hasOtherConstraints) {
 			const builder = new Base64Builder(this.options);

@@ -2,10 +2,10 @@ import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * DurationBuilder: represents z.duration() in Zod v4.
- * 
+ *
  * In v4, duration validation is a top-level function that provides better type inference
  * and tree-shaking compared to v3's z.string().duration() method chain.
- * 
+ *
  * @example
  * ```typescript
  * // v4 mode
@@ -35,7 +35,9 @@ export class DurationBuilder extends ZodBuilder<'duration'> {
 			return `z.duration(${this._errorMessage ? this.withErrorMessage(this._errorMessage).slice(2) : ''})`;
 		}
 		// In v3, fall back to string().duration()
-		const errorParam = this._errorMessage ? this.withErrorMessage(this._errorMessage) : '';
+		const errorParam = this._errorMessage
+			? this.withErrorMessage(this._errorMessage)
+			: '';
 		return `z.string().duration(${errorParam ? errorParam.slice(2) : ''})`;
 	}
 }

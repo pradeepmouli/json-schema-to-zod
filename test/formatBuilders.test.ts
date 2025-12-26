@@ -155,18 +155,12 @@ describe('String Format Builders - Hybrid Approach', () => {
 
 	describe('Modifier support on format builders', () => {
 		it('should support .optional() on EmailBuilder', () => {
-			const email = build
-				.string({ zodVersion: 'v4' })
-				.email()
-				.optional();
+			const email = build.string({ zodVersion: 'v4' }).email().optional();
 			expect(email.text()).toBe('z.email().optional()');
 		});
 
 		it('should support .nullable() on UuidBuilder', () => {
-			const uuid = build
-				.string({ zodVersion: 'v4' })
-				.uuid()
-				.nullable();
+			const uuid = build.string({ zodVersion: 'v4' }).uuid().nullable();
 			expect(uuid.text()).toBe('z.uuid().nullable()');
 		});
 

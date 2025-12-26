@@ -2,16 +2,16 @@ import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * TimeBuilder: represents z.time() in Zod v4.
- * 
+ *
  * In v4, time validation is a top-level function that provides better type inference
  * and tree-shaking compared to v3's z.string().time() method chain.
- * 
+ *
  * @example
  * ```typescript
  * // v4 mode
  * const time = new TimeBuilder({ zodVersion: 'v4' });
  * time.text(); // => 'z.time()'
- * 
+ *
  * // With precision
  * time.withPrecision(3).text(); // => 'z.time({ precision: 3 })'
  * ```

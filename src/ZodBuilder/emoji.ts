@@ -2,10 +2,10 @@ import { ZodBuilder } from './BaseBuilder.js';
 
 /**
  * EmojiBuilder: represents z.emoji() in Zod v4.
- * 
+ *
  * In v4, emoji validation is a top-level function that provides better type inference
  * and tree-shaking compared to v3's z.string().emoji() method chain.
- * 
+ *
  * @example
  * ```typescript
  * // v4 mode
@@ -35,7 +35,9 @@ export class EmojiBuilder extends ZodBuilder<'emoji'> {
 			return `z.emoji(${this._errorMessage ? this.withErrorMessage(this._errorMessage).slice(2) : ''})`;
 		}
 		// In v3, fall back to string().emoji()
-		const errorParam = this._errorMessage ? this.withErrorMessage(this._errorMessage) : '';
+		const errorParam = this._errorMessage
+			? this.withErrorMessage(this._errorMessage)
+			: '';
 		return `z.string().emoji(${errorParam ? errorParam.slice(2) : ''})`;
 	}
 }
