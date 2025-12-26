@@ -183,7 +183,7 @@ jsonSchemaToZod(schema, { zodVersion: 'v3' })
 
 ### For Implementation Details
 - See REFACTOR_006_SUMMARY.md sections:
-  - "Implementation Details" 
+  - "Implementation Details"
   - "Files Modified / Created"
 
 ### For Testing Information

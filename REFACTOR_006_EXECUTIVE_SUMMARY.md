@@ -231,7 +231,7 @@ Seamless propagation through builder hierarchy:
    - Zod v4 support
    - Version selection option
    - Migration path for v3 users
-   
+
 2. Publish new version (consider semver implications)
 
 3. Update package README on npm
