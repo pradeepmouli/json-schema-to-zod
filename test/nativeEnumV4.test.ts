@@ -19,7 +19,9 @@ describe('NativeEnumBuilder - Zod v4 Unified API', () => {
 			const enumBuilder = build
 				.nativeEnum('ColorEnum', { zodVersion: 'v4' })
 				.default('ColorEnum.Red');
-			expect(enumBuilder.text()).toBe('z.enum(ColorEnum).default("ColorEnum.Red")');
+			expect(enumBuilder.text()).toBe(
+				'z.enum(ColorEnum).default("ColorEnum.Red")',
+			);
 		});
 
 		it('should handle enum with description in v4 mode', () => {

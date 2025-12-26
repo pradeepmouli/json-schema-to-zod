@@ -25,10 +25,14 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 					{ zodVersion: 'v4' },
 				)
 				.loose();
-			
+
 			// When modifying a precomputed schema, use method form
-			const modified = ObjectBuilder.fromCode(obj.text(), { zodVersion: 'v4' }).loose();
-			expect(modified.text()).toBe('z.looseObject({ "name": z.string() }).loose()');
+			const modified = ObjectBuilder.fromCode(obj.text(), {
+				zodVersion: 'v4',
+			}).loose();
+			expect(modified.text()).toBe(
+				'z.looseObject({ "name": z.string() }).loose()',
+			);
 		});
 
 		it('should generate .passthrough() in v3 mode', () => {
@@ -50,9 +54,13 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 				},
 				{ zodVersion: 'v3' },
 			);
-			
-			const modified = ObjectBuilder.fromCode(baseObj.text(), { zodVersion: 'v3' }).loose();
-			expect(modified.text()).toBe('z.object({ "name": z.string() }).passthrough()');
+
+			const modified = ObjectBuilder.fromCode(baseObj.text(), {
+				zodVersion: 'v3',
+			}).loose();
+			expect(modified.text()).toBe(
+				'z.object({ "name": z.string() }).passthrough()',
+			);
 		});
 	});
 
@@ -70,7 +78,7 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 				},
 				{ zodVersion: 'v4' },
 			);
-			
+
 			const merged = base.merge(extension);
 			expect(merged.text()).toBe(
 				'z.object({ "id": z.number() }).extend(z.object({ "name": z.string() }))',
@@ -90,7 +98,7 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 				},
 				{ zodVersion: 'v3' },
 			);
-			
+
 			const merged = base.merge(extension);
 			expect(merged.text()).toBe(
 				'z.object({ "id": z.number() }).merge(z.object({ "name": z.string() }))',
@@ -104,7 +112,7 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 				},
 				{ zodVersion: 'v4' },
 			);
-			
+
 			const merged = base.merge('z.object({ name: z.string() })');
 			expect(merged.text()).toBe(
 				'z.object({ "id": z.number() }).extend(z.object({ name: z.string() }))',
@@ -118,7 +126,7 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 				},
 				{ zodVersion: 'v3' },
 			);
-			
+
 			const merged = base.merge('z.object({ name: z.string() })');
 			expect(merged.text()).toBe(
 				'z.object({ "id": z.number() }).merge(z.object({ name: z.string() }))',
@@ -183,7 +191,7 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 				},
 				{ zodVersion: 'v4' },
 			);
-			
+
 			const merged = base.merge(extension);
 			// When merge is present, strict must be applied as a method modifier
 			// because v4 strictObject() cannot be extended inline
@@ -207,7 +215,7 @@ describe('ObjectBuilder - Zod v4 Compatibility', () => {
 				},
 				{ zodVersion: 'v3' },
 			);
-			
+
 			const merged = base.merge(extension);
 			expect(merged.text()).toBe(
 				'z.object({ "id": z.number() }).passthrough().merge(z.object({ "name": z.string() }))',

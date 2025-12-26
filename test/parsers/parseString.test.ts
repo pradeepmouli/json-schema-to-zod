@@ -125,7 +125,6 @@ describe('parseString', () => {
 		).toBe(`z.string().duration()`);
 	});
 
-
 	it('stringified JSON', () => {
 		expect(
 			parseString({

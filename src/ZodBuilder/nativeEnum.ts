@@ -3,7 +3,7 @@ import { ZodBuilder } from './BaseBuilder.js';
 /**
  * NativeEnumBuilder: represents z.enum() in v4 or z.nativeEnum() in v3
  * Validates against TypeScript native enum values.
- * 
+ *
  * In Zod v4, the enum API is unified - both native TypeScript enums and
  * string literal enums use z.enum(). In v3, native enums use z.nativeEnum().
  */

@@ -222,7 +222,10 @@ describe('New Zod Builders', () => {
 
 		it('merge method', () => {
 			const schema = build
-				.object({ name: build.string({ zodVersion: 'v3' }) }, { zodVersion: 'v3' })
+				.object(
+					{ name: build.string({ zodVersion: 'v3' }) },
+					{ zodVersion: 'v3' },
+				)
 				.merge('otherSchema');
 			expect(schema.text()).toContain('.merge(otherSchema)');
 		});
@@ -390,7 +393,9 @@ describe('New Zod Builders', () => {
 		});
 
 		it('nativeEnum builder with modifiers', () => {
-			const schema = build.nativeEnum('Status', { zodVersion: 'v3' }).optional();
+			const schema = build
+				.nativeEnum('Status', { zodVersion: 'v3' })
+				.optional();
 			expect(schema.text()).toBe('z.nativeEnum(Status).optional()');
 		});
 
